@@ -14,12 +14,9 @@ import Link from 'next/link';
 import { postLogin } from '@/app/features/auth/api';
 import { loginFormSchema } from '@/app/features/auth/schema';
 import { Controller, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 
 import * as z from 'zod';
-import makeServer from '@/lib/mirage';
-makeServer();
 
 type SchemaInput = z.input<typeof loginFormSchema>;
 
