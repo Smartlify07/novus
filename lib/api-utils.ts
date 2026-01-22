@@ -117,6 +117,7 @@ export const updateData = async (
 export const fetchData = async (
   endpoint: string,
   options: Record<string, any> = {},
+  noAuth: boolean = false,
 ) => {
-  return callApi('GET', endpoint, null, options);
+  return callApi('GET', endpoint, null, options, noAuth);
 };

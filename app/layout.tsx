@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono, Nunito_Sans } from 'next/font/google';
 import './globals.css';
 
+import AppProvider from './app-provider';
+import { Toaster } from '@/components/ui/sonner';
+
 const nunitoSans = Nunito_Sans({ variable: '--font-sans' });
 
 const geistSans = Geist({
@@ -26,10 +29,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={nunitoSans.variable}>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`antialiased`}>
+        <AppProvider>{children}</AppProvider>
+        <Toaster />
       </body>
     </html>
   );
