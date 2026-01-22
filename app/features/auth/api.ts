@@ -1,4 +1,5 @@
 import { callApi } from '@/lib/api-utils';
+import { toast } from 'sonner';
 
 type LoginDetailsType = {
   email: string;
@@ -8,27 +9,30 @@ type LoginDetailsType = {
 const postLogin = async (loginDetail: LoginDetailsType) => {
   const { email, password } = loginDetail;
 
-  let response;
   try {
-    response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: new URLSearchParams({
-        email: email,
-        password: password,
-      }).toString(),
+      body: JSON.stringify({ email, password }),
     });
+    if (!response.ok) {
+      console.log(response);
+      console.log(await response.json());
+
+      if (response.status === 401) {
+        throw new Error('Incorrect email or password. Please try again.');
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Login Failed');
+      }
+    }
+    return await response.json();
   } catch (error) {
     console.error(error);
+    throw error;
   }
-
-  if (!response?.ok) {
-    throw new Error('An error occurred' + response?.statusText);
-  }
-
-  return response.json();
 };
 
 const postSignUp = async (form: any) => {

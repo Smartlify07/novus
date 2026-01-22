@@ -1,21 +1,57 @@
-import { cn } from '@/lib/utils';
+'use client';
+import { cn, getErrorMessage } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
   Field,
   FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
   FieldSeparator,
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
+import { postLogin } from '@/app/features/auth/api';
+import { loginFormSchema } from '@/app/features/auth/schema';
+import { Controller, useForm } from 'react-hook-form';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 
+import * as z from 'zod';
+
+type SchemaInput = z.input<typeof loginFormSchema>;
+
+// Note that the below are both the same
+type SchemaInferred = z.infer<typeof loginFormSchema>;
+type SchemaOutput = z.output<typeof loginFormSchema>;
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<'form'>) {
+  const form = useForm<SchemaInput, unknown, SchemaOutput>({
+    resolver: standardSchemaResolver(loginFormSchema),
+    defaultValues: {
+      password: '',
+      email: '',
+    },
+  });
+  const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
+    try {
+      await postLogin(values);
+    } catch (error) {
+      console.error(error);
+      const errorMessage = getErrorMessage(error);
+      form.setError('root', {
+        message: errorMessage,
+      });
+    }
+  };
   return (
-    <form className={cn('flex flex-col gap-6', className)} {...props}>
+    <form
+      id="login-form"
+      onSubmit={form.handleSubmit(onSubmit)}
+      className={cn('flex flex-col gap-6', className)}
+      {...props}
+    >
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">Welcome Back !</h1>
@@ -99,24 +135,58 @@ export function LoginForm({
         </Field>
         <FieldSeparator>Or continue with</FieldSeparator>
 
+        <Controller
+          control={form.control}
+          name="email"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="email">Email</FieldLabel>
+              <Input
+                {...field}
+                id="email"
+                aria-invalid={fieldState.invalid}
+                type="email"
+                placeholder="m@example.com"
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="password"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <div className="flex items-center">
+                <FieldLabel htmlFor="password">Password</FieldLabel>
+                <a
+                  href="#"
+                  className="ml-auto text-sm underline-offset-4 hover:underline"
+                >
+                  Forgot your password?
+                </a>
+              </div>
+              <Input
+                {...field}
+                aria-invalid={fieldState.invalid}
+                id="password"
+                type="password"
+              />
+              {fieldState.invalid}
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        {form.formState.errors && (
+          <FieldError
+            errors={[{ message: form.formState.errors['root']?.message }]}
+          />
+        )}
         <Field>
-          <FieldLabel htmlFor="email">Email</FieldLabel>
-          <Input id="email" type="email" placeholder="m@example.com" required />
-        </Field>
-        <Field>
-          <div className="flex items-center">
-            <FieldLabel htmlFor="password">Password</FieldLabel>
-            <a
-              href="#"
-              className="ml-auto text-sm underline-offset-4 hover:underline"
-            >
-              Forgot your password?
-            </a>
-          </div>
-          <Input id="password" type="password" required />
-        </Field>
-        <Field>
-          <Button type="submit">Login</Button>
+          <Button type="submit" form="login-form">
+            Login
+          </Button>
         </Field>
         <FieldDescription className="px-6 text-center">
           Don't have an account? <Link href="/signup">Sign up</Link>
