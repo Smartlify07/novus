@@ -7,7 +7,7 @@ export const phoneSchema = z.object({
     .min(1, { error: 'We need your number to secure your account.' })
     .transform((v, ctx) => {
       const p = parsePhoneNumberFromString(v, {
-        defaultCountry: 'US',
+        defaultCountry: 'NG',
         extract: false,
       });
       if (!p?.isValid()) {
@@ -18,7 +18,7 @@ export const phoneSchema = z.object({
         });
         return z.NEVER;
       }
-      return p.number; // always returns E.164
+      return p.number;
     }),
 });
 
@@ -71,4 +71,4 @@ export const signupOnboardingSchema = phoneSchema
     }
   });
 
-export type SignupFormValues = z.infer<typeof signupOnboardingSchema>;
+export type SignupFormValues = z.input<typeof signupOnboardingSchema>;

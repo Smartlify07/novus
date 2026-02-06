@@ -5,8 +5,8 @@ import {
 } from '@/app/features/auth/components/signup-form';
 import { signupOnboardingSchema } from '@/app/features/signup-onboarding/schema';
 import { Button } from '@/components/ui/button';
-import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { ArrowLeft01Icon, LeftAngleIcon } from '@hugeicons/core-free-icons';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ArrowLeft01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -15,10 +15,10 @@ import z from 'zod';
 
 export default function SignupPage() {
   const [currentStep, setCurrentStep] = useState<OnboardingStep>(1);
-  const form = useForm<z.infer<typeof signupOnboardingSchema>>({
-    resolver: standardSchemaResolver(signupOnboardingSchema),
+  const form = useForm<z.input<typeof signupOnboardingSchema>>({
+    resolver: zodResolver(signupOnboardingSchema),
     defaultValues: {
-      phone: '' as any,
+      phone: '',
       firstName: '',
       otp: '',
       passcode: '',

@@ -10,7 +10,7 @@ export type OnboardingFormProps = {
   form: UseFormReturn<
     {
       firstName: string;
-      phone: E164Number;
+      phone: string;
       otp: string;
       passcode: string;
       confirmPasscode: string;
@@ -18,7 +18,7 @@ export type OnboardingFormProps = {
     any,
     {
       firstName: string;
-      phone: E164Number;
+      phone: string;
       otp: string;
       passcode: string;
       confirmPasscode: string;
