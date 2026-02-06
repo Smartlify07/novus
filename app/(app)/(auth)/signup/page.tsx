@@ -15,7 +15,7 @@ import z from 'zod';
 
 export default function SignupPage() {
   const [currentStep, setCurrentStep] = useState<OnboardingStep>(1);
-  const form = useForm<z.input<typeof signupOnboardingSchema>>({
+  const form = useForm({
     resolver: zodResolver(signupOnboardingSchema),
     defaultValues: {
       phone: '',
