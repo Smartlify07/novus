@@ -57,10 +57,10 @@ export const confirmPasscodeSchema = z.object({
 });
 
 export const signupOnboardingSchema = phoneSchema
-  .extend(firstNameSchema.shape)
-  .extend(otpSchema.shape)
-  .extend(passcodeSchema.shape)
-  .extend(confirmPasscodeSchema.shape)
+  .merge(firstNameSchema)
+  .merge(otpSchema)
+  .merge(passcodeSchema)
+  .merge(confirmPasscodeSchema)
   .superRefine(({ confirmPasscode, passcode }, context) => {
     if (confirmPasscode !== passcode) {
       context.addIssue({
