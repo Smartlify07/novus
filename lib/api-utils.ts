@@ -80,6 +80,7 @@ export const callFormApi = async (
     });
   } catch (error) {
     console.error(error);
+    throw error;
   }
 
   if (!response?.ok) {

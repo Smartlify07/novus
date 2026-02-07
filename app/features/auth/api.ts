@@ -18,9 +18,6 @@ const postLogin = async (loginDetail: LoginDetailsType) => {
       body: JSON.stringify({ email, password }),
     });
     if (!response.ok) {
-      console.log(response);
-      console.log(await response.json());
-
       if (response.status === 401) {
         throw new Error('Incorrect email or password. Please try again.');
       } else {
