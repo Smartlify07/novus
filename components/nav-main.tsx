@@ -28,19 +28,20 @@ export function NavMain({
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <Link href={item.url} passHref>
-                <SidebarMenuButton
-                  className={cn(
-                    pathname === item.url
-                      ? 'bg-sidebar-accent text-sidebar-accent-foreground'
-                      : '',
-                  )}
-                  tooltip={item.title}
-                >
+              <SidebarMenuButton
+                asChild
+                className={cn(
+                  pathname === item.url
+                    ? 'bg-sidebar-accent text-sidebar-accent-foreground [&>svg]:text-sidebar-primary'
+                    : '',
+                )}
+                tooltip={item.title}
+              >
+                <Link href={item.url}>
                   {item.icon}
                   <span>{item.title}</span>
-                </SidebarMenuButton>
-              </Link>
+                </Link>
+              </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>

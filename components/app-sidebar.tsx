@@ -14,6 +14,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarRail,
+  SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
@@ -83,7 +85,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
-        <SidebarMenu>
+        <SidebarMenu className="flex flex-row items-center justify-between gap-1">
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
@@ -92,6 +94,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <AppLogo />
             </SidebarMenuButton>
           </SidebarMenuItem>
+          <SidebarTrigger />
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
@@ -101,6 +104,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter>
         <NavUser user={data.user} />
       </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   );
 }
