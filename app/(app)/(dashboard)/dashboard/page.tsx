@@ -1,4 +1,5 @@
 import AccountNumberCard from '@/app/features/dashboard/components/account-number-card';
+import { CashFlowAnalyticsChart } from '@/app/features/dashboard/components/cashflow-analytics-chart';
 import GreetingSection from '@/app/features/dashboard/components/greeting-section';
 import SummaryCard from '@/app/features/dashboard/components/summary-card';
 import {
@@ -22,7 +23,7 @@ export default function DashboardPage() {
   const availableBalanceChange = calculatePercentageChange(10000, 9999);
   const nextPaymentDueDate = '2026-07-15';
   return (
-    <div className="p-6 flex flex-col gap-6">
+    <div className="p-6 flex flex-col gap-10">
       <div className="flex items-center justify-between  gap-6">
         <GreetingSection />
         <AccountNumberCard
@@ -82,6 +83,7 @@ export default function DashboardPage() {
           </span>
         </SummaryCard>
       </div>
+      <CashFlowAnalyticsChart />
     </div>
   );
 }
