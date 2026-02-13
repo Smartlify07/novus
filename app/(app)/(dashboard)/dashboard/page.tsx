@@ -1,6 +1,8 @@
+'use client';
 import AccountNumberCard from '@/app/features/dashboard/components/account-number-card';
 import { CashFlowAnalyticsChart } from '@/app/features/dashboard/components/cashflow-analytics-chart';
 import GreetingSection from '@/app/features/dashboard/components/greeting-section';
+import QuickActionButton from '@/app/features/dashboard/components/quick-action-button';
 import SummaryCard from '@/app/features/dashboard/components/summary-card';
 import {
   calculateDaysUntilDue,
@@ -9,11 +11,15 @@ import {
   cn,
 } from '@/lib/utils';
 import {
+  AddMoneyCircleIcon,
   ArrowDown02Icon,
   ArrowRight02Icon,
   ArrowUp02Icon,
   Calendar03Icon,
   CreditCardIcon,
+  GoogleDocIcon,
+  MoneyBag02Icon,
+  SentIcon,
   Wallet01Icon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
@@ -82,6 +88,56 @@ export default function DashboardPage() {
             {calculateDaysUntilDue(new Date(nextPaymentDueDate))} days until due
           </span>
         </SummaryCard>
+      </div>
+      <div className="flex items-center gap-6">
+        <QuickActionButton
+          icon={
+            <HugeiconsIcon
+              size={20}
+              icon={SentIcon}
+              stroke="1"
+              color="var(--color-primary)"
+            />
+          }
+          label="Transfer"
+          onClick={() => console.log('Transfer clicked')}
+        />
+        <QuickActionButton
+          icon={
+            <HugeiconsIcon
+              size={20}
+              icon={AddMoneyCircleIcon}
+              stroke="1"
+              color="var(--color-primary)"
+            />
+          }
+          label="Add money"
+          onClick={() => console.log('Add money clicked')}
+        />
+        <QuickActionButton
+          icon={
+            <HugeiconsIcon
+              size={20}
+              icon={MoneyBag02Icon}
+              stroke="1"
+              color="var(--color-primary)"
+            />
+          }
+          label="Apply for a loan"
+          onClick={() => console.log('Get a loan clicked')}
+        />
+        <QuickActionButton
+          icon={
+            <HugeiconsIcon
+              size={20}
+              icon={GoogleDocIcon}
+              stroke="1"
+              color="var(--color-primary)"
+            />
+          }
+          label="Get Bank Statement"
+          onClick={() => console.log('View Payment Schedule clicked')}
+        />
       </div>
       <CashFlowAnalyticsChart />
     </div>
