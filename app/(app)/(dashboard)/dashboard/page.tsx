@@ -4,9 +4,10 @@ import { CashFlowAnalyticsChart } from '@/app/features/dashboard/components/cash
 import GreetingSection from '@/app/features/dashboard/components/greeting-section';
 import QuickActionButton from '@/app/features/dashboard/components/quick-action-button';
 import SummaryCard from '@/app/features/dashboard/components/summary-card';
+import { TransactionsTable } from '@/app/features/dashboard/components/transactions-table';
+import { transactions } from '@/app/features/dashboard/data/dummyTxs';
 import {
   calculateDaysUntilDue,
-  calculateDueDate,
   calculatePercentageChange,
   cn,
 } from '@/lib/utils';
@@ -17,7 +18,7 @@ import {
   ArrowUp02Icon,
   Calendar03Icon,
   CreditCardIcon,
-  GoogleDocIcon,
+  FileDollarIcon,
   MoneyBag02Icon,
   SentIcon,
   Wallet01Icon,
@@ -28,6 +29,7 @@ import Link from 'next/link';
 export default function DashboardPage() {
   const availableBalanceChange = calculatePercentageChange(10000, 9999);
   const nextPaymentDueDate = '2026-07-15';
+
   return (
     <div className="p-6 flex flex-col gap-10">
       <div className="flex items-center justify-between  gap-6">
@@ -130,7 +132,7 @@ export default function DashboardPage() {
           icon={
             <HugeiconsIcon
               size={20}
-              icon={GoogleDocIcon}
+              icon={FileDollarIcon}
               stroke="1"
               color="var(--color-primary)"
             />
@@ -140,6 +142,7 @@ export default function DashboardPage() {
         />
       </div>
       <CashFlowAnalyticsChart />
+      <TransactionsTable transactions={transactions} />
     </div>
   );
 }
