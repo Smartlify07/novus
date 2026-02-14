@@ -11,13 +11,11 @@ export default function SummaryCard({
   value,
   icon,
   children,
-  percentageChange,
 }: {
   title: string;
   value: string;
   icon: React.ReactNode;
   children?: React.ReactNode;
-  percentageChange?: number;
 }) {
   return (
     <Card className="gap-0 flex flex-row px-4 rounded-md shadow-none">

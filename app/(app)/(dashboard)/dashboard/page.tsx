@@ -45,7 +45,6 @@ export default function DashboardPage() {
           title="Available Balance"
           value="₦12,345.67"
           icon={<HugeiconsIcon size={20} icon={Wallet01Icon} stroke="1" />}
-          percentageChange={20}
         >
           {availableBalanceChange >= 0 ? (
             <div className="flex items-center gap-1 text-sm font-medium text-green-500">

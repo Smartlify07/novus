@@ -28,6 +28,16 @@ export function calculatePercentageChange(
   return ((newValue - oldValue) / Math.abs(oldValue)) * 100;
 }
 
+export function getPercentageChangeColor(percentageChange: number): string {
+  if (percentageChange > 0) {
+    return 'text-green-600';
+  } else if (percentageChange < 0) {
+    console.log('Negative change:', percentageChange);
+    return 'text-red-600';
+  }
+  return 'text-gray-600';
+}
+
 export function calculateDueDate(daysUntilDue: number): string {
   const dueDate = new Date();
   dueDate.setDate(dueDate.getDate() + daysUntilDue);
@@ -46,7 +56,7 @@ export function calculateDaysUntilDue(dueDate: Date): number {
 
 export function formatCurrency(
   amount: number,
-  currency: string = 'USD',
+  currency: string = 'NGN',
 ): string {
   return new Intl.NumberFormat(undefined, {
     style: 'currency',
