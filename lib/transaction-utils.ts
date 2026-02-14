@@ -53,10 +53,66 @@ function getTransactionAmountColor(type: Transaction['type']) {
   return 'text-gray-800';
 }
 
+function calculateTotalTransactionsTypeAmount(
+  transactions: Transaction[],
+  type: 'credit' | 'debit',
+): number {
+  return transactions
+    .filter((tx) => tx.type === type)
+    .filter((tx) => tx.status === 'successful')
+    .reduce((total, tx) => total + tx.amount, 0);
+}
+
+function calculateTotalIncome(transactions: Transaction[]): number {
+  return calculateTotalTransactionsTypeAmount(transactions, 'credit');
+}
+
+function calculateTotalExpenses(transactions: Transaction[]): number {
+  return calculateTotalTransactionsTypeAmount(transactions, 'debit');
+}
+
+function calculateTotalTransactionsAmount(transactions: Transaction[]): number {
+  return (
+    calculateTotalIncome(transactions) + calculateTotalExpenses(transactions)
+  );
+}
+
+function calculatePercentageChange(current: number, previous: number): number {
+  if (previous === 0) {
+    return current === 0 ? 0 : 100; // Handle division by zero
+  }
+  return ((current - previous) / Math.abs(previous)) * 100;
+}
+
+function getPercentageChangeColor(percentageChange: number): string {
+  if (percentageChange > 0) {
+    return 'text-green-600';
+  } else if (percentageChange < 0) {
+    return 'text-red-600';
+  }
+  return 'text-gray-600';
+}
+
+function getExpensePercentageChangeColor(percentageChange: number): string {
+  if (percentageChange > 0) {
+    return 'text-red-600';
+  } else if (percentageChange < 0) {
+    console.log('Negative change:', percentageChange);
+    return 'text-green-600';
+  }
+  return 'text-gray-600';
+}
+
 export {
   getTransactionStatusColor,
   getTransactionTypeColor,
   formatTransactionDate,
   getTransactionAmountColor,
   formatTransactionDateTime,
+  calculateTotalTransactionsAmount,
+  calculateTotalExpenses,
+  calculateTotalIncome,
+  calculatePercentageChange,
+  getPercentageChangeColor,
+  getExpensePercentageChangeColor,
 };
