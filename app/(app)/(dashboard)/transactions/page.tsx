@@ -1,6 +1,8 @@
+'use client';
 import SummaryCard from '@/app/features/dashboard/components/summary-card';
 import { transactions } from '@/app/features/dashboard/data/dummyTxs';
 import ExportTransactionsButton from '@/app/features/transactions/components/export-transactions-button';
+import { TransactionsDataTable } from '@/app/features/transactions/components/transactions-data-table';
 import {
   calculateTotalExpenses,
   calculateTotalIncome,
@@ -109,6 +111,8 @@ export default function TransactionsPage() {
           </div>
         </SummaryCard>
       </div>
+
+      <TransactionsDataTable transactions={transactions} />
     </div>
   );
 }
