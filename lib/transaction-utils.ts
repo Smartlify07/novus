@@ -35,7 +35,7 @@ function formatTransactionDate(dateString: string): string {
 
 function formatTransactionDateTime(dateString: string): string {
   const date = new Date(dateString);
-  return date.toLocaleString(undefined, {
+  return date.toLocaleString('en-US', {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
@@ -97,7 +97,6 @@ function getExpensePercentageChangeColor(percentageChange: number): string {
   if (percentageChange > 0) {
     return 'text-red-600';
   } else if (percentageChange < 0) {
-    console.log('Negative change:', percentageChange);
     return 'text-green-600';
   }
   return 'text-gray-600';

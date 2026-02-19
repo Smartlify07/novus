@@ -1,5 +1,11 @@
 import { Transaction } from '@/types';
 
+const currentUser = {
+  id: 'u-101',
+  name: 'John Doe',
+  email: 'john.doe@example.com',
+};
+
 export const transactions: Transaction[] = [
   {
     id: 'tx-001',
@@ -9,18 +15,14 @@ export const transactions: Transaction[] = [
     merchantName: 'TechCorp Inc.',
     method: 'deposit',
     type: 'credit',
-    txRefrence: 'REF-SAL-2024-001',
-    recepient: {
-      id: 'u-101',
-      name: 'Alex Rivera',
-      email: 'alex.r@example.com',
-    },
+    txRefrence: 'REF-SAL-2026-001',
+    recepient: currentUser,
     sender: {
       id: 'u-999',
       name: 'TechCorp Payroll',
       email: 'payroll@techcorp.com',
     },
-    createdAt: '2024-03-01T09:00:00Z',
+    createdAt: '2026-01-30T09:00:00Z',
   },
   {
     id: 'tx-002',
@@ -36,8 +38,8 @@ export const transactions: Transaction[] = [
       name: 'Whole Foods',
       email: 'billing@wholefoods.com',
     },
-    sender: { id: 'u-101', name: 'Alex Rivera', email: 'alex.r@example.com' },
-    createdAt: '2024-03-02T14:30:00Z',
+    sender: currentUser,
+    createdAt: '2026-02-02T14:30:00Z',
   },
   {
     id: 'tx-003',
@@ -47,14 +49,14 @@ export const transactions: Transaction[] = [
     merchantName: 'Skyline Properties',
     method: 'transfer',
     type: 'debit',
-    txRefrence: 'REF-RENT-MAR',
+    txRefrence: 'REF-RENT-MAR-26',
     recepient: {
       id: 'u-202',
       name: 'Skyline Management',
       email: 'rent@skyline.com',
     },
-    sender: { id: 'u-101', name: 'Alex Rivera', email: 'alex.r@example.com' },
-    createdAt: '2024-03-03T08:00:00Z',
+    sender: currentUser,
+    createdAt: '2026-03-01T08:00:00Z',
   },
   {
     id: 'tx-004',
@@ -65,13 +67,9 @@ export const transactions: Transaction[] = [
     method: 'withdrawal',
     type: 'debit',
     txRefrence: 'REF-ATM-1102',
-    recepient: {
-      id: 'u-101',
-      name: 'Alex Rivera',
-      email: 'alex.r@example.com',
-    },
-    sender: { id: 'u-101', name: 'Alex Rivera', email: 'alex.r@example.com' },
-    createdAt: '2024-03-04T18:15:00Z',
+    recepient: currentUser,
+    sender: currentUser,
+    createdAt: '2026-02-15T18:15:00Z',
   },
   {
     id: 'tx-005',
@@ -87,8 +85,8 @@ export const transactions: Transaction[] = [
       name: 'City Power',
       email: 'support@citypower.com',
     },
-    sender: { id: 'u-101', name: 'Alex Rivera', email: 'alex.r@example.com' },
-    createdAt: '2024-03-04T10:00:00Z',
+    sender: currentUser,
+    createdAt: '2026-02-10T10:00:00Z',
   },
   {
     id: 'tx-006',
@@ -99,17 +97,13 @@ export const transactions: Transaction[] = [
     method: 'transfer',
     type: 'credit',
     txRefrence: 'REF-VN-4451',
-    recepient: {
-      id: 'u-101',
-      name: 'Alex Rivera',
-      email: 'alex.r@example.com',
-    },
+    recepient: currentUser,
     sender: {
       id: 'u-707',
       name: 'Sarah Jenkins',
       email: 'sarah.j@example.com',
     },
-    createdAt: '2024-03-05T20:10:00Z',
+    createdAt: '2026-01-20T20:10:00Z',
   },
   {
     id: 'tx-007',
@@ -125,8 +119,8 @@ export const transactions: Transaction[] = [
       name: 'Starbucks Corp',
       email: 'pos@starbucks.com',
     },
-    sender: { id: 'u-101', name: 'Alex Rivera', email: 'alex.r@example.com' },
-    createdAt: '2024-03-06T07:45:00Z',
+    sender: currentUser,
+    createdAt: '2026-02-28T07:45:00Z',
   },
   {
     id: 'tx-008',
@@ -137,13 +131,9 @@ export const transactions: Transaction[] = [
     method: 'deposit',
     type: 'credit',
     txRefrence: 'REF-DIV-772',
-    recepient: {
-      id: 'u-101',
-      name: 'Alex Rivera',
-      email: 'alex.r@example.com',
-    },
+    recepient: currentUser,
     sender: { id: 'm-808', name: 'E-Trade', email: 'brokerage@etrade.com' },
-    createdAt: '2024-03-07T12:00:00Z',
+    createdAt: '2026-03-05T12:00:00Z',
   },
   {
     id: 'tx-009',
@@ -159,8 +149,8 @@ export const transactions: Transaction[] = [
       name: 'Comcast Xfinity',
       email: 'billing@xfinity.com',
     },
-    sender: { id: 'u-101', name: 'Alex Rivera', email: 'alex.r@example.com' },
-    createdAt: '2024-03-08T11:00:00Z',
+    sender: currentUser,
+    createdAt: '2026-03-10T11:00:00Z',
   },
   {
     id: 'tx-010',
@@ -171,12 +161,8 @@ export const transactions: Transaction[] = [
     method: 'deposit',
     type: 'credit',
     txRefrence: 'REF-RFND-102',
-    recepient: {
-      id: 'u-101',
-      name: 'Alex Rivera',
-      email: 'alex.r@example.com',
-    },
+    recepient: currentUser,
     sender: { id: 'm-606', name: 'Anytime Fitness', email: 'hq@anytime.com' },
-    createdAt: '2024-03-09T06:00:00Z',
+    createdAt: '2026-01-15T14:20:00Z',
   },
 ];

@@ -32,7 +32,6 @@ export function getPercentageChangeColor(percentageChange: number): string {
   if (percentageChange > 0) {
     return 'text-green-600';
   } else if (percentageChange < 0) {
-    console.log('Negative change:', percentageChange);
     return 'text-red-600';
   }
   return 'text-gray-600';
@@ -52,6 +51,10 @@ export function calculateDaysUntilDue(dueDate: Date): number {
   const today = new Date();
   const timeDiff = dueDate.getTime() - today.getTime();
   return Math.ceil(timeDiff / (1000 * 3600 * 24));
+}
+
+export function getTimeInMs(date: Date): number {
+  return date.getTime();
 }
 
 export function formatCurrency(
