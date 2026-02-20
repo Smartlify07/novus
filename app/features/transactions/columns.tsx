@@ -7,12 +7,12 @@ import {
 import { cn, getTimeInMs } from '@/lib/utils';
 import { Transaction } from '@/types';
 import {
-  ArrowDown02Icon,
-  ArrowUp02Icon,
+  ArrowDownLeft,
+  ArrowUpRight,
   MoreHorizontal,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
+import { createColumnHelper } from '@tanstack/react-table';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -38,13 +38,13 @@ const columns = [
               {row.getValue('type') === 'credit' ? (
                 <HugeiconsIcon
                   className="w-4 h-4"
-                  icon={ArrowDown02Icon}
+                  icon={ArrowDownLeft}
                   size={16}
                 />
               ) : (
                 <HugeiconsIcon
                   className="w-4 h-4"
-                  icon={ArrowUp02Icon}
+                  icon={ArrowUpRight}
                   size={16}
                 />
               )}

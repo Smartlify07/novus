@@ -12,7 +12,9 @@ import {
 import { calculatePercentageChange, cn, formatCurrency } from '@/lib/utils';
 import {
   ArrowDown02Icon,
+  ArrowDownLeft,
   ArrowUp02Icon,
+  ArrowUpRight,
   Wallet01Icon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
@@ -63,7 +65,7 @@ export default function TransactionsPage() {
           </div>
         </SummaryCard>
         <SummaryCard
-          icon={<HugeiconsIcon icon={Wallet01Icon} />}
+          icon={<HugeiconsIcon icon={ArrowDownLeft} />}
           title="Total Income"
           value={formatCurrency(totalIncome, 'NGN')}
         >
@@ -83,7 +85,7 @@ export default function TransactionsPage() {
           </div>
         </SummaryCard>
         <SummaryCard
-          icon={<HugeiconsIcon icon={Wallet01Icon} />}
+          icon={<HugeiconsIcon icon={ArrowUpRight} />}
           title="Total Expenses"
           value={formatCurrency(calculateTotalExpenses(transactions), 'NGN')}
         >
