@@ -211,7 +211,7 @@ export default function TransactionDetailsSheet({
               <Button className="flex-1" asChild variant="outline">
                 <Link href={`/transactions/${transaction.id}`}>
                   <HugeiconsIcon icon={ArrowUpRight} size={16} />
-                  View fulll details
+                  View full details
                 </Link>
               </Button>
               <Button
