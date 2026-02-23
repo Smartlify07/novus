@@ -23,6 +23,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useRouter } from 'next/navigation';
+import { SheetTrigger } from '@/components/ui/sheet';
+import Link from 'next/link';
+import { useTransactionDetails } from '@/app/providers/transaction-details-provider';
 //if type is debit then show the receiver, else show the sender
 const columnHelper = createColumnHelper<Transaction>();
 const columns = [
@@ -146,6 +150,8 @@ const columns = [
     id: 'id',
     cell: ({ row }) => {
       const payment = row.original;
+      const router = useRouter();
+      const { onUpdateId } = useTransactionDetails();
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -162,7 +168,15 @@ const columns = [
               Copy transaction ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View transaction details</DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <SheetTrigger
+                onClick={() => {
+                  onUpdateId(row.original.id);
+                }}
+              >
+                View transaction details
+              </SheetTrigger>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
