@@ -7,12 +7,12 @@ import {
 import { cn, getTimeInMs } from '@/lib/utils';
 import { Transaction } from '@/types';
 import {
-  ArrowDown02Icon,
-  ArrowUp02Icon,
+  ArrowDownLeft,
+  ArrowUpRight,
   MoreHorizontal,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
+import { createColumnHelper } from '@tanstack/react-table';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -23,6 +23,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useRouter } from 'next/navigation';
+import { SheetTrigger } from '@/components/ui/sheet';
+import Link from 'next/link';
+import { useTransactionDetails } from '@/app/providers/transaction-details-provider';
 //if type is debit then show the receiver, else show the sender
 const columnHelper = createColumnHelper<Transaction>();
 const columns = [
@@ -38,13 +42,13 @@ const columns = [
               {row.getValue('type') === 'credit' ? (
                 <HugeiconsIcon
                   className="w-4 h-4"
-                  icon={ArrowDown02Icon}
+                  icon={ArrowDownLeft}
                   size={16}
                 />
               ) : (
                 <HugeiconsIcon
                   className="w-4 h-4"
-                  icon={ArrowUp02Icon}
+                  icon={ArrowUpRight}
                   size={16}
                 />
               )}
@@ -146,6 +150,8 @@ const columns = [
     id: 'id',
     cell: ({ row }) => {
       const payment = row.original;
+      const router = useRouter();
+      const { onUpdateId } = useTransactionDetails();
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -162,7 +168,15 @@ const columns = [
               Copy transaction ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View transaction details</DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <SheetTrigger
+                onClick={() => {
+                  onUpdateId(row.original.id);
+                }}
+              >
+                View transaction details
+              </SheetTrigger>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

@@ -30,6 +30,7 @@ import { DateRange } from 'react-day-picker';
 import { addDays } from 'date-fns';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Search } from '@hugeicons/core-free-icons';
+import { useRouter } from 'next/navigation';
 
 export function TransactionsDataTable({
   transactions,
@@ -61,6 +62,7 @@ export function TransactionsDataTable({
     },
   });
   const [date, setDate] = useState<DateRange | undefined>();
+  const router = useRouter();
   return (
     <Card className="gap-10 py-6">
       <CardHeader className="flex items-center justify-between">
@@ -93,7 +95,10 @@ export function TransactionsDataTable({
           <TableCaption>A list of your recent transactions.</TableCaption>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow
+                onClick={() => router.push(`/transactions/${headerGroup.id}`)}
+                key={headerGroup.id}
+              >
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>

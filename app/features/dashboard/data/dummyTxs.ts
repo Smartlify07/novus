@@ -23,6 +23,8 @@ export const transactions: Transaction[] = [
       email: 'payroll@techcorp.com',
     },
     createdAt: '2026-01-30T09:00:00Z',
+    beneficiaryInstitution: 'Novus Bank',
+    sourceInstitution: 'TechCorp Treasury',
   },
   {
     id: 'tx-002',
@@ -57,6 +59,8 @@ export const transactions: Transaction[] = [
     },
     sender: currentUser,
     createdAt: '2026-03-01T08:00:00Z',
+    beneficiaryInstitution: 'Skyline Properties Ltd',
+    sourceInstitution: 'Novus Bank',
   },
   {
     id: 'tx-004',

@@ -10,6 +10,9 @@ export type Transaction = {
   recepient: Account['owner'];
   sender: Account['owner'];
   createdAt: string;
+  beneficiaryInstitution?: string;
+  sourceInstitution?: string;
+  notes?: string;
 };
 
 export type Account = {
