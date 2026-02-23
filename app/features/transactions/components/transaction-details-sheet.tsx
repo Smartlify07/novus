@@ -61,7 +61,7 @@ export default function TransactionDetailsSheet({
           </SheetTitle>
         </SheetHeader>
 
-        <ScrollArea className="h-[calc(100vh-8rem)]">
+        <ScrollArea className="h-[calc(100vh-8rem)] relative">
           <div className="flex flex-col gap-10 px-4 py-4">
             <div className="rounded-md ring ring-border p-4 flex items-center justify-between gap-4">
               <div className="flex items-center gap-4">
@@ -82,7 +82,8 @@ export default function TransactionDetailsSheet({
                   'text-xl font-semibold',
                 )}
               >
-                +{formatCurrency(transaction.amount)}
+                {transaction.type === 'credit' ? '+' : '-'}
+                {formatCurrency(transaction.amount)}
               </h1>
             </div>
 
@@ -208,13 +209,8 @@ export default function TransactionDetailsSheet({
 
             {/* Actions */}
             <div className="flex gap-4">
-              <Button className="flex-1" asChild variant="outline">
-                <Link href={`/transactions/${transaction.id}`}>
-                  <HugeiconsIcon icon={ArrowUpRight} size={16} />
-                  View full details
-                </Link>
-              </Button>
               <Button
+                variant={transaction.type === 'debit' ? 'outline' : 'default'}
                 className="flex-1"
                 onClick={() => {
                   toast('Downloading receipt...');
@@ -223,6 +219,14 @@ export default function TransactionDetailsSheet({
                 <HugeiconsIcon icon={Download01Icon} size={16} />
                 Download Receipt
               </Button>
+              {transaction.type === 'debit' && (
+                <Button className="flex-1" asChild>
+                  <Link href={`/transactions/${transaction.id}`}>
+                    <HugeiconsIcon icon={RefreshIcon} size={16} />
+                    Repeat Transaction
+                  </Link>
+                </Button>
+              )}
             </div>
           </div>
         </ScrollArea>
