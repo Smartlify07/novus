@@ -2,7 +2,7 @@ import z from 'zod';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
 export const phoneSchema = z.object({
-  phone: z
+  phoneNumber: z
     .string()
     .min(1, { error: 'We need your number to secure your account.' })
     .transform((v, ctx) => {
@@ -26,7 +26,8 @@ export const firstNameSchema = z.object({
   firstName: z
     .string()
     .min(1, {
-      error: 'We’d love to know what to call you! Please enter your name.',
+      error:
+        'We’d love to know what to call you! Please enter your first name.',
     })
     .regex(
       /^[a-zA-Z\s]*$/,
@@ -34,38 +35,60 @@ export const firstNameSchema = z.object({
     ),
 });
 
-export const otpSchema = z.object({
-  otp: z.string().length(6, {
-    error: 'Please enter the 6-digit code sent to your phone.',
-  }),
-});
-
-export const passcodeSchema = z.object({
-  passcode: z
+export const lastNameSchema = z.object({
+  lastName: z
     .string()
-    .min(0, 'Your account needs a lock! Please create a password.')
-    .length(6, {
-      error:
-        'Almost there! Your password needs at least 6 characters to stay safe.',
-    }),
+    .min(1, {
+      error: 'We’d love to know what to call you! Please enter your last name.',
+    })
+    .regex(
+      /^[a-zA-Z\s]*$/,
+      'Just letters, please! Your name is unique enough without the numbers.',
+    ),
 });
 
-export const confirmPasscodeSchema = z.object({
-  confirmPasscode: z.string().length(6, {
-    error: 'Please re-enter your passcode to confirm.',
+export const addressSchema = z.object({
+  address: z.string().min(1, {
+    error: `We'd love to know your address!`,
   }),
+});
+
+export const dateOfBirthSchema = z.object({ dateOfBirth: z.coerce.date() });
+
+export const passwordSchema = z.object({
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .regex(/\d/, 'Password must contain at least one number')
+    .regex(
+      /[^a-zA-Z0-9]/,
+      'Password must contain at least one special character',
+    ),
+});
+
+export const confirmPasswordSchema = z.object({
+  confirmPassword: z.string(),
+});
+
+export const emailSchema = z.object({
+  email: z.email('Invalid email address'),
 });
 
 export const signupOnboardingSchema = phoneSchema
   .extend(firstNameSchema.shape)
-  .extend(otpSchema.shape)
-  .extend(passcodeSchema.shape)
-  .extend(confirmPasscodeSchema.shape)
-  .superRefine(({ confirmPasscode, passcode }, context) => {
-    if (confirmPasscode !== passcode) {
+  .extend(lastNameSchema.shape)
+  .extend(passwordSchema.shape)
+  .extend(dateOfBirthSchema.shape)
+  .extend(emailSchema.shape)
+  .extend(addressSchema.shape)
+  .extend(confirmPasswordSchema.shape)
+  .superRefine(({ confirmPassword, password }, context) => {
+    if (confirmPassword !== password) {
       context.addIssue({
         code: 'custom',
-        message: 'Whoops! The passcodes do not match. Please try again.',
+        message: 'Whoops! The passwords do not match. Please try again.',
         path: ['confirmPasscode'],
       });
     }

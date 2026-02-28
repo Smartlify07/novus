@@ -3,8 +3,6 @@ import { Nunito_Sans } from 'next/font/google';
 import './globals.css';
 import AppProvider from './providers/app-provider';
 import { Toaster } from '@/components/ui/sonner';
-import makeServer from '@/lib/mirage';
-import { MirageProvider } from './providers/mirage-provider';
 
 const nunitoSans = Nunito_Sans({ variable: '--font-sans' });
 
@@ -21,9 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={nunitoSans.variable}>
       <body className={`antialiased`}>
-        <AppProvider>
-          <MirageProvider>{children}</MirageProvider>
-        </AppProvider>
+        <AppProvider>{children}</AppProvider>
         <Toaster />
       </body>
     </html>

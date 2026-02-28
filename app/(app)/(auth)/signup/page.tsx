@@ -9,22 +9,27 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import z from 'zod';
 
 export default function SignupPage() {
   const [currentStep, setCurrentStep] = useState<OnboardingStep>(1);
   const form = useForm({
     resolver: zodResolver(signupOnboardingSchema),
     defaultValues: {
-      phone: '',
+      phoneNumber: '',
       firstName: '',
-      otp: '',
-      passcode: '',
-      confirmPasscode: '',
+      password: '',
+      confirmPassword: '',
+      lastName: '',
+      dateOfBirth: '',
+      email: '',
+      address: '',
     },
+    mode: 'onChange',
   });
+  console.log(form.formState.isSubmitting);
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="bg-primary rounded-r-2xl relative hidden lg:flex lg:flex-col lg:gap-10 lg:p-10">
@@ -50,7 +55,7 @@ export default function SignupPage() {
       </div>
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <div className="flex justify-center gap-2 md:justify-between">
-          <a href="/" className="flex items-center gap-2 font-bold">
+          <Link href="/" className="flex items-center gap-2 font-bold">
             <svg
               fill="none"
               height="48"
@@ -66,7 +71,7 @@ export default function SignupPage() {
               />
             </svg>{' '}
             Novus
-          </a>
+          </Link>
           <Button
             variant={'link'}
             className="text-muted-foreground flex items-center gap-1 text-sm p-0 hover:no-underline cursor-pointer"

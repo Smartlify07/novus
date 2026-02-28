@@ -1,5 +1,6 @@
 import { callApi } from '@/lib/api-utils';
 import { toast } from 'sonner';
+import { SignupFormValues } from '../signup-onboarding/schema';
 
 type LoginDetailsType = {
   email: string;
@@ -32,24 +33,8 @@ const postLogin = async (loginDetail: LoginDetailsType) => {
   }
 };
 
-const postSignUp = async (form: any) => {
-  return callApi('POST', '/open', form, {}, true);
+const postSignUp = async (payload: SignupFormValues) => {
+  return callApi('POST', '/auth/register', payload, {}, true);
 };
 
-const postRecoveryEmail = async (form: Record<string, any>) => {
-  return callApi('POST', '/password-recovery', form, {}, true);
-};
-const postVerifyEmailCode = async (form: Record<string, any>) => {
-  return callApi('POST', '/verify-token', form, {}, true);
-};
-const postResetPassword = async (form: Record<string, any>) => {
-  return callApi('POST', '/reset-password', form, {}, true);
-};
-
-export {
-  postLogin,
-  postRecoveryEmail,
-  postSignUp,
-  postVerifyEmailCode,
-  postResetPassword,
-};
+export { postLogin, postSignUp };
