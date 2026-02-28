@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -54,7 +55,7 @@ export default function SignupPage() {
       </div>
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <div className="flex justify-center gap-2 md:justify-between">
-          <a href="/" className="flex items-center gap-2 font-bold">
+          <Link href="/" className="flex items-center gap-2 font-bold">
             <svg
               fill="none"
               height="48"
@@ -70,7 +71,7 @@ export default function SignupPage() {
               />
             </svg>{' '}
             Novus
-          </a>
+          </Link>
           <Button
             variant={'link'}
             className="text-muted-foreground flex items-center gap-1 text-sm p-0 hover:no-underline cursor-pointer"

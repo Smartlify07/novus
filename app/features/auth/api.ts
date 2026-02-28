@@ -1,19 +1,10 @@
 import { callApi } from '@/lib/api-utils';
 import { toast } from 'sonner';
+import { SignupFormValues } from '../signup-onboarding/schema';
 
 type LoginDetailsType = {
   email: string;
   password: string;
-};
-
-export type RegistrationPayload = {
-  email: string;
-  phoneNumber: string;
-  dateOfBirth: string;
-  address: string;
-  password: string;
-  firstName: string;
-  lastName: string;
 };
 
 const postLogin = async (loginDetail: LoginDetailsType) => {
@@ -42,7 +33,7 @@ const postLogin = async (loginDetail: LoginDetailsType) => {
   }
 };
 
-const postSignUp = async (payload: RegistrationPayload) => {
+const postSignUp = async (payload: SignupFormValues) => {
   return callApi('POST', '/auth/register', payload, {}, true);
 };
 
