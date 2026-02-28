@@ -27,7 +27,7 @@ export function MobileNumberForm({
         </div>
 
         <Controller
-          name="phone"
+          name="phoneNumber"
           control={control}
           render={({ field, fieldState }) => (
             <Field>
@@ -51,7 +51,7 @@ export function MobileNumberForm({
 
             if (!result.success) {
               // If invalid, trigger RHF validation to show errors in UI
-              await form.trigger('phone');
+              await form.trigger('phoneNumber');
             } else {
               // If valid, move to next step
               setCurrentStep(OnboardingSteps.Firstname);

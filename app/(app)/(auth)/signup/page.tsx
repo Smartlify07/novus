@@ -11,20 +11,24 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import Image from 'next/image';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import z from 'zod';
 
 export default function SignupPage() {
   const [currentStep, setCurrentStep] = useState<OnboardingStep>(1);
   const form = useForm({
     resolver: zodResolver(signupOnboardingSchema),
     defaultValues: {
-      phone: '',
+      phoneNumber: '',
       firstName: '',
-      otp: '',
-      passcode: '',
-      confirmPasscode: '',
+      password: '',
+      confirmPassword: '',
+      lastName: '',
+      dateOfBirth: '',
+      email: '',
+      address: '',
     },
+    mode: 'onChange',
   });
+  console.log(form.formState.isSubmitting);
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="bg-primary rounded-r-2xl relative hidden lg:flex lg:flex-col lg:gap-10 lg:p-10">

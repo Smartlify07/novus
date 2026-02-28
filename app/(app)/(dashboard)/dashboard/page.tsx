@@ -25,11 +25,12 @@ import {
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
   const availableBalanceChange = calculatePercentageChange(10000, 9999);
   const nextPaymentDueDate = '2026-07-15';
-
+  const router = useRouter();
   return (
     <div className="p-6 flex flex-col gap-10">
       <div className="flex items-center justify-between  gap-6">
@@ -101,7 +102,7 @@ export default function DashboardPage() {
             />
           }
           label="Transfer"
-          onClick={() => console.log('Transfer clicked')}
+          onClick={() => router.push('/transfer')}
         />
         <QuickActionButton
           icon={
