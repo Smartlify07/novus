@@ -9,20 +9,26 @@ export type OnboardingFormProps = {
   setCurrentStep: Dispatch<SetStateAction<OnboardingStep>>;
   form: UseFormReturn<
     {
+      phoneNumber: string;
       firstName: string;
-      phone: string;
-      otp: string;
-      passcode: string;
-      confirmPasscode: string;
+      lastName: string;
+      password: string;
+      dateOfBirth: unknown;
+      email: string;
+      address: string;
+      confirmPassword: string;
     },
-    any,
+    unknown,
     {
+      phoneNumber: string;
       firstName: string;
-      phone: string;
-      otp: string;
-      passcode: string;
-      confirmPasscode: string;
+      lastName: string;
+      password: string;
+      dateOfBirth: unknown;
+      email: string;
+      address: string;
+      confirmPassword: string;
     }
   >;
-  onSubmit?: () => void;
+  onSubmit?: (values: SignupFormValues) => void;
 };

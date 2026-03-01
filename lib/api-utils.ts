@@ -47,6 +47,7 @@ export const callApi = async (
     });
   } catch (error) {
     console.error(error);
+    throw error;
   }
 
   if (!response?.ok) {

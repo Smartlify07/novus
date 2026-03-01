@@ -6,48 +6,41 @@ import {
   FieldLabel,
 } from '@/components/ui/field';
 import { Controller } from 'react-hook-form';
-
-import { OnboardingSteps } from '../../auth/components/signup-form';
 import { OnboardingFormProps } from '../types';
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from '@/components/ui/input-otp';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
-import { EyeIcon, EyeOff } from '@hugeicons/core-free-icons';
+import { EyeIcon, EyeOff, LoaderCircle } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 
-export function PasswordForm({
+export function ConfirmPasscodeForm({
   control,
   form,
-  setCurrentStep,
+  onSubmit,
 }: OnboardingFormProps) {
   const [showPassword, setShowPassword] = useState(false);
-
   return (
     <>
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="text-2xl font-bold">Setup your Password</h1>
+          <h1 className="text-2xl font-bold">Confirm your Password</h1>
           <p className="text-muted-foreground text-sm text-balance">
-            Enter your password to secure your account.
+            Re-enter your password to confirm.
           </p>
         </div>
-
         <Controller
-          name="password"
+          name="confirmPassword"
           control={control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="firstName">Password</FieldLabel>
+              <FieldLabel htmlFor="confirmPassword">
+                Confirm password
+              </FieldLabel>
               <div className="relative">
                 <Input
                   {...field}
-                  placeholder="Create a strong password"
-                  aria-invalid={fieldState.invalid}
                   type={showPassword ? 'text' : 'password'}
+                  placeholder="Re-enter your password"
+                  aria-invalid={fieldState.invalid}
                   className="pr-10"
                 />
                 <button
@@ -70,16 +63,16 @@ export function PasswordForm({
       <Field>
         <Button
           onClick={async () => {
-            const isValid = await form.trigger('password');
-
+            const isValid = await form.trigger('confirmPassword');
+            const values = form.getValues();
             if (isValid) {
-              setCurrentStep(OnboardingSteps.ConfirmPassword);
+              onSubmit?.(values);
             }
           }}
           form="onboarding-form"
-          type="button"
+          type="submit"
         >
-          Continue
+          {form.formState.isSubmitting ? 'Submitting...' : 'Sign up'}
         </Button>
       </Field>
     </>
