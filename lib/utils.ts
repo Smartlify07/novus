@@ -57,6 +57,10 @@ export function getTimeInMs(date: Date): number {
   return date.getTime();
 }
 
+export function splitAccountNumber(number: string) {
+  return number.slice(0, 3) + ' ' + number.slice(3, 6) + ' ' + number.slice(6);
+}
+
 export function formatCurrency(
   amount: number,
   currency: string = 'NGN',
