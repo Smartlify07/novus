@@ -1,9 +1,8 @@
 'use client';
-import AccountSourceCard from '@/app/features/transfer/components/account-source-card';
 import TransfersBreadcrumb from '@/app/features/transfer/components/transfers-breadcrumb';
 import TransfersStepper from '@/app/features/transfer/components/transfers-stepper';
 import { Button } from '@/components/ui/button';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const Steps = {
   EnterRecipient: 1,
