@@ -1,4 +1,5 @@
 import { Transaction } from '@/types';
+import { getMilliseconds } from 'date-fns';
 
 function getTransactionStatusColor(status: string) {
   switch (status) {
@@ -102,6 +103,25 @@ function getExpensePercentageChangeColor(percentageChange: number): string {
   return 'text-gray-600';
 }
 
+function getRecentTransfers(transactions: Transaction[]) {
+  const result = transactions
+    .sort((a, b) => getMilliseconds(b.createdAt) - getMilliseconds(a.createdAt))
+    .filter(
+      (transaction) =>
+        transaction.type === 'debit' && transaction.method === 'transfer',
+    );
+  const uniqueIds = new Set();
+
+  const uniqueArray = result.filter((item) => {
+    if (!uniqueIds.has(item.recepient.id)) {
+      uniqueIds.add(item.recepient.id);
+      return true; // Keep the object
+    }
+    return false; // Discard the duplicate
+  });
+  return uniqueArray;
+}
+
 export {
   getTransactionStatusColor,
   getTransactionTypeColor,
@@ -114,4 +134,5 @@ export {
   calculatePercentageChange,
   getPercentageChangeColor,
   getExpensePercentageChangeColor,
+  getRecentTransfers,
 };

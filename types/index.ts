@@ -7,8 +7,12 @@ export type Transaction = {
   method: 'transfer' | 'payment' | 'withdrawal' | 'deposit';
   type: 'credit' | 'debit';
   txRefrence: string;
-  recepient: Account['owner'];
-  sender: Account['owner'];
+  recepient: Account['owner'] & {
+    accountNumber: string;
+  };
+  sender: Account['owner'] & {
+    accountNumber: string;
+  };
   createdAt: string;
   beneficiaryInstitution?: string;
   sourceInstitution?: string;
