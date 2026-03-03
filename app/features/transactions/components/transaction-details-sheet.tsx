@@ -83,7 +83,7 @@ export default function TransactionDetailsSheet({
                 )}
               >
                 {transaction.type === 'credit' ? '+' : '-'}
-                {formatCurrency(transaction.amount)}
+                {formatCurrency(transaction.amount, 'NGN')}
               </h1>
             </div>
 
