@@ -1,10 +1,29 @@
 import { Transaction } from '@/types';
 
-const currentUser = {
+export const currentUser = {
   id: 'u-101',
   name: 'John Doe',
   email: 'john.doe@example.com',
   accountNumber: '101000000000101', // 15 digits, no hyphens
+  accounts: [
+    {
+      accountNumber: '101000000000101',
+      type: 'SAVINGS',
+      id: 1,
+      status: 'ACTIVE',
+      balance: 10000,
+      currency: 'NGN',
+    },
+
+    {
+      accountNumber: '102030030300303',
+      type: 'CURRENT',
+      id: 2,
+      status: 'ACTIVE',
+      balance: 100000,
+      currency: 'NGN',
+    },
+  ],
 };
 
 export const transactions: Transaction[] = [

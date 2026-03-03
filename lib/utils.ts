@@ -58,15 +58,26 @@ export function getTimeInMs(date: Date): number {
 }
 
 export function splitAccountNumber(number: string) {
-  return number.slice(0, 3) + ' ' + number.slice(3, 6) + ' ' + number.slice(6);
+  return (
+    number.slice(0, 3) +
+    ' ' +
+    number.slice(3, 6) +
+    ' ' +
+    number.slice(6, 9) +
+    ' ' +
+    number.slice(9)
+  );
 }
 
-export function formatCurrency(
-  amount: number,
-  currency: string = 'NGN',
-): string {
-  return new Intl.NumberFormat(undefined, {
+export function splitAndAsteriskLast5Digits(number: string) {
+  return splitAccountNumber(number.split(' ').join('').slice(0, 9) + '*****');
+}
+
+export function formatCurrency(amount: number, currency: string): string {
+  return new Intl.NumberFormat('en-NG', {
     style: 'currency',
-    currency,
+    currency: currency,
+    currencyDisplay: 'symbol',
+    currencySign: 'accounting',
   }).format(amount);
 }
