@@ -13,7 +13,7 @@ import { Separator } from '@/components/ui/separator';
 import {
   formatCurrency,
   splitAccountNumber,
-  splitAndAsteriskLast5Digits,
+  maskAccountNumber,
 } from '@/lib/utils';
 import { ArrowReloadHorizontalIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
@@ -76,7 +76,7 @@ export default function AccountSourceCard({
                     onClick={() => onSwitch(account)}
                     key={account.id}
                     title={`${account.type.charAt(0)}${account.type.slice(1).toLowerCase()} Account`}
-                    description={`${splitAndAsteriskLast5Digits(splitAccountNumber(account.accountNumber))}`}
+                    description={`${maskAccountNumber(account.accountNumber)}`}
                     id={String(account.id)}
                     value={String(account.id)}
                     htmlFor={String(account.id)}

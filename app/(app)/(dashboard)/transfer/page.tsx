@@ -129,8 +129,6 @@ export default function TranferPage() {
     (account) => account.id === data.sourceAccountId,
   );
 
-  console.log(selectedAccount, data.sourceAccountId);
-  console.log(data);
   return (
     <div className="p-6 flex flex-col gap-10 self-center w-3xl max-w-3xl">
       <div className="flex flex-col gap-4">

@@ -57,20 +57,31 @@ export function getTimeInMs(date: Date): number {
   return date.getTime();
 }
 
-export function splitAccountNumber(number: string) {
-  return (
-    number.slice(0, 3) +
-    ' ' +
-    number.slice(3, 6) +
-    ' ' +
-    number.slice(6, 9) +
-    ' ' +
-    number.slice(9)
-  );
+export function splitAccountNumber(number: string, group = 3, end = 6) {
+  let arr = [];
+  const cleaned = number.replace('\s/g', '');
+  const leadingPart = cleaned.slice(0, cleaned.length - end);
+  const trailingPart = number.slice(number.length - end);
+  for (let i = 0; i <= leadingPart.length - 1; i += group) {
+    arr.push(leadingPart.slice(i, i + group));
+  }
+  arr.push(trailingPart);
+  return arr.join(' ');
 }
 
-export function splitAndAsteriskLast5Digits(number: string) {
-  return splitAccountNumber(number.split(' ').join('').slice(0, 9) + '*****');
+export function maskAccountNumber(number: string, group = 3, end = 6) {
+  let arr = [];
+  if (number.length <= end) {
+    return number;
+  }
+  const splitted = splitAccountNumber(number);
+  const cleaned = splitted.replace(/\s/g, '');
+  const leadingPart = cleaned.slice(0, cleaned.length - end);
+  for (let i = 0; i <= leadingPart.length - 1; i += group) {
+    arr.push(leadingPart.slice(i, i + group));
+  }
+  arr.push('*'.repeat(end));
+  return arr.join(' ');
 }
 
 export function formatCurrency(amount: number, currency: string): string {
