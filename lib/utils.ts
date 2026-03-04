@@ -57,16 +57,38 @@ export function getTimeInMs(date: Date): number {
   return date.getTime();
 }
 
-export function splitAccountNumber(number: string) {
-  return number.slice(0, 3) + ' ' + number.slice(3, 6) + ' ' + number.slice(6);
+export function splitAccountNumber(number: string, group = 3, end = 6) {
+  let arr = [];
+  const cleaned = number.replace('\s/g', '');
+  const leadingPart = cleaned.slice(0, cleaned.length - end);
+  const trailingPart = number.slice(number.length - end);
+  for (let i = 0; i <= leadingPart.length - 1; i += group) {
+    arr.push(leadingPart.slice(i, i + group));
+  }
+  arr.push(trailingPart);
+  return arr.join(' ');
 }
 
-export function formatCurrency(
-  amount: number,
-  currency: string = 'NGN',
-): string {
-  return new Intl.NumberFormat(undefined, {
+export function maskAccountNumber(number: string, group = 3, end = 6) {
+  let arr = [];
+  if (number.length <= end) {
+    return number;
+  }
+  const splitted = splitAccountNumber(number);
+  const cleaned = splitted.replace(/\s/g, '');
+  const leadingPart = cleaned.slice(0, cleaned.length - end);
+  for (let i = 0; i <= leadingPart.length - 1; i += group) {
+    arr.push(leadingPart.slice(i, i + group));
+  }
+  arr.push('*'.repeat(end));
+  return arr.join(' ');
+}
+
+export function formatCurrency(amount: number, currency: string): string {
+  return new Intl.NumberFormat('en-NG', {
     style: 'currency',
-    currency,
+    currency: currency,
+    currencyDisplay: 'symbol',
+    currencySign: 'accounting',
   }).format(amount);
 }

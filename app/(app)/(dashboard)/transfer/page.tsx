@@ -1,5 +1,8 @@
 'use client';
-import { transactions } from '@/app/features/dashboard/data/dummyTxs';
+import {
+  currentUser,
+  transactions,
+} from '@/app/features/dashboard/data/dummyTxs';
 import AccountSourceCard from '@/app/features/transfer/components/account-source-card';
 import RecentTransfers from '@/app/features/transfer/components/recent-transfers';
 import RecepientReviewCard from '@/app/features/transfer/components/recepient-preview-card';
@@ -39,7 +42,7 @@ export default function TranferPage() {
       name: '',
       accountNumber: '',
     },
-    sourceAccountId: 0,
+    sourceAccountId: currentUser.accounts[0].id,
   });
 
   const [isRecepientPreviewVisible, setIsRecepientPreviewVisible] =
@@ -68,7 +71,16 @@ export default function TranferPage() {
       case Steps.EnterRecipient:
         return (
           <>
-            <AccountSourceCard />
+            <AccountSourceCard
+              selectedAccount={selectedAccount}
+              accounts={currentUser.accounts}
+              onSwitch={(account) =>
+                setData((prev) => ({
+                  ...prev,
+                  sourceAccountId: account.id,
+                }))
+              }
+            />
             <div className="flex flex-col gap-4">
               <RecepientsAccountInput
                 initialValue={data.recepient.accountNumber}
@@ -112,6 +124,10 @@ export default function TranferPage() {
       setIsRecepientPreviewVisible(true);
     }
   }, [data.recepient.accountNumber]);
+
+  const selectedAccount = currentUser.accounts.find(
+    (account) => account.id === data.sourceAccountId,
+  );
 
   return (
     <div className="p-6 flex flex-col gap-10 self-center w-3xl max-w-3xl">
