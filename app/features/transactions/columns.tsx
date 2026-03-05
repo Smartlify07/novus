@@ -36,27 +36,21 @@ const columnHelper = createColumnHelper<Transaction>();
 const columns = [
   columnHelper.accessor(
     (row) => {
-      const user = getAccountUser(
-        row.sourceAccountId,
-        row.destinationAccountId,
-      );
-      const username = `${user?.firstName} ${user?.lastName}`;
+      const user = getAccountUser(row.sourceAccountId);
+      const username = `${user?.user?.firstName} ${user?.user?.lastName}`;
       return username;
     },
     {
       header: 'Record Name',
       id: 'record',
       cell: ({ row }) => {
-        const user = getAccountUser(
-          row.original.sourceAccountId,
-          row.original.destinationAccountId,
-        );
+        const user = getAccountUser(row.original.sourceAccountId);
         const status = getTransactionStatus(
           row.original.sourceAccountId,
           currentUserAccounts[0].id,
         );
 
-        const username = `${user?.firstName} ${user?.lastName}`;
+        const username = `${user?.user?.firstName} ${user?.user?.lastName}`;
         return (
           <div className="flex items-center gap-2 font-medium text-foreground">
             <div className="w-8 h-8 rounded-full bg-primary/5 text-primary flex items-center justify-center">
@@ -193,7 +187,7 @@ const columns = [
               <HugeiconsIcon icon={MoreHorizontal} className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent className="w-[180px]" align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(String(payment.id))}

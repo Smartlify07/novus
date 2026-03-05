@@ -52,7 +52,7 @@ export default function TransactionsPage() {
   );
   const { currentId } = useTransactionDetails();
   const transaction = transactions.find(
-    (transaction) => transaction.id === currentId,
+    (transaction) => String(transaction.id) === currentId,
   );
   // @todo: refactor percentage change calculations to compare with previous month data instead of hardcoded values, refactor the code to use a single function or something to know the color for the percentage change, instead of doing it everywhere rn cuz it's a mess.
   return (

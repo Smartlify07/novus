@@ -9,7 +9,9 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import {
   formatTransactionDateTime,
+  getAccountUser,
   getTransactionAmountColor,
+  getTransactionStatus,
   getTransactionStatusColor,
 } from '@/lib/transaction-utils';
 import {
@@ -21,40 +23,50 @@ import {
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { currentUserAccounts } from '../../dashboard/data/dummyTxs';
 
 export default function TransactionDetailsSheet({
   transaction,
 }: {
   transaction: Transaction;
 }) {
-  const [notes, setNotes] = useState(transaction.notes ?? '');
-  const router = useRouter();
+  const [notes, setNotes] = useState(transaction.description ?? '');
+  const sender = getAccountUser(transaction.sourceAccountId);
+  const receiver = getAccountUser(transaction.destinationAccountId);
+  const transactionKind = getTransactionStatus(
+    transaction.sourceAccountId,
+    currentUserAccounts[0].id,
+  );
   const counterpartyName =
-    transaction.type === 'credit'
-      ? transaction.sender.name
-      : transaction.recepient.name;
+    transactionKind === 'credit'
+      ? `${sender?.user.firstName} ${sender?.user.lastName}`
+      : `${receiver?.user.firstName} ${receiver?.user.lastName}`;
 
   const descriptionText =
-    transaction.type === 'credit' ? (
+    transactionKind === 'credit' ? (
       <>
         Received money from{' '}
         <span className="font-semibold text-foreground">
-          {transaction.sender.name}
+          {sender?.user?.firstName}
+          {sender?.user?.lastName}
         </span>
       </>
     ) : (
       <>
         Sent money to{' '}
         <span className="font-semibold text-foreground">
-          {transaction.recepient.name}
+          {receiver?.user?.firstName}
+          {receiver?.user?.lastName}{' '}
         </span>
       </>
     );
   return (
     <div>
-      <SheetContent className="data-[side=right]:sm:max-w-lg">
+      <SheetContent
+        aria-describedby="Transaction Details Sheet"
+        className="data-[side=right]:sm:max-w-lg"
+      >
         <SheetHeader>
           <SheetTitle className="text-2xl font-semibold">
             Transaction Details
@@ -66,7 +78,7 @@ export default function TransactionDetailsSheet({
             <div className="rounded-md ring ring-border p-4 flex items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <div className="rounded-full size-10 flex items-center justify-center bg-primary/5 text-primary">
-                  {transaction.type === 'debit' ? (
+                  {transactionKind === 'debit' ? (
                     <HugeiconsIcon icon={ArrowUpRight} />
                   ) : (
                     <HugeiconsIcon icon={ArrowDownLeft} />
@@ -78,11 +90,11 @@ export default function TransactionDetailsSheet({
               </div>
               <h1
                 className={cn(
-                  getTransactionAmountColor(transaction.type),
+                  getTransactionAmountColor(transactionKind),
                   'text-xl font-semibold',
                 )}
               >
-                {transaction.type === 'credit' ? '+' : '-'}
+                {transactionKind === 'credit' ? '+' : '-'}
                 {formatCurrency(transaction.amount, 'NGN')}
               </h1>
             </div>
@@ -97,7 +109,7 @@ export default function TransactionDetailsSheet({
                   Transaction Reference
                 </TransactionDetailItem.Label>
                 <TransactionDetailItem.Value>
-                  {transaction.txRefrence}
+                  {transaction.transactionRef}
                 </TransactionDetailItem.Value>
                 <TransactionDetailItem.Action>
                   <Button
@@ -105,7 +117,7 @@ export default function TransactionDetailsSheet({
                     variant="ghost"
                     size="icon-xs"
                     onClick={() => {
-                      navigator.clipboard.writeText(transaction.txRefrence);
+                      navigator.clipboard.writeText(transaction.transactionRef);
                       toast('Copied!');
                     }}
                   >
@@ -146,7 +158,7 @@ export default function TransactionDetailsSheet({
                   {formatTransactionDateTime(transaction.createdAt)}
                 </TransactionDetailItem.Value>
               </TransactionDetailItem>
-              {transaction.type === 'debit' && (
+              {transactionKind === 'debit' && (
                 <TransactionDetailItem>
                   <TransactionDetailItem.Label>
                     Our Fee
@@ -166,7 +178,7 @@ export default function TransactionDetailsSheet({
                       'capitalize rounded-md bg-blue-500/10 text-blue-500',
                     )}
                   >
-                    {transaction.method}
+                    {transaction.transactionType}
                   </Badge>
                 </TransactionDetailItem.Value>
               </TransactionDetailItem>
@@ -182,7 +194,7 @@ export default function TransactionDetailsSheet({
                   Beneficiary Institution
                 </TransactionDetailItem.Label>
                 <TransactionDetailItem.Value>
-                  {transaction.beneficiaryInstitution ?? 'N/A'}
+                  {'Novus Bank'}
                 </TransactionDetailItem.Value>
               </TransactionDetailItem>
 
@@ -191,7 +203,7 @@ export default function TransactionDetailsSheet({
                   Source Institution
                 </TransactionDetailItem.Label>
                 <TransactionDetailItem.Value>
-                  {transaction.sourceInstitution ?? 'N/A'}
+                  {'Source Institution'}
                 </TransactionDetailItem.Value>
               </TransactionDetailItem>
             </div>
@@ -210,7 +222,7 @@ export default function TransactionDetailsSheet({
             {/* Actions */}
             <div className="flex gap-4">
               <Button
-                variant={transaction.type === 'debit' ? 'outline' : 'default'}
+                variant={transactionKind === 'debit' ? 'outline' : 'default'}
                 className="flex-1"
                 onClick={() => {
                   toast('Downloading receipt...');
@@ -219,7 +231,7 @@ export default function TransactionDetailsSheet({
                 <HugeiconsIcon icon={Download01Icon} size={16} />
                 Download Receipt
               </Button>
-              {transaction.type === 'debit' && (
+              {transactionKind === 'debit' && (
                 <Button className="flex-1" asChild>
                   <Link href={`/transactions/${transaction.id}`}>
                     <HugeiconsIcon icon={RefreshIcon} size={16} />
