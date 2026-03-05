@@ -147,7 +147,6 @@ export default function TranferPage() {
       const accountFound = accounts.find(
         (account) => account.accountNumber === data.recepient?.accountNumber,
       );
-      console.log();
       if (accountFound) {
         setData((prev) => ({
           ...prev,
