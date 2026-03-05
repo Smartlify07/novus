@@ -1,35 +1,45 @@
 export type Transaction = {
-  id: string;
-  description: string;
+  id: number;
+  transactionRef: string;
+  sourceAccountId: number;
+  destinationAccountId: number;
+  transactionType: 'DEPOSIT' | 'WITHDRAWAL' | 'TRANSFER';
   amount: number;
-  status: 'successful' | 'failed' | 'pending';
-  merchantName: string;
-  method: 'transfer' | 'payment' | 'withdrawal' | 'deposit';
-  type: 'credit' | 'debit';
-  txRefrence: string;
-  recepient: Account['owner'] & {
-    accountNumber: string;
-  };
-  sender: Account['owner'] & {
-    accountNumber: string;
-  };
+  currency: string;
+  description: string;
+  status: 'PENDING' | 'COMPLETED' | 'FAILED';
   createdAt: string;
-  beneficiaryInstitution?: string;
-  sourceInstitution?: string;
-  notes?: string;
 };
 
 export type Account = {
-  id: string;
+  id: number;
   accountNumber: string;
-  accountType: 'savings' | 'checking' | 'credit';
+  accountType: 'SAVINGS' | 'CURRENT' | 'FIXED_DEPOSIT';
   balance: number;
   currency: string;
-  owner: {
-    id: string;
-    name: string;
-    email: string;
-  };
+  status: 'ACTIVE' | 'FROZEN' | 'CLOSED';
   createdAt: string;
-  updatedAt: string;
+};
+
+export type AccountBalanceResponse = {
+  accountNumber: string;
+  balance: number;
+  currency: string;
+  availableBalance: number;
+};
+
+export type User = {
+  id: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  dateOfBirth: string;
+  address: string;
+  isActive: boolean;
+  roles: string[];
+};
+
+export type AccountWithUser = Account & {
+  user: Pick<User, 'id' | 'email' | 'firstName' | 'lastName'>;
 };

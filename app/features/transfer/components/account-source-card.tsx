@@ -17,16 +17,19 @@ import {
 } from '@/lib/utils';
 import { ArrowReloadHorizontalIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { currentUser } from '../../dashboard/data/dummyTxs';
+import {
+  currentUser,
+  currentUserAccounts,
+} from '../../dashboard/data/dummyTxs';
 
 export default function AccountSourceCard({
   selectedAccount,
   accounts,
   onSwitch,
 }: {
-  selectedAccount: (typeof currentUser.accounts)[number] | undefined;
-  accounts: typeof currentUser.accounts;
-  onSwitch: (account: (typeof currentUser.accounts)[number]) => void;
+  selectedAccount: (typeof currentUserAccounts)[number] | undefined;
+  accounts: typeof currentUserAccounts;
+  onSwitch: (account: (typeof currentUserAccounts)[number]) => void;
 }) {
   return (
     <Field className="flex flex-col gap-2 max-w">
@@ -39,13 +42,14 @@ export default function AccountSourceCard({
           <div className="flex gap-4">
             <Avatar className="rounded-none">
               <AvatarFallback className="font-medium rounded-md text-background bg-primary after:bg-primary">
-                {currentUser.name.charAt(0)}
+                {currentUser.firstName.charAt(0)}
+                {currentUser.lastName.charAt(0)}
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
               <div className="flex flex-col shrink-0">
                 <p className="text-foreground text-base font-medium">
-                  {currentUser.name}
+                  {currentUser.firstName} {currentUser.lastName}
                 </p>
                 <div className="flex items-center gap-2">
                   <p className="text-muted-foreground text-sm">
@@ -53,7 +57,7 @@ export default function AccountSourceCard({
                   </p>
                   <div className="rounded-full w-1 h-1 bg-muted-foreground"></div>
                   <p className="text-sm text-muted-foreground capitalize">
-                    {`${selectedAccount?.type.charAt(0)}${selectedAccount?.type.slice(1).toLowerCase()} Account`}
+                    {`${selectedAccount?.accountType.charAt(0)}${selectedAccount?.accountType.slice(1).toLowerCase()} Account`}
                   </p>
                 </div>
               </div>
@@ -71,11 +75,11 @@ export default function AccountSourceCard({
             </PopoverTrigger>
             <PopoverContent align="start">
               <RadioGroup defaultValue="1" className="max-w-sm">
-                {accounts.map((account) => (
+                {currentUserAccounts.map((account) => (
                   <AccountPopoverRadio
                     onClick={() => onSwitch(account)}
                     key={account.id}
-                    title={`${account.type.charAt(0)}${account.type.slice(1).toLowerCase()} Account`}
+                    title={`${account.accountType.charAt(0)}${account.accountType.slice(1).toLowerCase()} Account`}
                     description={`${maskAccountNumber(account.accountNumber)}`}
                     id={String(account.id)}
                     value={String(account.id)}

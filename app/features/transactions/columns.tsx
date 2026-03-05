@@ -1,10 +1,12 @@
 import {
   formatTransactionDateTime,
   getTransactionAmountColor,
+  getTransactionStatus,
   getTransactionStatusColor,
   getTransactionTypeColor,
+  getAccountUser,
 } from '@/lib/transaction-utils';
-import { cn, getTimeInMs } from '@/lib/utils';
+import { cn, formatCurrency, getTimeInMs } from '@/lib/utils';
 import { Transaction } from '@/types';
 import {
   ArrowDownLeft,
@@ -27,19 +29,32 @@ import { useRouter } from 'next/navigation';
 import { SheetTrigger } from '@/components/ui/sheet';
 import Link from 'next/link';
 import { useTransactionDetails } from '@/app/providers/transaction-details-provider';
+import { currentUser, currentUserAccounts } from '../dashboard/data/dummyTxs';
+import { Badge } from '@/components/ui/badge';
 //if type is debit then show the receiver, else show the sender
 const columnHelper = createColumnHelper<Transaction>();
 const columns = [
   columnHelper.accessor(
-    (row) => (row.type === 'credit' ? row.sender.name : row.recepient.name),
+    (row) => {
+      const user = getAccountUser(row.sourceAccountId);
+      const username = `${user?.user?.firstName} ${user?.user?.lastName}`;
+      return username;
+    },
     {
       header: 'Record Name',
       id: 'record',
       cell: ({ row }) => {
+        const user = getAccountUser(row.original.sourceAccountId);
+        const status = getTransactionStatus(
+          row.original.sourceAccountId,
+          currentUserAccounts[0].id,
+        );
+
+        const username = `${user?.user?.firstName} ${user?.user?.lastName}`;
         return (
           <div className="flex items-center gap-2 font-medium text-foreground">
             <div className="w-8 h-8 rounded-full bg-primary/5 text-primary flex items-center justify-center">
-              {row.getValue('type') === 'credit' ? (
+              {status === 'credit' ? (
                 <HugeiconsIcon
                   className="w-4 h-4"
                   icon={ArrowDownLeft}
@@ -53,46 +68,59 @@ const columns = [
                 />
               )}
             </div>
-            {row.original.type === 'credit'
-              ? row.original.sender.name
-              : row.original.recepient.name}
+            {username}
           </div>
         );
       },
     },
   ),
-  columnHelper.accessor((row) => row.type, {
-    header: 'Type',
-    id: 'type',
-    cell: ({ row }) => {
-      return (
-        <span
-          className={cn(
-            'w-max rounded-md font-medium capitalize px-2 py-1 flex items-center justify-center h-6 text-sm',
-            getTransactionTypeColor(row.original.type),
-          )}
-        >
-          {row.original.type === 'credit' ? 'Credit' : 'Debit'}
-        </span>
+  columnHelper.accessor(
+    (row) => {
+      const status = getTransactionStatus(
+        row.sourceAccountId,
+        currentUserAccounts[0].id,
       );
+      console.log(status);
+      return status;
     },
-  }),
+    {
+      header: 'Type',
+      id: 'type',
+      cell: ({ row }) => {
+        const status = getTransactionStatus(
+          row.original.sourceAccountId,
+          currentUserAccounts[0].id,
+        );
+        return (
+          <Badge
+            className={cn(
+              'w-max rounded-md font-medium capitalize px-2 py-1 flex items-center justify-center h-6 text-sm',
+              getTransactionTypeColor(status),
+            )}
+          >
+            {status === 'credit' ? 'Credit' : 'Debit'}
+          </Badge>
+        );
+      },
+    },
+  ),
   columnHelper.accessor((row) => row.amount, {
     header: 'Amount',
     id: 'amount',
     cell: ({ row }) => {
+      const status = getTransactionStatus(
+        row.original.sourceAccountId,
+        currentUserAccounts[0].id,
+      );
       return (
         <div
           className={cn(
             'font-semibold tracking-tight',
-            getTransactionAmountColor(row.original.type),
+            getTransactionAmountColor(status),
           )}
         >
-          {row.original.type === 'credit' ? '+' : '-'}{' '}
-          {row.original.amount.toLocaleString('en-US', {
-            style: 'currency',
-            currency: 'NGN',
-          })}
+          {status === 'credit' ? '+' : '-'}{' '}
+          {formatCurrency(row.original.amount, 'NGN')}
         </div>
       );
     },
@@ -102,14 +130,14 @@ const columns = [
     id: 'status',
     cell: ({ row }) => {
       return (
-        <span
+        <Badge
           className={cn(
             getTransactionStatusColor(row.original.status),
-            'w-max rounded-md font-medium capitalize px-2 py-1 flex items-center justify-center h-6 text-sm',
+            'w-max rounded-md font-medium  capitalize px-2 py-1 flex items-center justify-center h-6 text-sm',
           )}
         >
           {row.original.status}
-        </span>
+        </Badge>
       );
     },
   }),
@@ -130,17 +158,16 @@ const columns = [
         from: getTimeInMs(from),
         txTime: getTimeInMs(new Date(row.original.createdAt)),
       };
-      console.log(timeValues.txTime >= from || timeValues.txTime <= to);
       return timeValues.txTime >= from && timeValues.txTime <= to;
     },
   }),
-  columnHelper.accessor((row) => row.method, {
+  columnHelper.accessor((row) => row.transactionType, {
     header: 'Method',
     id: 'method',
     cell: ({ row }) => {
       return (
         <div className="capitalize text-muted-foreground">
-          {row.original.method}
+          {row.original.transactionType}
         </div>
       );
     },
@@ -160,10 +187,10 @@ const columns = [
               <HugeiconsIcon icon={MoreHorizontal} className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent className="w-[180px]" align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(String(payment.id))}
             >
               Copy transaction ID
             </DropdownMenuItem>
@@ -171,7 +198,7 @@ const columns = [
             <DropdownMenuItem asChild>
               <SheetTrigger
                 onClick={() => {
-                  onUpdateId(row.original.id);
+                  onUpdateId(String(row.original.id));
                 }}
               >
                 View transaction details

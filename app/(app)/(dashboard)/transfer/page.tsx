@@ -1,6 +1,8 @@
 'use client';
 import {
+  accounts,
   currentUser,
+  currentUserAccounts,
   transactions,
 } from '@/app/features/dashboard/data/dummyTxs';
 import AccountSourceCard from '@/app/features/transfer/components/account-source-card';
@@ -14,8 +16,9 @@ import {
   TransferPayload,
 } from '@/app/features/transfer/types';
 import { Button } from '@/components/ui/button';
+import { MAX_ACCT_NUMBER_LENGTH } from '@/lib/constants';
 import { getRecentTransfers } from '@/lib/transaction-utils';
-import { Transaction } from '@/types';
+import { Account, AccountWithUser, Transaction } from '@/types';
 import { useEffect, useState } from 'react';
 
 const Steps = {
@@ -25,46 +28,68 @@ const Steps = {
   Success: 4,
 };
 
-export const MAX_ACCT_NUMBER_LENGTH = 15;
-const recepient = {
-  id: 'u-707',
-  name: 'Sarah Jenkins',
-  email: 'sarah.j@example.com',
-  accountNumber: '707000000000707',
+const STEP_METADATA = {
+  [Steps.EnterRecipient]: { title: 'Enter Recipient' },
+  [Steps.EnterAmount]: { title: 'Enter Amount' },
+  [Steps.ReviewTransfer]: { title: 'Review Transfer' },
+  [Steps.Success]: { title: 'Success' },
 };
 export default function TranferPage() {
   const [step, setStep] = useState(Steps.EnterRecipient);
-
   const [data, setData] = useState<TransferDataState>({
     amount: 0,
     description: '',
-    recepient: {
-      name: '',
-      accountNumber: '',
-    },
-    sourceAccountId: currentUser.accounts[0].id,
+    recepient: null,
+    sourceAccountId: currentUserAccounts[0].id,
   });
-
-  const [isRecepientPreviewVisible, setIsRecepientPreviewVisible] =
-    useState(false);
+  const [recepientVerificationStatus, setRecepientVerificationStatus] =
+    useState<{
+      success: boolean;
+      error: boolean;
+    }>({
+      error: false,
+      success: false,
+    });
 
   const stepTitle =
-    step === Steps.EnterRecipient
-      ? 'Enter Recipient'
-      : step === Steps.EnterAmount
-        ? 'Enter Amount'
-        : step === Steps.ReviewTransfer
-          ? 'Review Transfer'
-          : '';
+    STEP_METADATA[step as keyof typeof STEP_METADATA]?.title || '';
 
-  const handleSelectRecepient = (value: Transaction['recepient']) => {
+  const handleSelectRecepient = (value: AccountWithUser) => {
     setStep(Steps.EnterAmount);
     setData((prev) => ({
       ...prev,
       recepient: value,
     }));
   };
-  const recentTransfers = getRecentTransfers(transactions);
+
+  const updateRecipientAccount = (accountNumber: string) => {
+    setData((prev) => ({
+      ...prev,
+      recepient: { ...prev.recepient!, accountNumber },
+    }));
+  };
+
+  const updateVerificationStatus = (success: boolean, error: boolean) => {
+    setRecepientVerificationStatus({
+      error: error,
+      success: success,
+    });
+  };
+  const recentTransfers = getRecentTransfers(
+    transactions,
+    data.sourceAccountId,
+  );
+
+  const selectedAccount = currentUserAccounts.find(
+    (account) => account.id === data.sourceAccountId,
+  );
+
+  const isRecipientStepValid =
+    data.recepient?.accountNumber.length === MAX_ACCT_NUMBER_LENGTH &&
+    recepientVerificationStatus.success;
+
+  const canContinue =
+    step === Steps.EnterRecipient ? isRecipientStepValid : false;
 
   const renderStep = () => {
     switch (step) {
@@ -73,7 +98,7 @@ export default function TranferPage() {
           <>
             <AccountSourceCard
               selectedAccount={selectedAccount}
-              accounts={currentUser.accounts}
+              accounts={currentUserAccounts}
               onSwitch={(account) =>
                 setData((prev) => ({
                   ...prev,
@@ -83,27 +108,22 @@ export default function TranferPage() {
             />
             <div className="flex flex-col gap-4">
               <RecepientsAccountInput
-                initialValue={data.recepient.accountNumber}
-                onChange={(value) =>
-                  setData((prev) => ({
-                    ...prev,
-                    recepient: {
-                      ...prev.recepient,
-                      accountNumber: value,
-                    },
-                  }))
-                }
+                initialValue={data.recepient?.accountNumber ?? ''}
+                onChange={(value) => updateRecipientAccount(value)}
               />
-              {isRecepientPreviewVisible && (
+              {(recepientVerificationStatus.error ||
+                recepientVerificationStatus.success) && (
                 <RecepientReviewCard
-                  variant="success"
+                  variant={
+                    recepientVerificationStatus.success ? 'success' : 'error'
+                  }
                   onConfirm={(value) => {
                     handleSelectRecepient(value);
                   }}
                   onChange={() => {
-                    setIsRecepientPreviewVisible(false);
+                    updateVerificationStatus(false, false);
                   }}
-                  recepient={recepient}
+                  recepient={data.recepient}
                 />
               )}
             </div>
@@ -120,14 +140,24 @@ export default function TranferPage() {
   };
 
   useEffect(() => {
-    if (data.recepient.accountNumber.length === 15) {
-      setIsRecepientPreviewVisible(true);
+    const accountNum = data.recepient?.accountNumber ?? '';
+    if (accountNum.length !== MAX_ACCT_NUMBER_LENGTH) {
+      updateVerificationStatus(false, false);
+    } else {
+      const accountFound = accounts.find(
+        (account) => account.accountNumber === data.recepient?.accountNumber,
+      );
+      if (accountFound) {
+        setData((prev) => ({
+          ...prev,
+          recepient: accountFound,
+        }));
+        updateVerificationStatus(true, false);
+      } else {
+        updateVerificationStatus(false, true);
+      }
     }
-  }, [data.recepient.accountNumber]);
-
-  const selectedAccount = currentUser.accounts.find(
-    (account) => account.id === data.sourceAccountId,
-  );
+  }, [data.recepient?.accountNumber]);
 
   return (
     <div className="p-6 flex flex-col gap-10 self-center w-3xl max-w-3xl">
@@ -165,10 +195,7 @@ export default function TranferPage() {
         <Button
           className="w-30 ml-auto"
           onClick={() => setStep((prev) => prev + 1)}
-          disabled={
-            data.recepient.accountNumber === '' ||
-            data.recepient.accountNumber.length < MAX_ACCT_NUMBER_LENGTH
-          }
+          disabled={!canContinue}
         >
           Continue
         </Button>

@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { Transaction } from '@/types';
+import { AccountWithUser, Transaction } from '@/types';
 import { UserRemove01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 
@@ -17,9 +17,9 @@ export default function RecepientReviewCard({
   onConfirm,
   variant,
 }: {
-  recepient: Transaction['recepient'];
+  recepient: AccountWithUser | null;
   onChange: () => void;
-  onConfirm: (value: Transaction['recepient']) => void;
+  onConfirm: (value: AccountWithUser) => void;
   variant: 'error' | 'success';
 }) {
   return (
@@ -34,12 +34,16 @@ export default function RecepientReviewCard({
           <div className="flex items-center gap-4">
             <Avatar className="rounded-none">
               <AvatarFallback className="font-medium rounded-md text-background bg-primary after:bg-primary">
-                {recepient.name.charAt(0)}
+                {recepient?.user?.firstName?.charAt(0) ?? 'Unknown'}
+                {recepient?.user?.lastName?.charAt(0) ?? 'Unknown'}
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col gap-0">
-              <CardTitle className="text-base">{recepient.name}</CardTitle>
-              <CardDescription>{recepient.accountNumber}</CardDescription>
+              <CardTitle className="text-base">
+                {recepient?.user?.firstName ?? 'Unknown'}
+                {recepient?.user?.lastName ?? 'Unknown'}
+              </CardTitle>
+              <CardDescription>{recepient?.accountNumber}</CardDescription>
             </div>
           </div>
 
@@ -51,7 +55,9 @@ export default function RecepientReviewCard({
               <Button variant={'outline'}>Change</Button>
             </CardAction>
             <CardAction
-              onClick={() => onConfirm(recepient)}
+              onClick={() => {
+                recepient && onConfirm(recepient);
+              }}
               className="self-center flex items-center gap-2"
             >
               <Button>Confirm</Button>

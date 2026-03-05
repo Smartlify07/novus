@@ -1,6 +1,6 @@
-import { MAX_ACCT_NUMBER_LENGTH } from '@/app/(app)/(dashboard)/transfer/page';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import { MAX_ACCT_NUMBER_LENGTH } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 
