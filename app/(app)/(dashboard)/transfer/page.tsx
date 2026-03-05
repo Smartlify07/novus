@@ -1,24 +1,21 @@
 'use client';
 import {
   accounts,
-  currentUser,
   currentUserAccounts,
   transactions,
 } from '@/app/features/dashboard/data/dummyTxs';
 import AccountSourceCard from '@/app/features/transfer/components/account-source-card';
+import AmountEntryStep from '@/app/features/transfer/components/amount-entry-step';
 import RecentTransfers from '@/app/features/transfer/components/recent-transfers';
 import RecepientReviewCard from '@/app/features/transfer/components/recepient-preview-card';
 import RecepientsAccountInput from '@/app/features/transfer/components/recepients-account-input';
 import TransfersBreadcrumb from '@/app/features/transfer/components/transfers-breadcrumb';
 import TransfersStepper from '@/app/features/transfer/components/transfers-stepper';
-import {
-  TransferDataState,
-  TransferPayload,
-} from '@/app/features/transfer/types';
+import { TransferDataState } from '@/app/features/transfer/types';
 import { Button } from '@/components/ui/button';
 import { MAX_ACCT_NUMBER_LENGTH } from '@/lib/constants';
 import { getRecentTransfers } from '@/lib/transaction-utils';
-import { Account, AccountWithUser, Transaction } from '@/types';
+import { AccountWithUser } from '@/types';
 import { useEffect, useState } from 'react';
 
 const Steps = {
@@ -83,13 +80,19 @@ export default function TranferPage() {
   const selectedAccount = currentUserAccounts.find(
     (account) => account.id === data.sourceAccountId,
   );
-
+  const sourceAccountBalance =
+    currentUserAccounts.find((account) => account.id === data.sourceAccountId)
+      ?.balance ?? 0;
   const isRecipientStepValid =
     data.recepient?.accountNumber.length === MAX_ACCT_NUMBER_LENGTH &&
     recepientVerificationStatus.success;
-
+  const isAmountValid = data.amount <= sourceAccountBalance;
   const canContinue =
-    step === Steps.EnterRecipient ? isRecipientStepValid : false;
+    step === Steps.EnterRecipient
+      ? isRecipientStepValid
+      : step === Steps.EnterAmount
+        ? isAmountValid
+        : false;
 
   const renderStep = () => {
     switch (step) {
@@ -134,6 +137,16 @@ export default function TranferPage() {
           </>
         );
 
+      case Steps.EnterAmount:
+        return (
+          <AmountEntryStep
+            sourceAccountBalance={sourceAccountBalance}
+            recipient={data.recepient}
+            onChange={(value) =>
+              setData((prev) => ({ ...prev, amount: value }))
+            }
+          />
+        );
       default:
         return null;
     }
@@ -158,7 +171,7 @@ export default function TranferPage() {
       }
     }
   }, [data.recepient?.accountNumber]);
-
+  console.log(data.amount);
   return (
     <div className="p-6 flex flex-col gap-10 self-center w-3xl max-w-3xl">
       <div className="flex flex-col gap-4">
