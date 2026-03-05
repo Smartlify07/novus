@@ -1,4 +1,4 @@
-import { Transaction } from '@/types';
+import { AccountWithUser, Transaction } from '@/types';
 
 export type TransferPayload = {
   sourceAccountId: number;
@@ -8,7 +8,7 @@ export type TransferPayload = {
 };
 
 export type TransferDataState = {
-  recepient: Omit<Transaction['recepient'], 'id' | 'email'>;
+  recepient: AccountWithUser | null;
   sourceAccountId: number;
   amount: number;
   description: string;

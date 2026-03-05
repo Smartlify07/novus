@@ -1,20 +1,25 @@
-import { Transaction } from '@/types';
+import {
+  accounts,
+  currentUser,
+  currentUserAccounts,
+} from '@/app/features/dashboard/data/dummyTxs';
+import { Account, Transaction } from '@/types';
 import { getMilliseconds } from 'date-fns';
 
-function getTransactionStatusColor(status: string) {
+function getTransactionStatusColor(status: Transaction['status']) {
   switch (status) {
-    case 'successful':
+    case 'COMPLETED':
       return 'bg-green-500/10 text-green-800';
-    case 'failed':
+    case 'FAILED':
       return 'bg-red-500/10 text-red-800';
-    case 'pending':
+    case 'PENDING':
       return 'bg-yellow-500/10 text-yellow-800';
     default:
       return 'bg-gray-500/10 text-gray-800';
   }
 }
 
-function getTransactionTypeColor(type: string) {
+function getTransactionTypeColor(type: 'credit' | 'debit') {
   switch (type) {
     case 'credit':
       return 'bg-green-500/10 text-green-800';
@@ -45,7 +50,7 @@ function formatTransactionDateTime(dateString: string): string {
   });
 }
 
-function getTransactionAmountColor(type: Transaction['type']) {
+function getTransactionAmountColor(type: 'credit' | 'debit') {
   if (type === 'credit') {
     return 'text-green-800';
   } else if (type === 'debit') {
@@ -59,8 +64,12 @@ function calculateTotalTransactionsTypeAmount(
   type: 'credit' | 'debit',
 ): number {
   return transactions
-    .filter((tx) => tx.type === type)
-    .filter((tx) => tx.status === 'successful')
+    .filter((tx) =>
+      type === 'credit'
+        ? tx.destinationAccountId === currentUser.id
+        : tx.sourceAccountId === currentUser.id,
+    )
+    .filter((tx) => tx.status === 'COMPLETED')
     .reduce((total, tx) => total + tx.amount, 0);
 }
 
@@ -103,18 +112,25 @@ function getExpensePercentageChangeColor(percentageChange: number): string {
   return 'text-gray-600';
 }
 
-function getRecentTransfers(transactions: Transaction[]) {
+function getRecentTransfers(
+  transactions: Transaction[],
+  currentUserAccount: Account['id'],
+) {
+  if (!currentUserAccount) {
+    throw Error('No account specified to get recent transfers from');
+  }
   const result = transactions
     .sort((a, b) => getMilliseconds(b.createdAt) - getMilliseconds(a.createdAt))
     .filter(
       (transaction) =>
-        transaction.type === 'debit' && transaction.method === 'transfer',
+        transaction.sourceAccountId === currentUserAccount &&
+        transaction.transactionType === 'TRANSFER',
     );
   const uniqueIds = new Set();
 
   const uniqueArray = result.filter((item) => {
-    if (!uniqueIds.has(item.recepient.id)) {
-      uniqueIds.add(item.recepient.id);
+    if (!uniqueIds.has(item.sourceAccountId)) {
+      uniqueIds.add(item.sourceAccountId);
       return true; // Keep the object
     }
     return false; // Discard the duplicate
@@ -122,6 +138,20 @@ function getRecentTransfers(transactions: Transaction[]) {
   return uniqueArray;
 }
 
+function getTransactionStatus(
+  sourceAccountId: Transaction['sourceAccountId'],
+  currentAccountId: Account['id'],
+) {
+  return sourceAccountId === currentAccountId ? 'debit' : 'credit';
+}
+
+function getAccountUser(accountId: Transaction['sourceAccountId']) {
+  if (!accountId) {
+    return null;
+  }
+
+  return accounts.find((account) => account.id === accountId);
+}
 export {
   getTransactionStatusColor,
   getTransactionTypeColor,
@@ -135,4 +165,6 @@ export {
   getPercentageChangeColor,
   getExpensePercentageChangeColor,
   getRecentTransfers,
+  getTransactionStatus,
+  getAccountUser,
 };

@@ -5,13 +5,11 @@ import {
   TableBody,
   TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
 import {
-  formatTransactionDate,
   formatTransactionDateTime,
   getTransactionAmountColor,
   getTransactionStatusColor,
@@ -19,14 +17,10 @@ import {
 } from '@/lib/transaction-utils';
 import { cn } from '@/lib/utils';
 import { Transaction } from '@/types';
-import {
-  ArrowDown01,
-  ArrowDown02Icon,
-  ArrowUp01,
-  ArrowUp02Icon,
-} from '@hugeicons/core-free-icons';
+import { ArrowDown02Icon, ArrowUp02Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import Link from 'next/link';
+import { currentUser } from '../data/dummyTxs';
 
 export function TransactionsTable({
   transactions,
@@ -56,11 +50,11 @@ export function TransactionsTable({
           </TableHeader>
           <TableBody>
             {transactions.slice(0, 5).map((tx) => (
-              <TableRow className="h-[60px] " key={tx.txRefrence}>
+              <TableRow className="h-[60px] " key={tx.transactionRef}>
                 <TableCell className="font-medium text-foreground text-ellipsis">
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full bg-primary/5 text-primary flex items-center justify-center">
-                      {tx.type === 'credit' ? (
+                      {tx.destinationAccountId !== currentUser.id ? (
                         <HugeiconsIcon
                           className="w-4 h-4"
                           icon={ArrowDown02Icon}
@@ -74,26 +68,36 @@ export function TransactionsTable({
                         />
                       )}
                     </div>
-                    {tx.sender.name}
+                    Alex Thompson
                   </div>
                 </TableCell>
                 <TableCell>
                   <span
                     className={cn(
                       'w-max rounded-md font-medium capitalize px-2 py-1 flex items-center justify-center h-6 text-sm',
-                      getTransactionTypeColor(tx.type),
+                      getTransactionTypeColor(
+                        tx.destinationAccountId !== currentUser.id
+                          ? 'debit'
+                          : 'credit',
+                      ),
                     )}
                   >
-                    {tx.type === 'credit' ? 'Credit' : 'Debit'}
+                    {tx.destinationAccountId === currentUser.id
+                      ? 'Credit'
+                      : 'Debit'}
                   </span>
                 </TableCell>
                 <TableCell
                   className={cn(
                     'font-semibold tracking-tight',
-                    getTransactionAmountColor(tx.type),
+                    getTransactionAmountColor(
+                      tx.destinationAccountId !== currentUser.id
+                        ? 'debit'
+                        : 'credit',
+                    ),
                   )}
                 >
-                  {tx.type === 'credit' ? '+' : '-'}{' '}
+                  {tx.destinationAccountId !== currentUser.id ? '+' : '-'}{' '}
                   {tx.amount.toLocaleString('en-US', {
                     style: 'currency',
                     currency: 'NGN',
@@ -114,7 +118,7 @@ export function TransactionsTable({
                   {formatTransactionDateTime(tx.createdAt)}
                 </TableCell>
                 <TableCell className="capitalize text-muted-foreground">
-                  {tx.method}
+                  {tx.transactionType}
                 </TableCell>
               </TableRow>
             ))}
