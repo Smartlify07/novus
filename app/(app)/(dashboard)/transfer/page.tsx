@@ -16,6 +16,7 @@ import {
   TransferPayload,
 } from '@/app/features/transfer/types';
 import { Button } from '@/components/ui/button';
+import { MAX_ACCT_NUMBER_LENGTH } from '@/lib/constants';
 import { getRecentTransfers } from '@/lib/transaction-utils';
 import { Account, AccountWithUser, Transaction } from '@/types';
 import { useEffect, useState } from 'react';
@@ -27,8 +28,12 @@ const Steps = {
   Success: 4,
 };
 
-export const MAX_ACCT_NUMBER_LENGTH = 15;
-
+const STEP_METADATA = {
+  [Steps.EnterRecipient]: { title: 'Enter Recipient' },
+  [Steps.EnterAmount]: { title: 'Enter Amount' },
+  [Steps.ReviewTransfer]: { title: 'Review Transfer' },
+  [Steps.Success]: { title: 'Success' },
+};
 export default function TranferPage() {
   const [step, setStep] = useState(Steps.EnterRecipient);
   const [data, setData] = useState<TransferDataState>({
@@ -45,12 +50,7 @@ export default function TranferPage() {
       error: false,
       success: false,
     });
-  const STEP_METADATA = {
-    [Steps.EnterRecipient]: { title: 'Enter Recipient' },
-    [Steps.EnterAmount]: { title: 'Enter Amount' },
-    [Steps.ReviewTransfer]: { title: 'Review Transfer' },
-    [Steps.Success]: { title: 'Success' },
-  };
+
   const stepTitle =
     STEP_METADATA[step as keyof typeof STEP_METADATA]?.title || '';
 
@@ -90,7 +90,7 @@ export default function TranferPage() {
 
   const canContinue =
     step === Steps.EnterRecipient ? isRecipientStepValid : false;
-  console.log(isRecipientStepValid);
+
   const renderStep = () => {
     switch (step) {
       case Steps.EnterRecipient:
