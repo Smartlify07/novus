@@ -171,7 +171,6 @@ export default function TranferPage() {
       }
     }
   }, [data.recepient?.accountNumber]);
-  console.log(data.amount);
   return (
     <div className="p-6 flex flex-col gap-10 self-center w-3xl max-w-3xl">
       <div className="flex flex-col gap-4">
