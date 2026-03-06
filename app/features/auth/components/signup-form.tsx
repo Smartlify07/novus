@@ -6,11 +6,12 @@ import { FirstnameForm } from '../../signup-onboarding/components/firstname-form
 import { PasswordForm } from '../../signup-onboarding/components/password-form';
 import { OnboardingFormProps } from '../../signup-onboarding/types';
 import { ConfirmPasscodeForm } from '../../signup-onboarding/components/confirm-password-form';
-import { postSignUp } from '../api';
+import { postLogin, postSignUp } from '../api';
 import { LastnameForm } from '../../signup-onboarding/components/lastname-form';
 import { EmailForm } from '../../signup-onboarding/components/email-form';
 import { AddressForm } from '../../signup-onboarding/components/address-form';
 import { DateOfBirthForm } from '../../signup-onboarding/components/date-of-birth-form';
+import { useRouter } from 'next/navigation';
 
 export const OnboardingSteps = {
   Phone_Number: 1,
@@ -37,6 +38,7 @@ export function SignupForm({
   form,
   ...props
 }: SignupFormProps) {
+  const router = useRouter();
   const renderForm = () => {
     switch (currentStep) {
       case OnboardingSteps.Phone_Number:
@@ -123,11 +125,13 @@ export function SignupForm({
 
   const onSubmit = async (values: SignupFormValues) => {
     await form.trigger();
-    console.log('Submit');
-    console.log(values);
-    console.log(form.formState.isValid);
     if (form.formState.isValid) {
       const res = await postSignUp(values);
+      await postLogin({
+        password: values.password,
+        email: values.email,
+      });
+      router.replace('/dashboard');
     }
   };
 
