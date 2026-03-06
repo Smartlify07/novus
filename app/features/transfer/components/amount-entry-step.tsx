@@ -16,20 +16,19 @@ export default function AmountEntryStep() {
 
   const username = `${data.recepient?.user.firstName} ${data.recepient?.user.lastName}`;
   const [isBalanceSufficient, setIsBalanceSufficient] = useState(true);
-
   return (
     <div className="flex flex-col gap-10 w-xl max-w-xl self-center">
       <RecipientBadge recepientName={username} />
 
       <AmountInput
         onValueChange={(value) => {
-          if (value.floatValue) {
-            setIsBalanceSufficient(!(value.floatValue > sourceAccountBalance));
-            setData((prev) => ({
-              ...prev,
-              amount: value.floatValue as number,
-            }));
-          }
+          setIsBalanceSufficient(
+            (value.floatValue ?? 0) <= sourceAccountBalance,
+          );
+          setData((prev) => ({
+            ...prev,
+            amount: value.floatValue as number,
+          }));
         }}
         isBalanceSufficient={isBalanceSufficient}
         initialValue={data.amount}

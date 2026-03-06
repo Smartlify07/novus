@@ -30,7 +30,8 @@ export default function AmountInput({
         prefix="₦ "
         onValueChange={(values, sourceInfo) => {
           props.onValueChange?.(values, sourceInfo);
-          setValue(values.floatValue ?? 0);
+
+          setValue(values.floatValue);
         }}
         placeholder="₦ 0.00"
         className={cn(
