@@ -1,30 +1,30 @@
-import { AccountWithUser } from '@/types';
+import { useState } from 'react';
+import { useTransferWorkflowStore } from '@/store/transfer-workflow-store';
+import { currentUserAccounts } from '@/app/features/dashboard/data/dummyTxs';
 import RecipientBadge from './recepient-badge';
 import AmountInput from './amount-input';
-import { useState } from 'react';
-import AccountSourceCard from './account-source-card';
 
-export default function AmountEntryStep({
-  recipient,
-  sourceAccountBalance,
-  onChange,
-}: {
-  recipient: AccountWithUser | null;
-  sourceAccountBalance: number;
-  onChange: (value: number) => void;
-}) {
-  const username = `${recipient?.user.firstName} ${recipient?.user.lastName}`;
+export default function AmountEntryStep() {
+  const data = useTransferWorkflowStore((s) => s.data);
+  const setData = useTransferWorkflowStore((s) => s.setData);
+  
+  const sourceAccountId = data.sourceAccountId;
+  const sourceAccountBalance = currentUserAccounts.find(
+    (account) => account.id === sourceAccountId
+  )?.balance ?? 0;
+
+  const username = `${data.recepient?.user.firstName} ${data.recepient?.user.lastName}`;
   const [isBalanceSufficient, setIsBalanceSufficient] = useState(true);
+
   return (
     <div className="flex flex-col gap-10">
       <RecipientBadge recepientName={username} />
 
       <AmountInput
-        onValueChange={(value, source) => {
-          console.log(value, source);
+        onValueChange={(value) => {
           if (value.floatValue) {
             setIsBalanceSufficient(!(value.floatValue > sourceAccountBalance));
-            onChange(value.floatValue);
+            setData((prev) => ({ ...prev, amount: value.floatValue as number }));
           }
         }}
         isBalanceSufficient={isBalanceSufficient}

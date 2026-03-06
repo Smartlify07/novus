@@ -21,16 +21,14 @@ import {
   currentUser,
   currentUserAccounts,
 } from '../../dashboard/data/dummyTxs';
+import { useTransferWorkflowStore } from '@/store/transfer-workflow-store';
 
-export default function AccountSourceCard({
-  selectedAccount,
-  accounts,
-  onSwitch,
-}: {
-  selectedAccount: (typeof currentUserAccounts)[number] | undefined;
-  accounts: typeof currentUserAccounts;
-  onSwitch: (account: (typeof currentUserAccounts)[number]) => void;
-}) {
+export default function AccountSourceCard() {
+  const sourceAccountId = useTransferWorkflowStore((s) => s.data.sourceAccountId);
+  const handleSwitchSourceAccount = useTransferWorkflowStore((s) => s.handleSwitchSourceAccount);
+  
+  const selectedAccount = currentUserAccounts.find((account) => account.id === sourceAccountId);
+
   return (
     <Field className="flex flex-col gap-2 max-w">
       <FieldLabel className="text-foreground text-base font-medium">
@@ -77,7 +75,7 @@ export default function AccountSourceCard({
               <RadioGroup defaultValue="1" className="max-w-sm">
                 {currentUserAccounts.map((account) => (
                   <AccountPopoverRadio
-                    onClick={() => onSwitch(account)}
+                    onClick={() => handleSwitchSourceAccount(account)}
                     key={account.id}
                     title={`${account.accountType.charAt(0)}${account.accountType.slice(1).toLowerCase()} Account`}
                     description={`${maskAccountNumber(account.accountNumber)}`}

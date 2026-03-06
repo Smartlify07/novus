@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Nunito_Sans } from 'next/font/google';
 import './globals.css';
-import AppProvider from './providers/app-provider';
+import AppProvider from '../context/app-provider';
 import { Toaster } from '@/components/ui/sonner';
 
 const nunitoSans = Nunito_Sans({ variable: '--font-sans' });

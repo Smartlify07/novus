@@ -33,7 +33,7 @@ import {
 } from '@/components/ui/sheet';
 import TransactionDetailsProvider, {
   useTransactionDetails,
-} from '@/app/providers/transaction-details-provider';
+} from '@/context/transaction-details-provider';
 import TransactionDetailsSheet from '@/app/features/transactions/components/transaction-details-sheet';
 
 export default function TransactionsPage() {
