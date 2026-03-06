@@ -1,4 +1,4 @@
-import TransactionDetailsProvider from '@/app/providers/transaction-details-provider';
+import TransactionDetailsProvider from '@/context/transaction-details-provider';
 export default function TransactionsLayout({
   children,
 }: {

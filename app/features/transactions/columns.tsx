@@ -28,7 +28,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { SheetTrigger } from '@/components/ui/sheet';
 import Link from 'next/link';
-import { useTransactionDetails } from '@/app/providers/transaction-details-provider';
+import { useTransactionDetails } from '@/context/transaction-details-provider';
 import { currentUser, currentUserAccounts } from '../dashboard/data/dummyTxs';
 import { Badge } from '@/components/ui/badge';
 //if type is debit then show the receiver, else show the sender
