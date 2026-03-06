@@ -11,7 +11,7 @@ export default function RecepientsAccountInput({
   onChange: (value: string) => void;
   initialValue: string;
 }) {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(initialValue ?? '');
 
   return (
     <Field className="flex flex-col gap-2">
