@@ -1,7 +1,11 @@
 'use client';
 
 import { useMemo } from 'react';
-import { useTransferWorkflowStore, Steps, STEP_METADATA } from '@/store/transfer-workflow-store';
+import {
+  useTransferWorkflowStore,
+  Steps,
+  STEP_METADATA,
+} from '@/store/transfer-workflow-store';
 import { currentUserAccounts } from '@/app/features/dashboard/data/dummyTxs';
 import { MAX_ACCT_NUMBER_LENGTH } from '@/lib/constants';
 import AmountEntryStep from '@/app/features/transfer/components/amount-entry-step';
@@ -13,7 +17,9 @@ import { Button } from '@/components/ui/button';
 export default function TranferPage() {
   const step = useTransferWorkflowStore((s) => s.step);
   const data = useTransferWorkflowStore((s) => s.data);
-  const recepientVerificationStatus = useTransferWorkflowStore((s) => s.recepientVerificationStatus);
+  const recepientVerificationStatus = useTransferWorkflowStore(
+    (s) => s.recepientVerificationStatus,
+  );
   const setStep = useTransferWorkflowStore((s) => s.setStep);
   const goToNextStep = useTransferWorkflowStore((s) => s.goToNextStep);
   const goToPreviousStep = useTransferWorkflowStore((s) => s.goToPreviousStep);
@@ -24,19 +30,20 @@ export default function TranferPage() {
     () =>
       currentUserAccounts.find((account) => account.id === data.sourceAccountId)
         ?.balance ?? 0,
-    [data.sourceAccountId]
+    [data.sourceAccountId],
   );
 
   const isRecipientStepValid = useMemo(
     () =>
       data.recepient?.accountNumber.length === MAX_ACCT_NUMBER_LENGTH &&
       recepientVerificationStatus.success,
-    [data.recepient?.accountNumber.length, recepientVerificationStatus.success]
+    [data.recepient?.accountNumber.length, recepientVerificationStatus.success],
   );
 
   const isAmountValid = useMemo(
-    () => data.amount <= sourceAccountBalance,
-    [data.amount, sourceAccountBalance]
+    () =>
+      (data?.amount ?? 0) <= sourceAccountBalance && (data?.amount ?? 0) > 0,
+    [data.amount, sourceAccountBalance],
   );
 
   const canContinue = useMemo(() => {

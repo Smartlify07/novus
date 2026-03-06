@@ -33,7 +33,7 @@ type TransferWorkflowStore = {
   data: TransferDataState;
   recepientVerificationStatus: RecepientVerificationStatus;
   recentTransfers: Transaction[];
-  
+
   setStep: (step: number) => void;
   setData: React.Dispatch<React.SetStateAction<TransferDataState>>;
   updateRecipientAccount: (accountNumber: string) => void;
@@ -44,72 +44,78 @@ type TransferWorkflowStore = {
   goToPreviousStep: () => void;
 };
 
-export const useTransferWorkflowStore = create<TransferWorkflowStore>((set, get) => ({
-  step: Steps.EnterRecipient,
-  data: {
-    amount: 0,
-    description: '',
-    recepient: null,
-    sourceAccountId: currentUserAccounts[0].id,
-  },
-  recepientVerificationStatus: {
-    error: false,
-    success: false,
-  },
-  recentTransfers: getRecentTransfers(transactions, currentUserAccounts[0].id),
+export const useTransferWorkflowStore = create<TransferWorkflowStore>(
+  (set, get) => ({
+    step: Steps.EnterRecipient,
+    data: {
+      amount: undefined,
+      description: '',
+      recepient: null,
+      sourceAccountId: currentUserAccounts[0].id,
+    },
+    recepientVerificationStatus: {
+      error: false,
+      success: false,
+    },
+    recentTransfers: getRecentTransfers(
+      transactions,
+      currentUserAccounts[0].id,
+    ),
 
-  setStep: (step) => set({ step }),
+    setStep: (step) => set({ step }),
 
-  setData: (data) => set(typeof data === 'function' ? { data: data(get().data) } : { data }),
+    setData: (data) =>
+      set(typeof data === 'function' ? { data: data(get().data) } : { data }),
 
-  updateRecipientAccount: (accountNumber) => {
-    const { data } = get();
-    
-    set({
-      data: { ...data, recepient: { ...data.recepient!, accountNumber } },
-    });
+    updateRecipientAccount: (accountNumber) => {
+      const { data } = get();
 
-    if (accountNumber.length !== MAX_ACCT_NUMBER_LENGTH) {
-      set({ recepientVerificationStatus: { error: false, success: false } });
-    } else {
-      const accountFound = accounts.find(
-        (account) => account.accountNumber === accountNumber,
-      );
-      if (accountFound) {
-        set({
-          data: { ...get().data, recepient: accountFound },
-          recepientVerificationStatus: { error: false, success: true },
-        });
+      set({
+        data: { ...data, recepient: { ...data.recepient!, accountNumber } },
+      });
+
+      if (accountNumber.length !== MAX_ACCT_NUMBER_LENGTH) {
+        set({ recepientVerificationStatus: { error: false, success: false } });
       } else {
-        set({ recepientVerificationStatus: { error: true, success: false } });
+        const accountFound = accounts.find(
+          (account) => account.accountNumber === accountNumber,
+        );
+        if (accountFound) {
+          set({
+            data: { ...get().data, recepient: accountFound },
+            recepientVerificationStatus: { error: false, success: true },
+          });
+        } else {
+          set({ recepientVerificationStatus: { error: true, success: false } });
+        }
       }
-    }
-  },
+    },
 
-  updateVerificationStatus: (success, error) => {
-    set({ recepientVerificationStatus: { error, success } });
-  },
+    updateVerificationStatus: (success, error) => {
+      set({ recepientVerificationStatus: { error, success } });
+    },
 
-  handleSelectRecepient: (value) => {
-    set({
-      step: Steps.EnterAmount,
-      data: { ...get().data, recepient: value },
-    });
-  },
+    handleSelectRecepient: (value) => {
+      set({
+        step: Steps.EnterAmount,
+        data: { ...get().data, recepient: value },
+      });
+    },
 
-  handleSwitchSourceAccount: (account) => {
-    const recentTransfers = getRecentTransfers(transactions, account.id);
-    set({
-      data: { ...get().data, sourceAccountId: account.id },
-      recentTransfers,
-    });
-  },
+    handleSwitchSourceAccount: (account) => {
+      const recentTransfers = getRecentTransfers(transactions, account.id);
+      set({
+        data: { ...get().data, sourceAccountId: account.id },
+        recentTransfers,
+      });
+    },
 
-  goToNextStep: () => {
-    set((state) => ({ step: state.step + 1 }));
-  },
+    goToNextStep: () => {
+      set((state) => ({ step: state.step + 1 }));
+    },
 
-  goToPreviousStep: () => {
-    set((state) => ({ step: Math.max(1, state.step - 1) }));
-  },
-}));
+    goToPreviousStep: () => {
+      set((state) => ({ step: Math.max(1, state.step - 1) }));
+    },
+  }),
+);
