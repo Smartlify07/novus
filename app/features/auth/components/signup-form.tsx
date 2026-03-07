@@ -6,6 +6,7 @@ import { BasicInfoForm } from '../../signup-onboarding/components/basic-info-for
 import { PersonalInfoForm } from '../../signup-onboarding/components/personal-info-form';
 import { SecurityForm } from '../../signup-onboarding/components/security-form';
 import { postLogin, postSignUp } from '../api';
+import { createAccount } from '../../accounts/api';
 import { useRouter } from 'next/navigation';
 
 export const OnboardingSteps = {
@@ -39,6 +40,10 @@ export function SignupForm({
       await postLogin({
         password: values.password,
         email: values.email,
+      });
+      await createAccount({
+        accountType: 'SAVINGS',
+        initialDeposit: 0,
       });
       router.replace('/dashboard');
     }
