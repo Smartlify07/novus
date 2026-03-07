@@ -16,6 +16,10 @@ import { loginFormSchema } from '@/app/features/auth/schema';
 import { Controller, useForm } from 'react-hook-form';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Loading03Icon } from '@hugeicons/core-free-icons';
+import { useState } from 'react';
 
 import * as z from 'zod';
 
@@ -36,16 +40,21 @@ export function LoginForm({
     },
   });
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
     try {
+      setIsSubmitting(true);
       await postLogin(values);
       router.push('/dashboard');
     } catch (error) {
       console.error(error);
       const errorMessage = getErrorMessage(error);
+      toast.error(errorMessage);
       form.setError('root', {
         message: errorMessage,
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
   return (
@@ -182,8 +191,12 @@ export function LoginForm({
         />
 
         <Field>
-          <Button type="submit" form="login-form">
-            Login
+          <Button type="submit" form="login-form" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <HugeiconsIcon icon={Loading03Icon} className="animate-spin" />
+            ) : (
+              'Login'
+            )}
           </Button>
         </Field>
         <FieldDescription className="px-6 text-center">
