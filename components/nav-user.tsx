@@ -23,10 +23,17 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { MoreVerticalCircle01Icon, UserCircle02Icon, CreditCardIcon, Notification03Icon, Logout01Icon } from "@hugeicons/core-free-icons"
 import { useAuth } from "@/hooks/use-auth"
+import { useRouter } from "next/navigation"
 
 export function NavUser() {
-  const { user } = useAuth()
+  const { user, logout } = useAuth()
   const { isMobile } = useSidebar()
+  const router = useRouter()
+
+  const handleLogout = () => {
+    logout()
+    router.push('/login')
+  }
 
   const userName = user ? `${user.firstName} ${user.lastName}` : 'Guest'
   const userEmail = user?.email || ''
@@ -90,7 +97,7 @@ export function NavUser() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <HugeiconsIcon icon={Logout01Icon} strokeWidth={2} />
               Log out
             </DropdownMenuItem>
