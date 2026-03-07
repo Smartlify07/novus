@@ -9,10 +9,12 @@ import { EyeIcon, ViewOffIcon } from '@hugeicons/core-free-icons';
 
 import { OnboardingFormProps } from '../types';
 import { Input } from '@/components/ui/input';
+import { Spinner } from '@/components/ui/spinner';
 
 export function SecurityForm({
   control,
   form,
+  isSubmitting,
 }: Omit<OnboardingFormProps, 'setCurrentStep'>) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -111,8 +113,9 @@ export function SecurityForm({
           }}
           type="submit"
           className="w-full"
+          disabled={isSubmitting}
         >
-          Create account
+          {isSubmitting ? <Spinner /> : 'Create account'}
         </Button>
       </Field>
     </>
