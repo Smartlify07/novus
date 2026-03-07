@@ -1,5 +1,5 @@
 'use client';
-import { cn } from '@/lib/utils';
+import { cn, getErrorMessage } from '@/lib/utils';
 import { SignupFormValues } from '../../signup-onboarding/schema';
 import { OnboardingFormProps } from '../../signup-onboarding/types';
 import { BasicInfoForm } from '../../signup-onboarding/components/basic-info-form';
@@ -8,6 +8,8 @@ import { SecurityForm } from '../../signup-onboarding/components/security-form';
 import { postLogin, postSignUp } from '../api';
 import { createAccount } from '../../accounts/api';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { useState } from 'react';
 
 export const OnboardingSteps = {
   BasicInfo: 1,
@@ -32,20 +34,30 @@ export function SignupForm({
   ...props
 }: SignupFormProps) {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSubmit = async (values: SignupFormValues) => {
     await form.trigger();
     if (form.formState.isValid) {
-      await postSignUp(values);
-      await postLogin({
-        password: values.password,
-        email: values.email,
-      });
-      await createAccount({
-        accountType: 'SAVINGS',
-        initialDeposit: 0,
-      });
-      router.replace('/dashboard');
+      try {
+        setIsSubmitting(true);
+        await postSignUp(values);
+        await postLogin({
+          password: values.password,
+          email: values.email,
+        });
+        await createAccount({
+          accountType: 'SAVINGS',
+          initialDeposit: 0,
+        });
+        router.replace('/dashboard');
+      } catch (error) {
+        console.error(error);
+        const errorMessage = getErrorMessage(error);
+        toast.error(errorMessage);
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -72,6 +84,7 @@ export function SignupForm({
           <SecurityForm
             form={form}
             control={form.control}
+            isSubmitting={isSubmitting}
           />
         );
       default:

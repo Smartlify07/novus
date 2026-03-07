@@ -31,4 +31,5 @@ export type OnboardingFormProps = {
     }
   >;
   onSubmit?: (values: SignupFormValues) => void;
+  isSubmitting?: boolean;
 };
