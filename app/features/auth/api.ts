@@ -1,10 +1,27 @@
 import { callApi } from '@/lib/api-utils';
-import { toast } from 'sonner';
 import { SignupFormValues } from '../signup-onboarding/schema';
+import { useAuthStore } from '@/store/auth-store';
 
 type LoginDetailsType = {
   email: string;
   password: string;
+};
+
+type LoginResponse = {
+  user: {
+    id: number;
+    email: string;
+    firstName: string;
+    lastName: string;
+    phoneNumber?: string;
+    dateOfBirth?: string;
+    address?: string;
+    roles: string[];
+    isActive: boolean;
+  };
+  token: string;
+  type: string;
+  expiresIn: number;
 };
 
 const postLogin = async (loginDetail: LoginDetailsType) => {
@@ -29,7 +46,11 @@ const postLogin = async (loginDetail: LoginDetailsType) => {
         throw new Error(errorData.message || 'Login Failed');
       }
     }
-    return await response.json();
+    const data: LoginResponse = await response.json();
+
+    useAuthStore.getState().setAuth(data.user, data.token, data.expiresIn);
+
+    return data;
   } catch (error) {
     console.error(error);
     throw error;
