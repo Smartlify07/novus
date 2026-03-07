@@ -15,6 +15,7 @@ import { postLogin } from '@/app/features/auth/api';
 import { loginFormSchema } from '@/app/features/auth/schema';
 import { Controller, useForm } from 'react-hook-form';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
+import { useRouter } from 'next/navigation';
 
 import * as z from 'zod';
 
@@ -34,9 +35,11 @@ export function LoginForm({
       email: '',
     },
   });
+  const router = useRouter();
   const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
     try {
       await postLogin(values);
+      router.push('/dashboard');
     } catch (error) {
       console.error(error);
       const errorMessage = getErrorMessage(error);
@@ -148,7 +151,7 @@ export function LoginForm({
                 type="email"
                 placeholder="m@example.com"
               />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              {fieldState.invalid && <FieldError>{fieldState.error?.message}</FieldError>}
             </Field>
           )}
         />
@@ -173,16 +176,11 @@ export function LoginForm({
                 id="password"
                 type="password"
               />
-              {fieldState.invalid}
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              {fieldState.invalid && <FieldError>{fieldState.error?.message}</FieldError>}
             </Field>
           )}
         />
-        {form.formState.errors && (
-          <FieldError
-            errors={[{ message: form.formState.errors['root']?.message }]}
-          />
-        )}
+
         <Field>
           <Button type="submit" form="login-form">
             Login
