@@ -1,5 +1,5 @@
 'use client';
-import { useAccountBalance } from '@/app/features/accounts/hooks';
+import { useAccountBalance, useAccounts } from '@/app/features/accounts/hooks';
 import AccountNumberCard from '@/app/features/dashboard/components/account-number-card';
 import { CashFlowAnalyticsChart } from '@/app/features/dashboard/components/cashflow-analytics-chart';
 import GreetingSection from '@/app/features/dashboard/components/greeting-section';
@@ -11,7 +11,6 @@ import {
   calculateDaysUntilDue,
   calculatePercentageChange,
   cn,
-  formatCurrency,
 } from '@/lib/utils';
 import { useAccountStore } from '@/store/account-store';
 import {
@@ -29,6 +28,7 @@ import {
 import { HugeiconsIcon } from '@hugeicons/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function DashboardPage() {
   const availableBalanceChange = calculatePercentageChange(10000, 9999);
@@ -38,13 +38,22 @@ export default function DashboardPage() {
   const availableBalance = useAccountBalance(currentAccount?.id ?? 0);
   const isBalanceLoading = availableBalance.isPending;
 
+  // Alert: This is a premature workaround to get the current Account and set it, until the response from login shows the currentAccount.
+  const accounts = useAccounts();
+  const setAccount = useAccountStore().setCurrentAccount;
+
+  useEffect(() => {
+    if (!currentAccount && accounts.data) {
+      setAccount(accounts.data[0]);
+    }
+  }, []);
+
   return (
     <div className="p-6 flex flex-col gap-10">
       <div className="flex items-center justify-between  gap-6">
         <GreetingSection />
         <AccountNumberCard />
       </div>
-
       <div className="grid grid-cols-3 gap-6">
         <SummaryCard
           title="Available Balance"

@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useAccountStore } from '@/store/account-store';
 import { useAuth } from '@/hooks/use-auth';
 import { maskAccountNumber } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 export default function AccountNumberCard() {
   const currentAccount = useAccountStore((state) => state.currentAccount);
@@ -31,11 +32,12 @@ export default function AccountNumberCard() {
           {accountName}
         </span>
         <span className="text-muted-foreground font-medium tracking-wide">
-          {maskAccountNumber(accountNumber)}
+          ACC-{maskAccountNumber(accountNumber.slice(3), 3, 4)}
         </span>
       </div>
-      <button
-        className="rounded-full border border-accent size-8 justify-center items-center flex cursor-pointer hover:bg-accent/60 transition-colors duration-300"
+      <Button
+        variant={'ghost'}
+        className="border border-accent justify-center items-center flex cursor-pointer hover:bg-accent/60 transition-colors duration-300"
         onClick={copyTextToClipboard}
       >
         {isCopied ? (
@@ -43,7 +45,7 @@ export default function AccountNumberCard() {
         ) : (
           <HugeiconsIcon icon={Copy} size={16} className="text-primary" />
         )}
-      </button>
+      </Button>
     </div>
   );
 }

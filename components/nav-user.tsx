@@ -1,10 +1,6 @@
-"use client"
+'use client';
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,31 +9,42 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from '@/components/ui/dropdown-menu';
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { MoreVerticalCircle01Icon, UserCircle02Icon, CreditCardIcon, Notification03Icon, Logout01Icon } from "@hugeicons/core-free-icons"
-import { useAuth } from "@/hooks/use-auth"
-import { useRouter } from "next/navigation"
+} from '@/components/ui/sidebar';
+import { HugeiconsIcon } from '@hugeicons/react';
+import {
+  MoreVerticalCircle01Icon,
+  UserCircle02Icon,
+  CreditCardIcon,
+  Notification03Icon,
+  Logout01Icon,
+} from '@hugeicons/core-free-icons';
+import { useAuth } from '@/hooks/use-auth';
+import { useRouter } from 'next/navigation';
+import { useAccountStore } from '@/store/account-store';
 
 export function NavUser() {
-  const { user, logout } = useAuth()
-  const { isMobile } = useSidebar()
-  const router = useRouter()
+  const { user, logout } = useAuth();
+  const { clearCurrentAccount } = useAccountStore();
+  const { isMobile } = useSidebar();
+  const router = useRouter();
 
   const handleLogout = () => {
-    logout()
-    router.push('/login')
-  }
+    logout();
+    clearCurrentAccount();
+    router.replace('/login');
+  };
 
-  const userName = user ? `${user.firstName} ${user.lastName}` : 'Guest'
-  const userEmail = user?.email || ''
-  const initials = user ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase() : 'GU'
+  const userName = user ? `${user.firstName} ${user.lastName}` : 'Guest';
+  const userEmail = user?.email || '';
+  const initials = user
+    ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase()
+    : 'GU';
 
   return (
     <SidebarMenu>
@@ -50,7 +57,9 @@ export function NavUser() {
             >
               <Avatar className="h-8 w-8 rounded-lg grayscale">
                 <AvatarImage alt={userName} />
-                <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
+                <AvatarFallback className="rounded-lg">
+                  {initials}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{userName}</span>
@@ -58,12 +67,16 @@ export function NavUser() {
                   {userEmail}
                 </span>
               </div>
-              <HugeiconsIcon icon={MoreVerticalCircle01Icon} strokeWidth={2} className="ml-auto size-4" />
+              <HugeiconsIcon
+                icon={MoreVerticalCircle01Icon}
+                strokeWidth={2}
+                className="ml-auto size-4"
+              />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
+            side={isMobile ? 'bottom' : 'right'}
             align="end"
             sideOffset={4}
           >
@@ -71,7 +84,9 @@ export function NavUser() {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage alt={userName} />
-                  <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">
+                    {initials}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{userName}</span>
@@ -105,5 +120,5 @@ export function NavUser() {
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }
