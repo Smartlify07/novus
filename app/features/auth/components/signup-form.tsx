@@ -6,7 +6,6 @@ import { BasicInfoForm } from '../../signup-onboarding/components/basic-info-for
 import { PersonalInfoForm } from '../../signup-onboarding/components/personal-info-form';
 import { SecurityForm } from '../../signup-onboarding/components/security-form';
 import { postLogin, postSignUp } from '../api';
-import { createAccount } from '../../accounts/api';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useState } from 'react';
@@ -46,17 +45,13 @@ export function SignupForm({
           password: values.password,
           email: values.email,
         });
-        await createAccount({
-          accountType: 'SAVINGS',
-          initialDeposit: 0,
-        });
-        router.replace('/dashboard');
       } catch (error) {
         console.error(error);
         const errorMessage = getErrorMessage(error);
         toast.error(errorMessage);
       } finally {
         setIsSubmitting(false);
+        router.replace('/dashboard');
       }
     }
   };
