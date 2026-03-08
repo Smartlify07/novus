@@ -50,8 +50,8 @@ export default function SummaryCard({
             )}
           </CardContent>
         </div>
-        <CardFooter className="rounded-none bg-transparent border-none px-2 pt-1 pb-2">
-          {isLoading ? <Skeleton className="h-4 w-40" /> : children}
+        <CardFooter className="rounded-none bg-transparent border-none px-4 pt-1 pb-2">
+          {isLoading ? <Skeleton className="h-5 w-40" /> : children}
         </CardFooter>
       </div>
     </Card>

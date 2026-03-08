@@ -37,15 +37,12 @@ export default function DashboardPage() {
   const currentAccount = useAccountStore((state) => state.currentAccount);
   const availableBalance = useAccountBalance(currentAccount?.id ?? 0);
   const isBalanceLoading = availableBalance.isPending;
-  
+
   return (
     <div className="p-6 flex flex-col gap-10">
       <div className="flex items-center justify-between  gap-6">
         <GreetingSection />
-        <AccountNumberCard
-          accountName="Obinna Smart Anosike"
-          accountNumber="1234567890"
-        />
+        <AccountNumberCard />
       </div>
 
       <div className="grid grid-cols-3 gap-6">
@@ -57,13 +54,13 @@ export default function DashboardPage() {
         >
           {availableBalanceChange >= 0 ? (
             <div className="flex items-center gap-1 text-sm font-medium text-green-500">
-              <HugeiconsIcon size={20} icon={ArrowUp02Icon} />
+              <HugeiconsIcon size={16} icon={ArrowUp02Icon} />
               {availableBalanceChange.toFixed(2)}%{' '}
               <span className="text-muted-foreground">vs last month</span>
             </div>
           ) : (
             <span className="flex items-center gap-1 text-sm font-medium text-destructive">
-              <HugeiconsIcon size={20} icon={ArrowDown02Icon} />
+              <HugeiconsIcon size={16} icon={ArrowDown02Icon} />
               {availableBalanceChange.toFixed(2)}%
               <span className="text-muted-foreground">vs last month</span>
             </span>
@@ -76,7 +73,7 @@ export default function DashboardPage() {
         >
           <Link
             href={'/loans/apply'}
-            className="text-sm font-medium flex items-center gap-1 px-2 text-primary hover:underline"
+            className="text-sm font-medium flex items-center gap-1 text-primary hover:underline"
           >
             Apply for Credit
             <HugeiconsIcon size={20} icon={ArrowRight02Icon} stroke="1" />
@@ -89,7 +86,7 @@ export default function DashboardPage() {
         >
           <span
             className={cn(
-              'text-sm font-medium text-muted-foreground px-2',
+              'text-sm font-medium text-muted-foreground',
               calculateDaysUntilDue(new Date(nextPaymentDueDate)) <= 7
                 ? 'text-destructive'
                 : '',
