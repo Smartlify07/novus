@@ -7,6 +7,7 @@ import { PersonalInfoForm } from '../../signup-onboarding/components/personal-in
 import { SecurityForm } from '../../signup-onboarding/components/security-form';
 import { postLogin, postSignUp } from '../api';
 import { useCreateAccount } from '../../accounts/hooks';
+import { useAccountStore } from '@/store/account-store';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useState } from 'react';
@@ -36,6 +37,7 @@ export function SignupForm({
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const createAccount = useCreateAccount();
+  const setCurrentAccount = useAccountStore((state) => state.setCurrentAccount);
 
   const onSubmit = async (values: SignupFormValues) => {
     await form.trigger();
@@ -47,10 +49,11 @@ export function SignupForm({
           password: values.password,
           email: values.email,
         });
-        await createAccount.mutateAsync({
+        const account = await createAccount.mutateAsync({
           accountType: 'SAVINGS',
           initialDeposit: 1000,
         });
+        setCurrentAccount(account);
       } catch (error) {
         console.error(error);
         const errorMessage = getErrorMessage(error);
