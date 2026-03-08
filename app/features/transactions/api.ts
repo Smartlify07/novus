@@ -1,5 +1,10 @@
-import { TransactionResponse } from '@/types';
+import { Transaction, Pagination } from '@/types';
 import { useAuthStore } from '@/store/auth-store';
+
+export type TransactionResponse = {
+  transactions: Transaction[];
+  pagination: Pagination;
+};
 
 type GetTransactionsParams = {
   accountId?: number;

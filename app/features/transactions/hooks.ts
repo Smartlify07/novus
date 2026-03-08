@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { TransactionResponse } from '@/types';
-import { getTransactions } from './api';
+import { getTransactions, TransactionResponse } from './api';
 
 type GetTransactionsParams = {
   accountId?: number;

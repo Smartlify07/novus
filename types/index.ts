@@ -5,11 +5,6 @@ export type Pagination = {
   totalPages: number;
 };
 
-export type TransactionResponse = {
-  transactions: Transaction[];
-  pagination: Pagination;
-};
-
 export type Transaction = {
   id: number;
   transactionRef: string;
