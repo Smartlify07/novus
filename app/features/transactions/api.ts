@@ -1,4 +1,4 @@
-import { Transaction } from '@/types';
+import { TransactionResponse } from '@/types';
 import { useAuthStore } from '@/store/auth-store';
 
 type GetTransactionsParams = {
@@ -15,7 +15,7 @@ const getAuthHeaders = () => {
   };
 };
 
-const getTransactions = async (params: GetTransactionsParams): Promise<Transaction[]> => {
+const getTransactions = async (params: GetTransactionsParams): Promise<TransactionResponse> => {
   const { accountId, startDate, endDate } = params;
 
   const searchParams = new URLSearchParams();
@@ -40,7 +40,7 @@ const getTransactions = async (params: GetTransactionsParams): Promise<Transacti
       throw new Error(errorData.message || 'Failed to get transactions');
     }
 
-    const data: Transaction[] = await response.json();
+    const data: TransactionResponse = await response.json();
     return data;
   } catch (error) {
     console.error(error);

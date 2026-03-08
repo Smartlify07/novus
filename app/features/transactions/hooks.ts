@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Transaction } from '@/types';
+import { TransactionResponse } from '@/types';
 import { getTransactions } from './api';
 
 type GetTransactionsParams = {
@@ -11,7 +11,7 @@ type GetTransactionsParams = {
 export const TRANSACTIONS_QUERY_KEY = ['transactions'];
 
 export function useTransactions(params: GetTransactionsParams = {}) {
-  return useQuery<Transaction[]>({
+  return useQuery<TransactionResponse>({
     queryKey: [...TRANSACTIONS_QUERY_KEY, params],
     queryFn: () => getTransactions(params),
   });
