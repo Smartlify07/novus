@@ -1,12 +1,12 @@
 'use client';
 import { useAccountBalance, useAccounts } from '@/app/features/accounts/hooks';
+import { useTransactions } from '@/app/features/transactions/hooks';
 import AccountNumberCard from '@/app/features/dashboard/components/account-number-card';
 import { CashFlowAnalyticsChart } from '@/app/features/dashboard/components/cashflow-analytics-chart';
 import GreetingSection from '@/app/features/dashboard/components/greeting-section';
 import QuickActionButton from '@/app/features/dashboard/components/quick-action-button';
 import SummaryCard from '@/app/features/dashboard/components/summary-card';
 import { TransactionsTable } from '@/app/features/dashboard/components/transactions-table';
-import { transactions } from '@/app/features/dashboard/data/dummyTxs';
 import {
   calculateDaysUntilDue,
   calculatePercentageChange,
@@ -37,6 +37,7 @@ export default function DashboardPage() {
   const currentAccount = useAccountStore((state) => state.currentAccount);
   const availableBalance = useAccountBalance(currentAccount?.id ?? 0);
   const isBalanceLoading = availableBalance.isPending;
+  const transactions = useTransactions({ accountId: currentAccount?.id });
 
   // Alert: This is a premature workaround to get the current Account and set it, until the response from login shows the currentAccount.
   const accounts = useAccounts();
@@ -156,7 +157,7 @@ export default function DashboardPage() {
         />
       </div>
       <CashFlowAnalyticsChart />
-      <TransactionsTable transactions={transactions} />
+      <TransactionsTable transactions={transactions.data?.transactions ?? []} />
     </div>
   );
 }
