@@ -1,4 +1,5 @@
 'use client';
+import { useAccountBalance } from '@/app/features/accounts/hooks';
 import AccountNumberCard from '@/app/features/dashboard/components/account-number-card';
 import { CashFlowAnalyticsChart } from '@/app/features/dashboard/components/cashflow-analytics-chart';
 import GreetingSection from '@/app/features/dashboard/components/greeting-section';
@@ -10,7 +11,9 @@ import {
   calculateDaysUntilDue,
   calculatePercentageChange,
   cn,
+  formatCurrency,
 } from '@/lib/utils';
+import { useAccountStore } from '@/store/account-store';
 import {
   AddMoneyCircleIcon,
   ArrowDown02Icon,
@@ -31,6 +34,10 @@ export default function DashboardPage() {
   const availableBalanceChange = calculatePercentageChange(10000, 9999);
   const nextPaymentDueDate = '2026-07-15';
   const router = useRouter();
+  const currentAccount = useAccountStore((state) => state.currentAccount);
+  const availableBalance = useAccountBalance(currentAccount?.id ?? 0);
+  const isBalanceLoading = availableBalance.isPending;
+  
   return (
     <div className="p-6 flex flex-col gap-10">
       <div className="flex items-center justify-between  gap-6">
@@ -44,8 +51,9 @@ export default function DashboardPage() {
       <div className="grid grid-cols-3 gap-6">
         <SummaryCard
           title="Available Balance"
-          value="₦12,345.67"
+          value={`₦${availableBalance.data?.availableBalance?.toLocaleString() ?? '0.00'}`}
           icon={<HugeiconsIcon size={20} icon={Wallet01Icon} stroke="1" />}
+          isLoading={isBalanceLoading}
         >
           {availableBalanceChange >= 0 ? (
             <div className="flex items-center gap-1 text-sm font-medium text-green-500">
