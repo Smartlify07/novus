@@ -17,16 +17,17 @@ import {
 } from '@/lib/transaction-utils';
 import { cn } from '@/lib/utils';
 import { Transaction } from '@/types';
+import { useAccountStore } from '@/store/account-store';
 import { ArrowDown02Icon, ArrowUp02Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import Link from 'next/link';
-import { currentUser } from '../data/dummyTxs';
 
 export function TransactionsTable({
   transactions,
 }: {
   transactions: Transaction[];
 }) {
+  const currentAccount = useAccountStore((state) => state.currentAccount);
   return (
     <Card className="gap-6 py-6">
       <CardHeader className="flex items-center justify-between">
@@ -54,7 +55,7 @@ export function TransactionsTable({
                 <TableCell className="font-medium text-foreground text-ellipsis">
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full bg-primary/5 text-primary flex items-center justify-center">
-                      {tx.destinationAccountId !== currentUser.id ? (
+                      {tx.destinationAccountId !== currentAccount?.id ? (
                         <HugeiconsIcon
                           className="w-4 h-4"
                           icon={ArrowDown02Icon}
@@ -76,13 +77,13 @@ export function TransactionsTable({
                     className={cn(
                       'w-max rounded-md font-medium capitalize px-2 py-1 flex items-center justify-center h-6 text-sm',
                       getTransactionTypeColor(
-                        tx.destinationAccountId !== currentUser.id
+                        tx.destinationAccountId !== currentAccount?.id
                           ? 'debit'
                           : 'credit',
                       ),
                     )}
                   >
-                    {tx.destinationAccountId === currentUser.id
+                    {tx.destinationAccountId === currentAccount?.id
                       ? 'Credit'
                       : 'Debit'}
                   </span>
@@ -91,13 +92,13 @@ export function TransactionsTable({
                   className={cn(
                     'font-semibold tracking-tight',
                     getTransactionAmountColor(
-                      tx.destinationAccountId !== currentUser.id
+                      tx.destinationAccountId !== currentAccount?.id
                         ? 'debit'
                         : 'credit',
                     ),
                   )}
                 >
-                  {tx.destinationAccountId !== currentUser.id ? '+' : '-'}{' '}
+                  {tx.destinationAccountId !== currentAccount?.id ? '+' : '-'}{' '}
                   {tx.amount.toLocaleString('en-US', {
                     style: 'currency',
                     currency: 'NGN',
