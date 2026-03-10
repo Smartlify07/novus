@@ -4,8 +4,13 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { CheckmarkCircle01Icon } from '@hugeicons/core-free-icons';
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils';
+import { TransferResponse } from '@/app/features/transactions/api';
 
-export default function TransferSuccessStep() {
+export default function TransferSuccessStep({
+  transferResult,
+}: {
+  transferResult: TransferResponse | null;
+}) {
   return (
     <div className="flex flex-col gap-10 w-xl max-w-xl self-center">
       <div className="flex flex-col items-center gap-6 py-8">
@@ -32,17 +37,23 @@ export default function TransferSuccessStep() {
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <p className="text-muted-foreground text-sm">Amount Sent</p>
-              <p className="text-foreground font-semibold">₦50,000.00</p>
+              <p className="text-foreground font-semibold">
+                {transferResult ? formatCurrency(transferResult.amount, 'NGN') : '-'}
+              </p>
             </div>
             
             <div className="flex items-center justify-between">
               <p className="text-muted-foreground text-sm">Transaction ID</p>
-              <p className="text-foreground font-medium">TXN123456789</p>
+              <p className="text-foreground font-medium">
+                {transferResult?.transactionRef ?? '-'}
+              </p>
             </div>
             
             <div className="flex items-center justify-between">
               <p className="text-muted-foreground text-sm">Status</p>
-              <p className="text-green-600 font-medium">Completed</p>
+              <p className="text-green-600 font-medium">
+                {transferResult?.status ?? 'Completed'}
+              </p>
             </div>
           </div>
         </CardContent>

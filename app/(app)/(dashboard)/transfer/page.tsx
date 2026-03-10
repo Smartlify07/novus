@@ -15,7 +15,7 @@ import TransfersBreadcrumb from '@/app/features/transfer/components/transfers-br
 import TransfersStepper from '@/app/features/transfer/components/transfers-stepper';
 import { Button } from '@/components/ui/button';
 import { useAccounts } from '@/app/features/accounts/hooks';
-import { transferMoney } from '@/app/features/transactions/api';
+import { transferMoney, TransferResponse } from '@/app/features/transactions/api';
 import { toast } from 'sonner';
 import { formatCurrency } from '@/lib/utils';
 
@@ -25,10 +25,13 @@ export default function TranferPage() {
   const setStep = useTransferWorkflowStore((s) => s.setStep);
   const goToNextStep = useTransferWorkflowStore((s) => s.goToNextStep);
   const goToPreviousStep = useTransferWorkflowStore((s) => s.goToPreviousStep);
-  const setSourceAccountId = useTransferWorkflowStore((s) => s.setSourceAccountId);
+  const setSourceAccountId = useTransferWorkflowStore(
+    (s) => s.setSourceAccountId,
+  );
   const { data: accounts } = useAccounts();
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [transferResult, setTransferResult] = useState<TransferResponse | null>(null);
 
   useEffect(() => {
     if (accounts && accounts.length > 0 && !data.sourceAccountId) {
@@ -36,7 +39,9 @@ export default function TranferPage() {
     }
   }, [accounts, data.sourceAccountId, setSourceAccountId]);
 
-  const currentAccount = accounts?.find((acc) => acc.id === data.sourceAccountId);
+  const currentAccount = accounts?.find(
+    (acc) => acc.id === data.sourceAccountId,
+  );
   const sourceAccountBalance = currentAccount?.balance ?? 0;
 
   const stepTitle = STEP_METADATA[step]?.title || '';
@@ -61,18 +66,20 @@ export default function TranferPage() {
 
   const handleTransfer = async () => {
     if (!data.sourceAccountId) return;
-    
+
     try {
       setIsSubmitting(true);
-      await transferMoney({
+      const result = await transferMoney({
         sourceAccountId: data.sourceAccountId,
         destinationAccountNumber: data.destinationAccountNumber,
         amount: data.amount ?? 0,
         description: data.description,
       });
+      setTransferResult(result);
       setStep(Steps.Success);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Transfer failed';
+      const message =
+        error instanceof Error ? error.message : 'Transfer failed';
       toast.error(message);
     } finally {
       setIsSubmitting(false);
@@ -88,7 +95,7 @@ export default function TranferPage() {
       case Steps.ReviewTransfer:
         return <ReviewTransferStep />;
       case Steps.Success:
-        return <TransferSuccessStep />;
+        return <TransferSuccessStep transferResult={transferResult} />;
       default:
         return null;
     }

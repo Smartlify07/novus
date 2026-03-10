@@ -13,6 +13,16 @@ export type TransferPayload = {
   description: string;
 };
 
+export type TransferResponse = {
+  transactionRef: string;
+  accountId: number;
+  transactionType: string;
+  amount: number;
+  newBalance: number;
+  status: string;
+  timestamp: string;
+};
+
 type GetTransactionsParams = {
   accountId?: number;
   startDate?: string;
@@ -60,7 +70,7 @@ const getTransactions = async (params: GetTransactionsParams): Promise<Transacti
   }
 };
 
-const transferMoney = async (payload: TransferPayload): Promise<Transaction> => {
+const transferMoney = async (payload: TransferPayload): Promise<TransferResponse> => {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 10000);
 
@@ -82,7 +92,7 @@ const transferMoney = async (payload: TransferPayload): Promise<Transaction> => 
       throw new Error(errorData.message || 'Failed to transfer money');
     }
 
-    const data: Transaction = await response.json();
+    const data: TransferResponse = await response.json();
     return data;
   } catch (error) {
     clearTimeout(timeoutId);
