@@ -38,16 +38,15 @@ export default function DashboardPage() {
   const availableBalance = useAccountBalance(currentAccount?.id ?? 0);
   const isBalanceLoading = availableBalance.isPending;
   const transactions = useTransactions({ accountId: currentAccount?.id });
-
   // Alert: This is a premature workaround to get the current Account and set it, until the response from login shows the currentAccount.
   const accounts = useAccounts();
   const setAccount = useAccountStore().setCurrentAccount;
 
   useEffect(() => {
-    if (!currentAccount && accounts.data) {
-      setAccount(accounts.data[0]);
+    if (!currentAccount && !accounts.isPending && accounts.data) {
+      setAccount(accounts?.data[0]);
     }
-  }, []);
+  }, [accounts.isPending]);
 
   return (
     <div className="p-6 flex flex-col gap-10">
@@ -157,7 +156,10 @@ export default function DashboardPage() {
         />
       </div>
       <CashFlowAnalyticsChart />
-      <TransactionsTable transactions={transactions.data?.transactions ?? []} />
+      <TransactionsTable 
+        transactions={transactions.data?.transactions ?? []} 
+        isLoading={transactions.isPending}
+      />
     </div>
   );
 }

@@ -7,7 +7,7 @@ import {
   getAccountUser,
 } from '@/lib/transaction-utils';
 import { cn, formatCurrency, getTimeInMs } from '@/lib/utils';
-import { Transaction } from '@/types';
+import { Account, Transaction } from '@/types';
 import {
   ArrowDownLeft,
   ArrowUpRight,
@@ -27,17 +27,16 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useRouter } from 'next/navigation';
 import { SheetTrigger } from '@/components/ui/sheet';
-import Link from 'next/link';
 import { useTransactionDetails } from '@/context/transaction-details-provider';
-import { currentUser, currentUserAccounts } from '../dashboard/data/dummyTxs';
 import { Badge } from '@/components/ui/badge';
-//if type is debit then show the receiver, else show the sender
 const columnHelper = createColumnHelper<Transaction>();
-const columns = [
+
+export const transactionColumns = (currentAccount: Account) => [
   columnHelper.accessor(
     (row) => {
       const user = getAccountUser(row.sourceAccountId);
       const username = `${user?.user?.firstName} ${user?.user?.lastName}`;
+
       return username;
     },
     {
@@ -47,7 +46,10 @@ const columns = [
         const user = getAccountUser(row.original.sourceAccountId);
         const status = getTransactionStatus(
           row.original.sourceAccountId,
-          currentUserAccounts[0].id,
+          row.original.destinationAccountId,
+
+          currentAccount?.id,
+          row.original.transactionType,
         );
 
         const username = `${user?.user?.firstName} ${user?.user?.lastName}`;
@@ -78,9 +80,11 @@ const columns = [
     (row) => {
       const status = getTransactionStatus(
         row.sourceAccountId,
-        currentUserAccounts[0].id,
+        row.destinationAccountId,
+
+        currentAccount?.id,
+        row.transactionType,
       );
-      console.log(status);
       return status;
     },
     {
@@ -89,7 +93,9 @@ const columns = [
       cell: ({ row }) => {
         const status = getTransactionStatus(
           row.original.sourceAccountId,
-          currentUserAccounts[0].id,
+          row.original.destinationAccountId,
+          currentAccount?.id,
+          row.original.transactionType,
         );
         return (
           <Badge
@@ -110,7 +116,9 @@ const columns = [
     cell: ({ row }) => {
       const status = getTransactionStatus(
         row.original.sourceAccountId,
-        currentUserAccounts[0].id,
+        row.original.destinationAccountId,
+        currentAccount?.id,
+        row.original.transactionType,
       );
       return (
         <div
@@ -187,7 +195,7 @@ const columns = [
               <HugeiconsIcon icon={MoreHorizontal} className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-[180px]" align="end">
+          <DropdownMenuContent className="w-45" align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(String(payment.id))}
@@ -210,4 +218,3 @@ const columns = [
     },
   }),
 ];
-export const transactionColumns = columns;
