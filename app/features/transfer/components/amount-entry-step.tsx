@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTransferWorkflowStore } from '@/store/transfer-workflow-store';
-import { currentUserAccounts } from '@/app/features/dashboard/data/dummyTxs';
+import { useAccounts } from '@/app/features/accounts/hooks';
 import RecipientBadge from './recepient-badge';
 import AmountInput from './amount-input';
 import AccountSourceCard from './account-source-card';
@@ -9,16 +9,20 @@ export default function AmountEntryStep() {
   const data = useTransferWorkflowStore((s) => s.data);
   const setData = useTransferWorkflowStore((s) => s.setData);
 
+  const { data: accounts } = useAccounts();
+  
   const sourceAccountId = data.sourceAccountId;
   const sourceAccountBalance =
-    currentUserAccounts.find((account) => account.id === sourceAccountId)
+    accounts?.find((account) => account.id === sourceAccountId)
       ?.balance ?? 0;
 
-  const username = `${data.recepient?.user.firstName} ${data.recepient?.user.lastName}`;
+  const username = data.recepient ? `${data.recepient.user.firstName} ${data.recepient.user.lastName}` : null;
+  const accountNumber = data.destinationAccountNumber;
+  
   const [isBalanceSufficient, setIsBalanceSufficient] = useState(true);
   return (
     <div className="flex flex-col gap-10 w-xl max-w-xl self-center">
-      <RecipientBadge recepientName={username} />
+      <RecipientBadge recepientName={username} accountNumber={accountNumber} />
 
       <AmountInput
         onValueChange={(value) => {

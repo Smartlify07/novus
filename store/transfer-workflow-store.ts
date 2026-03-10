@@ -51,6 +51,7 @@ export const useTransferWorkflowStore = create<TransferWorkflowStore>(
       amount: undefined,
       description: '',
       recepient: null,
+      destinationAccountNumber: '',
       sourceAccountId: currentUserAccounts[0].id,
     },
     recepientVerificationStatus: {
@@ -71,7 +72,7 @@ export const useTransferWorkflowStore = create<TransferWorkflowStore>(
       const { data } = get();
 
       set({
-        data: { ...data, recepient: { ...data.recepient!, accountNumber } },
+        data: { ...data, destinationAccountNumber: accountNumber },
       });
 
       if (accountNumber.length !== MAX_ACCT_NUMBER_LENGTH) {
@@ -98,7 +99,7 @@ export const useTransferWorkflowStore = create<TransferWorkflowStore>(
     handleSelectRecepient: (value) => {
       set({
         step: Steps.EnterAmount,
-        data: { ...get().data, recepient: value },
+        data: { ...get().data, recepient: value, destinationAccountNumber: value.accountNumber },
       });
     },
 
