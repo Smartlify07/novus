@@ -17,17 +17,19 @@ import {
 } from '@/lib/utils';
 import { ArrowReloadHorizontalIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
-import {
-  currentUser,
-  currentUserAccounts,
-} from '../../dashboard/data/dummyTxs';
 import { useTransferWorkflowStore } from '@/store/transfer-workflow-store';
+import { useAccountStore } from '@/store/account-store';
+import { useAuth } from '@/hooks/use-auth';
+import { useAccounts } from '@/app/features/accounts/hooks';
 
 export default function AccountSourceCard() {
   const sourceAccountId = useTransferWorkflowStore((s) => s.data.sourceAccountId);
   const handleSwitchSourceAccount = useTransferWorkflowStore((s) => s.handleSwitchSourceAccount);
+  const currentAccount = useAccountStore((state) => state.currentAccount);
+  const { user } = useAuth();
+  const { data: accounts } = useAccounts();
   
-  const selectedAccount = currentUserAccounts.find((account) => account.id === sourceAccountId);
+  const selectedAccount = accounts?.find((account) => account.id === sourceAccountId) ?? currentAccount;
 
   return (
     <Field className="flex flex-col gap-2 max-w">
@@ -40,14 +42,14 @@ export default function AccountSourceCard() {
           <div className="flex gap-4">
             <Avatar className="rounded-none">
               <AvatarFallback className="font-medium rounded-md text-background bg-primary after:bg-primary">
-                {currentUser.firstName.charAt(0)}
-                {currentUser.lastName.charAt(0)}
+                {user?.firstName?.charAt(0)}
+                {user?.lastName?.charAt(0)}
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
               <div className="flex flex-col shrink-0">
                 <p className="text-foreground text-base font-medium">
-                  {currentUser.firstName} {currentUser.lastName}
+                  {user?.firstName} {user?.lastName}
                 </p>
                 <div className="flex items-center gap-2">
                   <p className="text-muted-foreground text-sm">
@@ -73,7 +75,7 @@ export default function AccountSourceCard() {
             </PopoverTrigger>
             <PopoverContent align="start">
               <RadioGroup defaultValue="1" className="max-w-sm">
-                {currentUserAccounts.map((account) => (
+                {accounts?.map((account) => (
                   <AccountPopoverRadio
                     onClick={() => handleSwitchSourceAccount(account)}
                     key={account.id}
@@ -98,7 +100,7 @@ export default function AccountSourceCard() {
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">Available Balance</p>
           <h3 className="text-foreground font-semibold text-base">
-            {formatCurrency(selectedAccount?.balance ?? 0, 'NGN')}
+            {formatCurrency(selectedAccount?.balance ?? 0, selectedAccount?.currency ?? 'NGN')}
           </h3>
         </div>
       </Card>
