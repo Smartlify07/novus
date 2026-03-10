@@ -14,7 +14,7 @@ import TransferSuccessStep from '@/app/features/transfer/components/transfer-suc
 import TransfersBreadcrumb from '@/app/features/transfer/components/transfers-breadcrumb';
 import TransfersStepper from '@/app/features/transfer/components/transfers-stepper';
 import { Button } from '@/components/ui/button';
-import { useAccountStore } from '@/store/account-store';
+import { useAccounts } from '@/app/features/accounts/hooks';
 import { transferMoney } from '@/app/features/transactions/api';
 import { toast } from 'sonner';
 import { formatCurrency } from '@/lib/utils';
@@ -26,19 +26,21 @@ export default function TranferPage() {
   const goToNextStep = useTransferWorkflowStore((s) => s.goToNextStep);
   const goToPreviousStep = useTransferWorkflowStore((s) => s.goToPreviousStep);
   const setSourceAccountId = useTransferWorkflowStore((s) => s.setSourceAccountId);
-  const { currentAccount } = useAccountStore();
+  const { data: accounts } = useAccounts();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (currentAccount?.id && data.sourceAccountId === 0) {
-      setSourceAccountId(currentAccount.id);
+    if (accounts && accounts.length > 0 && !data.sourceAccountId) {
+      setSourceAccountId(accounts[0].id);
     }
-  }, [currentAccount?.id, data.sourceAccountId, setSourceAccountId]);
+  }, [accounts, data.sourceAccountId, setSourceAccountId]);
+
+  const currentAccount = accounts?.find((acc) => acc.id === data.sourceAccountId);
+  const sourceAccountBalance = currentAccount?.balance ?? 0;
 
   const stepTitle = STEP_METADATA[step]?.title || '';
 
-  const sourceAccountBalance = currentAccount?.balance ?? 0;
   const isRecipientStepValid = useMemo(
     () => data.destinationAccountNumber.length === MAX_ACCT_NUMBER_LENGTH,
     [data.destinationAccountNumber.length],
@@ -58,6 +60,8 @@ export default function TranferPage() {
   }, [step, isRecipientStepValid, isAmountValid]);
 
   const handleTransfer = async () => {
+    if (!data.sourceAccountId) return;
+    
     try {
       setIsSubmitting(true);
       await transferMoney({

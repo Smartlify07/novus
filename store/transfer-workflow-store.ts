@@ -45,7 +45,7 @@ const initialData: TransferDataState = {
   description: '',
   recepient: null,
   destinationAccountNumber: '',
-  sourceAccountId: 0,
+  sourceAccountId: null,
 };
 
 export const useTransferWorkflowStore = create<TransferWorkflowStore>(

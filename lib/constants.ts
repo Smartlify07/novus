@@ -1,1 +1,1 @@
-export const MAX_ACCT_NUMBER_LENGTH = 15;
+export const MAX_ACCT_NUMBER_LENGTH = 16;
