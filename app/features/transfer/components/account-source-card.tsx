@@ -74,7 +74,7 @@ export default function AccountSourceCard() {
               </Button>
             </PopoverTrigger>
             <PopoverContent align="start">
-              <RadioGroup defaultValue="1" className="max-w-sm">
+              <RadioGroup defaultValue={String(sourceAccountId)} className="max-w-sm">
                 {accounts?.map((account) => (
                   <AccountPopoverRadio
                     onClick={() => handleSwitchSourceAccount(account)}
