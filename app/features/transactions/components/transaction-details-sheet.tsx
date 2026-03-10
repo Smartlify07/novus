@@ -24,7 +24,7 @@ import {
 import { HugeiconsIcon } from '@hugeicons/react';
 import { toast } from 'sonner';
 import Link from 'next/link';
-import { currentUserAccounts } from '../../dashboard/data/dummyTxs';
+import { useAccountStore } from '@/store/account-store';
 
 export default function TransactionDetailsSheet({
   transaction,
@@ -32,11 +32,14 @@ export default function TransactionDetailsSheet({
   transaction: Transaction;
 }) {
   const [notes, setNotes] = useState(transaction.description ?? '');
+  const currentAccount = useAccountStore((state) => state.currentAccount);
   const sender = getAccountUser(transaction.sourceAccountId);
   const receiver = getAccountUser(transaction.destinationAccountId);
   const transactionKind = getTransactionStatus(
     transaction.sourceAccountId,
-    currentUserAccounts[0].id,
+    transaction.destinationAccountId,
+    currentAccount?.id,
+    transaction.transactionType,
   );
   const counterpartyName =
     transactionKind === 'credit'
