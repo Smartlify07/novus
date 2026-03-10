@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
   useTransferWorkflowStore,
   Steps,
@@ -10,21 +10,24 @@ import { MAX_ACCT_NUMBER_LENGTH } from '@/lib/constants';
 import AmountEntryStep from '@/app/features/transfer/components/amount-entry-step';
 import EnterRecepientStep from '@/app/features/transfer/components/enter-recepient-step';
 import ReviewTransferStep from '@/app/features/transfer/components/review-transfer-step';
+import TransferSuccessStep from '@/app/features/transfer/components/transfer-success-step';
 import TransfersBreadcrumb from '@/app/features/transfer/components/transfers-breadcrumb';
 import TransfersStepper from '@/app/features/transfer/components/transfers-stepper';
 import { Button } from '@/components/ui/button';
 import { useAccountStore } from '@/store/account-store';
+import { transferMoney } from '@/app/features/transactions/api';
+import { toast } from 'sonner';
+import { formatCurrency } from '@/lib/utils';
 
 export default function TranferPage() {
   const step = useTransferWorkflowStore((s) => s.step);
   const data = useTransferWorkflowStore((s) => s.data);
-  const recepientVerificationStatus = useTransferWorkflowStore(
-    (s) => s.recepientVerificationStatus,
-  );
-  const { currentAccount } = useAccountStore();
   const setStep = useTransferWorkflowStore((s) => s.setStep);
   const goToNextStep = useTransferWorkflowStore((s) => s.goToNextStep);
   const goToPreviousStep = useTransferWorkflowStore((s) => s.goToPreviousStep);
+  const { currentAccount } = useAccountStore();
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const stepTitle = STEP_METADATA[step]?.title || '';
 
@@ -40,14 +43,30 @@ export default function TranferPage() {
     [data.amount, sourceAccountBalance],
   );
 
-  console.log(isAmountValid);
-
   const canContinue = useMemo(() => {
     if (step === Steps.EnterRecipient) return isRecipientStepValid;
     if (step === Steps.EnterAmount) return isAmountValid;
     if (step === Steps.ReviewTransfer) return true;
     return false;
   }, [step, isRecipientStepValid, isAmountValid]);
+
+  const handleTransfer = async () => {
+    try {
+      setIsSubmitting(true);
+      await transferMoney({
+        sourceAccountId: data.sourceAccountId,
+        destinationAccountNumber: data.destinationAccountNumber,
+        amount: data.amount ?? 0,
+        description: data.description,
+      });
+      setStep(Steps.Success);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Transfer failed';
+      toast.error(message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const renderStep = () => {
     switch (step) {
@@ -57,10 +76,21 @@ export default function TranferPage() {
         return <AmountEntryStep />;
       case Steps.ReviewTransfer:
         return <ReviewTransferStep />;
+      case Steps.Success:
+        return <TransferSuccessStep />;
       default:
         return null;
     }
   };
+
+  const getButtonLabel = () => {
+    if (step === Steps.ReviewTransfer) {
+      return `Send ${formatCurrency(data.amount ?? 0, 'NGN')}`;
+    }
+    return 'Continue';
+  };
+
+  const isReviewStep = step === Steps.ReviewTransfer;
 
   return (
     <div className="p-6 flex flex-col gap-10 self-center w-3xl max-w-3xl">
@@ -84,25 +114,27 @@ export default function TranferPage() {
 
       <div className="flex flex-col gap-10">{renderStep()}</div>
 
-      <div className="flex items-center justify-between mt-10">
-        {step > 1 && (
+      {step !== Steps.Success && (
+        <div className="flex items-center justify-between mt-10">
+          {step > 1 && (
+            <Button
+              variant={'outline'}
+              className="w-30"
+              onClick={goToPreviousStep}
+              disabled={step === 1}
+            >
+              Back
+            </Button>
+          )}
           <Button
-            variant={'outline'}
-            className="w-30"
-            onClick={goToPreviousStep}
-            disabled={step === 1}
+            className="w-30 ml-auto"
+            onClick={isReviewStep ? handleTransfer : goToNextStep}
+            disabled={!canContinue || isSubmitting}
           >
-            Back
+            {isSubmitting ? 'Sending...' : getButtonLabel()}
           </Button>
-        )}
-        <Button
-          className="w-30 ml-auto"
-          onClick={goToNextStep}
-          disabled={!canContinue}
-        >
-          Continue
-        </Button>
-      </div>
+        </div>
+      )}
     </div>
   );
 }
