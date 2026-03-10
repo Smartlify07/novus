@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import {
   useTransferWorkflowStore,
   Steps,
@@ -25,9 +25,16 @@ export default function TranferPage() {
   const setStep = useTransferWorkflowStore((s) => s.setStep);
   const goToNextStep = useTransferWorkflowStore((s) => s.goToNextStep);
   const goToPreviousStep = useTransferWorkflowStore((s) => s.goToPreviousStep);
+  const setSourceAccountId = useTransferWorkflowStore((s) => s.setSourceAccountId);
   const { currentAccount } = useAccountStore();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (currentAccount?.id && data.sourceAccountId === 0) {
+      setSourceAccountId(currentAccount.id);
+    }
+  }, [currentAccount?.id, data.sourceAccountId, setSourceAccountId]);
 
   const stepTitle = STEP_METADATA[step]?.title || '';
 

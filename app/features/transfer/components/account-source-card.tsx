@@ -33,10 +33,6 @@ export default function AccountSourceCard() {
   const { user } = useAuth();
   const { data: accounts } = useAccounts();
 
-  const selectedAccount =
-    accounts?.find((account) => account.id === sourceAccountId) ??
-    currentAccount;
-
   return (
     <Field className="flex flex-col gap-2 max-w">
       <FieldLabel className="text-foreground text-base font-medium">
@@ -60,14 +56,14 @@ export default function AccountSourceCard() {
                 <div className="flex items-center gap-2">
                   <p className="text-muted-foreground text-sm">
                     {splitAccountNumber(
-                      selectedAccount?.accountNumber ?? '',
+                      currentAccount?.accountNumber ?? '',
                       3,
                       4,
                     )}
                   </p>
                   <div className="rounded-full w-1 h-1 bg-muted-foreground"></div>
                   <p className="text-sm text-muted-foreground capitalize">
-                    {`${selectedAccount?.accountType.charAt(0)}${selectedAccount?.accountType.slice(1).toLowerCase()} Account`}
+                    {`${currentAccount?.accountType.charAt(0)}${currentAccount?.accountType.slice(1).toLowerCase()} Account`}
                   </p>
                 </div>
               </div>
@@ -114,8 +110,8 @@ export default function AccountSourceCard() {
           <p className="text-sm text-muted-foreground">Available Balance</p>
           <h3 className="text-foreground font-semibold text-base">
             {formatCurrency(
-              selectedAccount?.balance ?? 0,
-              selectedAccount?.currency ?? 'NGN',
+              currentAccount?.balance ?? 0,
+              currentAccount?.currency ?? 'NGN',
             )}
           </h3>
         </div>
