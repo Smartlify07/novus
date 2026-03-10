@@ -8,32 +8,44 @@ import RecentTransfers from './recent-transfers';
 
 export default function EnterRecepientStep() {
   const data = useTransferWorkflowStore((s) => s.data);
-  const recepientVerificationStatus = useTransferWorkflowStore((s) => s.recepientVerificationStatus);
-  const updateRecipientAccount = useTransferWorkflowStore((s) => s.updateRecipientAccount);
-  const updateVerificationStatus = useTransferWorkflowStore((s) => s.updateVerificationStatus);
-  const handleSelectRecepient = useTransferWorkflowStore((s) => s.handleSelectRecepient);
-  
-  const currentAccount = useAccountStore((state) => state.currentAccount);
-  const { data: transactionsData } = useTransactions({ accountId: currentAccount?.id });
-  
-  const recentTransfers = transactionsData?.transactions
-    ?.filter((tx) => tx.transactionType === 'TRANSFER' && tx.sourceAccountId === currentAccount?.id)
-    ?.slice(0, 4) ?? [];
+  const recepientVerificationStatus = useTransferWorkflowStore(
+    (s) => s.recepientVerificationStatus,
+  );
+  const updateRecipientAccount = useTransferWorkflowStore(
+    (s) => s.updateRecipientAccount,
+  );
+  const updateVerificationStatus = useTransferWorkflowStore(
+    (s) => s.updateVerificationStatus,
+  );
+  const handleSelectRecepient = useTransferWorkflowStore(
+    (s) => s.handleSelectRecepient,
+  );
 
+  const currentAccount = useAccountStore((state) => state.currentAccount);
+  const { data: transactionsData } = useTransactions({
+    accountId: currentAccount?.id,
+  });
+
+  const recentTransfers =
+    transactionsData?.transactions
+      ?.filter(
+        (tx) =>
+          tx.transactionType === 'TRANSFER' &&
+          tx.sourceAccountId === currentAccount?.id,
+      )
+      ?.slice(0, 4) ?? [];
   return (
     <>
       <AccountSourceCard />
       <div className="flex flex-col gap-4">
         <RecepientsAccountInput
-          initialValue={data.recepient?.accountNumber ?? ''}
-          onChange={updateRecipientAccount}
+          initialValue={data?.destinationAccountNumber ?? ''}
+          onChange={(value) => updateRecipientAccount(value)}
         />
         {(recepientVerificationStatus.error ||
           recepientVerificationStatus.success) && (
           <RecepientReviewCard
-            variant={
-              recepientVerificationStatus.success ? 'success' : 'error'
-            }
+            variant={recepientVerificationStatus.success ? 'success' : 'error'}
             onConfirm={handleSelectRecepient}
             onChange={() => {
               updateVerificationStatus(false, false);

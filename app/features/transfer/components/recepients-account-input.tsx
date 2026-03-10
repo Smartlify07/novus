@@ -12,7 +12,6 @@ export default function RecepientsAccountInput({
   initialValue: string;
 }) {
   const [value, setValue] = useState(initialValue ?? '');
-
   return (
     <Field className="flex flex-col gap-2">
       <FieldLabel htmlFor="recepient-account" className="text-base">
@@ -32,7 +31,6 @@ export default function RecepientsAccountInput({
             if (val.length <= MAX_ACCT_NUMBER_LENGTH) {
               onChange(val);
               setValue(val);
-              ('');
             }
           }}
           onWheel={(e) => e.currentTarget.blur()}

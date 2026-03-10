@@ -6,13 +6,14 @@ import {
   Steps,
   STEP_METADATA,
 } from '@/store/transfer-workflow-store';
-import { currentUserAccounts } from '@/app/features/dashboard/data/dummyTxs';
 import { MAX_ACCT_NUMBER_LENGTH } from '@/lib/constants';
 import AmountEntryStep from '@/app/features/transfer/components/amount-entry-step';
 import EnterRecepientStep from '@/app/features/transfer/components/enter-recepient-step';
+import ReviewTransferStep from '@/app/features/transfer/components/review-transfer-step';
 import TransfersBreadcrumb from '@/app/features/transfer/components/transfers-breadcrumb';
 import TransfersStepper from '@/app/features/transfer/components/transfers-stepper';
 import { Button } from '@/components/ui/button';
+import { useAccountStore } from '@/store/account-store';
 
 export default function TranferPage() {
   const step = useTransferWorkflowStore((s) => s.step);
@@ -20,24 +21,17 @@ export default function TranferPage() {
   const recepientVerificationStatus = useTransferWorkflowStore(
     (s) => s.recepientVerificationStatus,
   );
+  const { currentAccount } = useAccountStore();
   const setStep = useTransferWorkflowStore((s) => s.setStep);
   const goToNextStep = useTransferWorkflowStore((s) => s.goToNextStep);
   const goToPreviousStep = useTransferWorkflowStore((s) => s.goToPreviousStep);
 
   const stepTitle = STEP_METADATA[step]?.title || '';
 
-  const sourceAccountBalance = useMemo(
-    () =>
-      currentUserAccounts.find((account) => account.id === data.sourceAccountId)
-        ?.balance ?? 0,
-    [data.sourceAccountId],
-  );
-
+  const sourceAccountBalance = currentAccount?.balance ?? 0;
   const isRecipientStepValid = useMemo(
-    () =>
-      data.recepient?.accountNumber.length === MAX_ACCT_NUMBER_LENGTH &&
-      recepientVerificationStatus.success,
-    [data.recepient?.accountNumber.length, recepientVerificationStatus.success],
+    () => data.destinationAccountNumber.length === MAX_ACCT_NUMBER_LENGTH,
+    [data.destinationAccountNumber.length],
   );
 
   const isAmountValid = useMemo(
@@ -46,9 +40,12 @@ export default function TranferPage() {
     [data.amount, sourceAccountBalance],
   );
 
+  console.log(isAmountValid);
+
   const canContinue = useMemo(() => {
     if (step === Steps.EnterRecipient) return isRecipientStepValid;
     if (step === Steps.EnterAmount) return isAmountValid;
+    if (step === Steps.ReviewTransfer) return true;
     return false;
   }, [step, isRecipientStepValid, isAmountValid]);
 
@@ -58,6 +55,8 @@ export default function TranferPage() {
         return <EnterRecepientStep />;
       case Steps.EnterAmount:
         return <AmountEntryStep />;
+      case Steps.ReviewTransfer:
+        return <ReviewTransferStep />;
       default:
         return null;
     }
