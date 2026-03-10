@@ -36,6 +36,7 @@ type TransferWorkflowStore = {
   handleSwitchSourceAccount: (account: Account) => void;
   setSourceAccountId: (accountId: number) => void;
   setRecentTransfers: (transfers: Transaction[]) => void;
+  resetTransfer: () => void;
   goToNextStep: () => void;
   goToPreviousStep: () => void;
 };
@@ -106,6 +107,15 @@ export const useTransferWorkflowStore = create<TransferWorkflowStore>(
 
     setRecentTransfers: (transfers) => {
       set({ recentTransfers: transfers });
+    },
+
+    resetTransfer: () => {
+      set({
+        step: Steps.EnterRecipient,
+        data: initialData,
+        recepientVerificationStatus: { error: false, success: false },
+        recentTransfers: [],
+      });
     },
 
     goToNextStep: () => {

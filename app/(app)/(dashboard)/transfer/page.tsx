@@ -15,7 +15,10 @@ import TransfersBreadcrumb from '@/app/features/transfer/components/transfers-br
 import TransfersStepper from '@/app/features/transfer/components/transfers-stepper';
 import { Button } from '@/components/ui/button';
 import { useAccounts } from '@/app/features/accounts/hooks';
-import { transferMoney, TransferResponse } from '@/app/features/transactions/api';
+import {
+  transferMoney,
+  TransferResponse,
+} from '@/app/features/transactions/api';
 import { toast } from 'sonner';
 import { formatCurrency } from '@/lib/utils';
 
@@ -31,7 +34,9 @@ export default function TranferPage() {
   const { data: accounts } = useAccounts();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [transferResult, setTransferResult] = useState<TransferResponse | null>(null);
+  const [transferResult, setTransferResult] = useState<TransferResponse | null>(
+    null,
+  );
 
   useEffect(() => {
     if (accounts && accounts.length > 0 && !data.sourceAccountId) {
@@ -71,7 +76,7 @@ export default function TranferPage() {
       setIsSubmitting(true);
       const result = await transferMoney({
         sourceAccountId: data.sourceAccountId,
-        destinationAccountNumber: data.destinationAccountNumber,
+        destinationAccountNumber: 'ACC' + data.destinationAccountNumber,
         amount: data.amount ?? 0,
         description: data.description,
       });

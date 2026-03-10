@@ -2,7 +2,7 @@ import { Field, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { MAX_ACCT_NUMBER_LENGTH } from '@/lib/constants';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function RecepientsAccountInput({
   initialValue,
@@ -12,6 +12,19 @@ export default function RecepientsAccountInput({
   initialValue: string;
 }) {
   const [value, setValue] = useState(initialValue ?? '');
+
+  useEffect(() => {
+    setValue(initialValue ?? '');
+  }, [initialValue]);
+
+  const handleChange = (val: string) => {
+    const cleaned = val.replace(/[^0-9]/g, '');
+    if (cleaned.length <= MAX_ACCT_NUMBER_LENGTH) {
+      setValue(cleaned);
+      onChange(cleaned);
+    }
+  };
+
   return (
     <Field className="flex flex-col gap-2">
       <FieldLabel htmlFor="recepient-account" className="text-base">
@@ -25,16 +38,10 @@ export default function RecepientsAccountInput({
         )}
         <Input
           name="recepient-account"
-          value={initialValue ?? value}
-          onChange={(e) => {
-            const val = e.target.value;
-            if (val.length <= MAX_ACCT_NUMBER_LENGTH) {
-              onChange(val);
-              setValue(val);
-            }
-          }}
+          value={value}
+          onChange={(e) => handleChange(e.target.value)}
           onWheel={(e) => e.currentTarget.blur()}
-          type="number"
+          type="text"
           inputMode="numeric"
           className={cn(
             'h-14 text-2xl md:text-2xl font-semibold placeholder:font-normal no-spinner',

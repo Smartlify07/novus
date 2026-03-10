@@ -3,11 +3,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { CheckmarkCircle01Icon } from '@hugeicons/core-free-icons';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { formatCurrency } from '@/lib/utils';
 import { TransferResponse } from '@/app/features/transactions/api';
-import { useTransferWorkflowStore, Steps } from '@/store/transfer-workflow-store';
+import { useTransferWorkflowStore } from '@/store/transfer-workflow-store';
 
 export default function TransferSuccessStep({
   transferResult,
@@ -15,10 +14,10 @@ export default function TransferSuccessStep({
   transferResult: TransferResponse | null;
 }) {
   const router = useRouter();
-  const setStep = useTransferWorkflowStore((s) => s.setStep);
+  const resetTransfer = useTransferWorkflowStore((s) => s.resetTransfer);
 
   const handleResetAndNavigate = (path: string) => {
-    setStep(Steps.EnterRecipient);
+    resetTransfer();
     router.push(path);
   };
 

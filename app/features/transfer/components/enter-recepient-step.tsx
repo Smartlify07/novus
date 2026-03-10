@@ -5,6 +5,7 @@ import AccountSourceCard from './account-source-card';
 import RecepientsAccountInput from './recepients-account-input';
 import RecepientReviewCard from './recepient-preview-card';
 import RecentTransfers from './recent-transfers';
+import { getRecentTransfers } from '@/lib/transaction-utils';
 
 export default function EnterRecepientStep() {
   const data = useTransferWorkflowStore((s) => s.data);
@@ -26,14 +27,10 @@ export default function EnterRecepientStep() {
     accountId: currentAccount?.id,
   });
 
-  const recentTransfers =
-    transactionsData?.transactions
-      ?.filter(
-        (tx) =>
-          tx.transactionType === 'TRANSFER' &&
-          tx.sourceAccountId === currentAccount?.id,
-      )
-      ?.slice(0, 4) ?? [];
+  const recentTransfers = getRecentTransfers(
+    transactionsData?.transactions ?? [],
+    currentAccount?.id,
+  );
   return (
     <>
       <AccountSourceCard />
