@@ -67,7 +67,10 @@ const deleteAccount = async (accountId: number) => {
   }
 };
 
-const updateAccount = async (accountId: number, payload: UpdateAccountPayload) => {
+const updateAccount = async (
+  accountId: number,
+  payload: UpdateAccountPayload,
+) => {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/accounts/${accountId}`,
@@ -91,7 +94,9 @@ const updateAccount = async (accountId: number, payload: UpdateAccountPayload) =
   }
 };
 
-const getAccountBalance = async (accountId: number): Promise<AccountBalanceResponse> => {
+const getAccountBalance = async (
+  accountId: number,
+): Promise<AccountBalanceResponse> => {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/accounts/${accountId}/balance`,
@@ -129,8 +134,8 @@ const getUserAccounts = async (): Promise<Account[]> => {
       throw new Error(errorData.message || 'Failed to get user accounts');
     }
 
-    const data: Account[] = await response.json();
-    return data;
+    const data: { accounts: Account[] } = await response.json();
+    return data.accounts;
   } catch (error) {
     console.error(error);
     throw error;

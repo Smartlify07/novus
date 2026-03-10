@@ -22,6 +22,7 @@ import { Loading03Icon } from '@hugeicons/core-free-icons';
 import { useState } from 'react';
 
 import * as z from 'zod';
+import { useAccounts } from '../../accounts/hooks';
 
 type SchemaInput = z.input<typeof loginFormSchema>;
 
@@ -160,7 +161,9 @@ export function LoginForm({
                 type="email"
                 placeholder="m@example.com"
               />
-              {fieldState.invalid && <FieldError>{fieldState.error?.message}</FieldError>}
+              {fieldState.invalid && (
+                <FieldError>{fieldState.error?.message}</FieldError>
+              )}
             </Field>
           )}
         />
@@ -185,7 +188,9 @@ export function LoginForm({
                 id="password"
                 type="password"
               />
-              {fieldState.invalid && <FieldError>{fieldState.error?.message}</FieldError>}
+              {fieldState.invalid && (
+                <FieldError>{fieldState.error?.message}</FieldError>
+              )}
             </Field>
           )}
         />

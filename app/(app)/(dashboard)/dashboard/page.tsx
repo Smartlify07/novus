@@ -1,16 +1,18 @@
 'use client';
+import { useAccountBalance, useAccounts } from '@/app/features/accounts/hooks';
+import { useTransactions } from '@/app/features/transactions/hooks';
 import AccountNumberCard from '@/app/features/dashboard/components/account-number-card';
 import { CashFlowAnalyticsChart } from '@/app/features/dashboard/components/cashflow-analytics-chart';
 import GreetingSection from '@/app/features/dashboard/components/greeting-section';
 import QuickActionButton from '@/app/features/dashboard/components/quick-action-button';
 import SummaryCard from '@/app/features/dashboard/components/summary-card';
 import { TransactionsTable } from '@/app/features/dashboard/components/transactions-table';
-import { transactions } from '@/app/features/dashboard/data/dummyTxs';
 import {
   calculateDaysUntilDue,
   calculatePercentageChange,
   cn,
 } from '@/lib/utils';
+import { useAccountStore } from '@/store/account-store';
 import {
   AddMoneyCircleIcon,
   ArrowDown02Icon,
@@ -26,36 +28,48 @@ import {
 import { HugeiconsIcon } from '@hugeicons/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function DashboardPage() {
   const availableBalanceChange = calculatePercentageChange(10000, 9999);
   const nextPaymentDueDate = '2026-07-15';
   const router = useRouter();
+  const currentAccount = useAccountStore((state) => state.currentAccount);
+  const availableBalance = useAccountBalance(currentAccount?.id ?? 0);
+  const isBalanceLoading = availableBalance.isPending;
+  const transactions = useTransactions({ accountId: currentAccount?.id });
+  // Alert: This is a premature workaround to get the current Account and set it, until the response from login shows the currentAccount.
+  const accounts = useAccounts();
+  const setAccount = useAccountStore().setCurrentAccount;
+
+  useEffect(() => {
+    if (!currentAccount && !accounts.isPending && accounts.data) {
+      setAccount(accounts?.data[0]);
+    }
+  }, [accounts.isPending]);
+
   return (
     <div className="p-6 flex flex-col gap-10">
       <div className="flex items-center justify-between  gap-6">
         <GreetingSection />
-        <AccountNumberCard
-          accountName="Obinna Smart Anosike"
-          accountNumber="1234567890"
-        />
+        <AccountNumberCard />
       </div>
-
       <div className="grid grid-cols-3 gap-6">
         <SummaryCard
           title="Available Balance"
-          value="₦12,345.67"
+          value={`₦${availableBalance.data?.availableBalance?.toLocaleString() ?? '0.00'}`}
           icon={<HugeiconsIcon size={20} icon={Wallet01Icon} stroke="1" />}
+          isLoading={isBalanceLoading}
         >
           {availableBalanceChange >= 0 ? (
             <div className="flex items-center gap-1 text-sm font-medium text-green-500">
-              <HugeiconsIcon size={20} icon={ArrowUp02Icon} />
+              <HugeiconsIcon size={16} icon={ArrowUp02Icon} />
               {availableBalanceChange.toFixed(2)}%{' '}
               <span className="text-muted-foreground">vs last month</span>
             </div>
           ) : (
             <span className="flex items-center gap-1 text-sm font-medium text-destructive">
-              <HugeiconsIcon size={20} icon={ArrowDown02Icon} />
+              <HugeiconsIcon size={16} icon={ArrowDown02Icon} />
               {availableBalanceChange.toFixed(2)}%
               <span className="text-muted-foreground">vs last month</span>
             </span>
@@ -68,7 +82,7 @@ export default function DashboardPage() {
         >
           <Link
             href={'/loans/apply'}
-            className="text-sm font-medium flex items-center gap-1 px-2 text-primary hover:underline"
+            className="text-sm font-medium flex items-center gap-1 text-primary hover:underline"
           >
             Apply for Credit
             <HugeiconsIcon size={20} icon={ArrowRight02Icon} stroke="1" />
@@ -81,7 +95,7 @@ export default function DashboardPage() {
         >
           <span
             className={cn(
-              'text-sm font-medium text-muted-foreground px-2',
+              'text-sm font-medium text-muted-foreground',
               calculateDaysUntilDue(new Date(nextPaymentDueDate)) <= 7
                 ? 'text-destructive'
                 : '',
@@ -142,7 +156,10 @@ export default function DashboardPage() {
         />
       </div>
       <CashFlowAnalyticsChart />
-      <TransactionsTable transactions={transactions} />
+      <TransactionsTable 
+        transactions={transactions.data?.transactions ?? []} 
+        isLoading={transactions.isPending}
+      />
     </div>
   );
 }

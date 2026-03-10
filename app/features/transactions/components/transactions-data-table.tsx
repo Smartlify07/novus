@@ -31,18 +31,23 @@ import { addDays } from 'date-fns';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Search } from '@hugeicons/core-free-icons';
 import { useRouter } from 'next/navigation';
+import { useAccountStore } from '@/store/account-store';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export function TransactionsDataTable({
   transactions,
+  isLoading = false,
 }: {
   transactions: Transaction[];
+  isLoading?: boolean;
 }) {
   const [globalFilter, setGlobalFilter] = useState<any>('');
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const { currentAccount } = useAccountStore();
   const table = useReactTable({
     data: transactions,
-    columns: transactionColumns,
+    columns: transactionColumns(currentAccount!),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onColumnFiltersChange: setColumnFilters,
@@ -115,7 +120,17 @@ export function TransactionsDataTable({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {isLoading ? (
+              Array.from({ length: 10 }).map((_, index) => (
+                <TableRow key={index}>
+                  {Array.from({ length: 6 }).map((_, cellIndex) => (
+                    <TableCell key={cellIndex}>
+                      <Skeleton className="h-4 w-full" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -134,7 +149,7 @@ export function TransactionsDataTable({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={transactions.length}
+                  colSpan={6}
                   className="h-24 text-center"
                 >
                   No results.

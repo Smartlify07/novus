@@ -1,6 +1,5 @@
 'use client';
 import SummaryCard from '@/app/features/dashboard/components/summary-card';
-import { transactions } from '@/app/features/dashboard/data/dummyTxs';
 import ExportTransactionsButton from '@/app/features/transactions/components/export-transactions-button';
 import { TransactionsDataTable } from '@/app/features/transactions/components/transactions-data-table';
 import {
@@ -18,29 +17,25 @@ import {
   Wallet01Icon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
-import TransactionDetailsProvider, {
-  useTransactionDetails,
-} from '@/context/transaction-details-provider';
+import { Sheet } from '@/components/ui/sheet';
+import { useTransactionDetails } from '@/context/transaction-details-provider';
 import TransactionDetailsSheet from '@/app/features/transactions/components/transaction-details-sheet';
+import { useTransactions } from '@/app/features/transactions/hooks';
+import { useAccountStore } from '@/store/account-store';
+import NewTransactionButton from '@/app/features/transactions/components/new-transaction-button';
 
 export default function TransactionsPage() {
-  const totalTransactionsAmount =
-    calculateTotalTransactionsAmount(transactions);
-  const totalIncome = calculateTotalIncome(transactions);
-  const totalExpenses = calculateTotalExpenses(transactions);
+  const { currentAccount } = useAccountStore();
+  const { data, isPending } = useTransactions({
+    accountId: currentAccount?.id,
+  });
+  const transactions = data?.transactions ?? [];
+  const totalTransactionsAmount = calculateTotalTransactionsAmount(
+    transactions,
+    currentAccount,
+  );
+  const totalIncome = calculateTotalIncome(transactions, currentAccount);
+  const totalExpenses = calculateTotalExpenses(transactions, currentAccount);
   const expensesPercentageChange = calculatePercentageChange(
     1000,
     totalExpenses,
@@ -60,7 +55,11 @@ export default function TransactionsPage() {
       <div className="p-6 flex flex-col gap-10">
         <div className="justify-between flex items-center">
           <h1 className="text-2xl font-semibold">Transactions</h1>
-          <ExportTransactionsButton />
+          <div className="flex items-center gap-2">
+            <NewTransactionButton />{' '}
+            {/*For now this will navigate to transfers */}
+            {/* <ExportTransactionsButton /> */}
+          </div>
         </div>
         <div className="grid grid-cols-3 items-center gap-6">
           <SummaryCard
@@ -108,7 +107,7 @@ export default function TransactionsPage() {
           <SummaryCard
             icon={<HugeiconsIcon icon={ArrowUpRight} />}
             title="Total Expenses"
-            value={formatCurrency(calculateTotalExpenses(transactions), 'NGN')}
+            value={formatCurrency(totalExpenses, 'NGN')}
           >
             <div
               className={cn(
@@ -135,7 +134,7 @@ export default function TransactionsPage() {
           </SummaryCard>
         </div>
 
-        <TransactionsDataTable transactions={transactions} />
+        <TransactionsDataTable transactions={transactions} isLoading={isPending} />
       </div>
       {transaction && <TransactionDetailsSheet transaction={transaction} />}
     </Sheet>

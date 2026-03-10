@@ -1,3 +1,10 @@
+export type Pagination = {
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+};
+
 export type Transaction = {
   id: number;
   transactionRef: string;

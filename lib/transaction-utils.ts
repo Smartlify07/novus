@@ -6,6 +6,7 @@ import {
 import { Account, Transaction } from '@/types';
 import { getMilliseconds } from 'date-fns';
 
+type TransactionTypeUnion = 'credit' | 'debit' | null;
 function getTransactionStatusColor(status: Transaction['status']) {
   switch (status) {
     case 'COMPLETED':
@@ -19,7 +20,7 @@ function getTransactionStatusColor(status: Transaction['status']) {
   }
 }
 
-function getTransactionTypeColor(type: 'credit' | 'debit') {
+function getTransactionTypeColor(type: TransactionTypeUnion) {
   switch (type) {
     case 'credit':
       return 'bg-green-500/10 text-green-800';
@@ -50,7 +51,7 @@ function formatTransactionDateTime(dateString: string): string {
   });
 }
 
-function getTransactionAmountColor(type: 'credit' | 'debit') {
+function getTransactionAmountColor(type: TransactionTypeUnion) {
   if (type === 'credit') {
     return 'text-green-800';
   } else if (type === 'debit') {
@@ -62,28 +63,47 @@ function getTransactionAmountColor(type: 'credit' | 'debit') {
 function calculateTotalTransactionsTypeAmount(
   transactions: Transaction[],
   type: 'credit' | 'debit',
+  currentAccount: Account | null,
 ): number {
   return transactions
     .filter((tx) =>
       type === 'credit'
-        ? tx.destinationAccountId === currentUser.id
-        : tx.sourceAccountId === currentUser.id,
+        ? tx.destinationAccountId === currentAccount?.id
+        : tx.sourceAccountId === currentAccount?.id,
     )
     .filter((tx) => tx.status === 'COMPLETED')
     .reduce((total, tx) => total + tx.amount, 0);
 }
 
-function calculateTotalIncome(transactions: Transaction[]): number {
-  return calculateTotalTransactionsTypeAmount(transactions, 'credit');
+function calculateTotalIncome(
+  transactions: Transaction[],
+  currentAccount: Account | null,
+): number {
+  return calculateTotalTransactionsTypeAmount(
+    transactions,
+    'credit',
+    currentAccount,
+  );
 }
 
-function calculateTotalExpenses(transactions: Transaction[]): number {
-  return calculateTotalTransactionsTypeAmount(transactions, 'debit');
+function calculateTotalExpenses(
+  transactions: Transaction[],
+  currentAccount: Account | null,
+): number {
+  return calculateTotalTransactionsTypeAmount(
+    transactions,
+    'debit',
+    currentAccount,
+  );
 }
 
-function calculateTotalTransactionsAmount(transactions: Transaction[]): number {
+function calculateTotalTransactionsAmount(
+  transactions: Transaction[],
+  currentAccount: Account | null,
+): number {
   return (
-    calculateTotalIncome(transactions) + calculateTotalExpenses(transactions)
+    calculateTotalIncome(transactions, currentAccount) +
+    calculateTotalExpenses(transactions, currentAccount)
   );
 }
 
@@ -140,9 +160,22 @@ function getRecentTransfers(
 
 function getTransactionStatus(
   sourceAccountId: Transaction['sourceAccountId'],
-  currentAccountId: Account['id'],
-) {
-  return sourceAccountId === currentAccountId ? 'debit' : 'credit';
+  destinationAccountId: Transaction['destinationAccountId'],
+  currentAccountId: Account['id'] | undefined,
+  transactionType: Transaction['transactionType'],
+): 'debit' | 'credit' | null {
+  if (transactionType === 'DEPOSIT') {
+    return destinationAccountId
+      ? destinationAccountId === currentAccountId
+        ? 'credit'
+        : null
+      : null;
+  } else {
+    if (!currentAccountId || !sourceAccountId) {
+      return null;
+    }
+    return sourceAccountId === currentAccountId ? 'debit' : 'credit';
+  }
 }
 
 function getAccountUser(accountId: Transaction['sourceAccountId']) {
