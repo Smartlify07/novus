@@ -1,16 +1,27 @@
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { CheckmarkCircle01Icon } from '@hugeicons/core-free-icons';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { formatCurrency } from '@/lib/utils';
 import { TransferResponse } from '@/app/features/transactions/api';
+import { useTransferWorkflowStore, Steps } from '@/store/transfer-workflow-store';
 
 export default function TransferSuccessStep({
   transferResult,
 }: {
   transferResult: TransferResponse | null;
 }) {
+  const router = useRouter();
+  const setStep = useTransferWorkflowStore((s) => s.setStep);
+
+  const handleResetAndNavigate = (path: string) => {
+    setStep(Steps.EnterRecipient);
+    router.push(path);
+  };
+
   return (
     <div className="flex flex-col gap-10 w-xl max-w-xl self-center">
       <div className="flex flex-col items-center gap-6 py-8">
@@ -60,12 +71,12 @@ export default function TransferSuccessStep({
       </Card>
 
       <div className="flex flex-col gap-3">
-        <Button className="w-full" asChild>
-          <Link href="/transactions">View Transaction</Link>
+        <Button className="w-full" onClick={() => handleResetAndNavigate('/transactions')}>
+          View Transaction
         </Button>
         
-        <Button variant="outline" className="w-full" asChild>
-          <Link href="/dashboard">Return to Dashboard</Link>
+        <Button variant="outline" className="w-full" onClick={() => handleResetAndNavigate('/dashboard')}>
+          Return to Dashboard
         </Button>
       </div>
     </div>
