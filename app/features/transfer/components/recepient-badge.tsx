@@ -2,12 +2,17 @@ import { Badge } from '@/components/ui/badge';
 import { User } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import React from 'react';
+import { maskAccountNumber } from '@/lib/utils';
 
 export default function RecipientBadge({
   recepientName,
+  accountNumber,
 }: {
-  recepientName: string;
+  recepientName?: string | null;
+  accountNumber?: string;
 }) {
+  const displayName = recepientName || (accountNumber ? maskAccountNumber(accountNumber) : 'Unknown');
+
   return (
     <Badge
       variant={'secondary'}
@@ -17,7 +22,7 @@ export default function RecipientBadge({
 
       <span className="text-muted-foreground">
         Transferring to{' '}
-        <span className="text-foreground font-semibold">{recepientName}</span>
+        <span className="text-foreground font-semibold">{displayName}</span>
       </span>
     </Badge>
   );

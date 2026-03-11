@@ -1,12 +1,6 @@
 import { create } from 'zustand';
-import {
-  accounts,
-  currentUserAccounts,
-  transactions,
-} from '@/app/features/dashboard/data/dummyTxs';
 import { TransferDataState } from '@/app/features/transfer/types';
 import { Account, AccountWithUser, Transaction } from '@/types';
-import { getRecentTransfers } from '@/lib/transaction-utils';
 import { MAX_ACCT_NUMBER_LENGTH } from '@/lib/constants';
 
 export const Steps = {
@@ -40,27 +34,30 @@ type TransferWorkflowStore = {
   updateVerificationStatus: (success: boolean, error: boolean) => void;
   handleSelectRecepient: (value: AccountWithUser) => void;
   handleSwitchSourceAccount: (account: Account) => void;
+  setSourceAccountId: (accountId: number) => void;
+  setRecentTransfers: (transfers: Transaction[]) => void;
+  resetTransfer: () => void;
   goToNextStep: () => void;
   goToPreviousStep: () => void;
+};
+
+const initialData: TransferDataState = {
+  amount: undefined,
+  description: '',
+  recepient: null,
+  destinationAccountNumber: '',
+  sourceAccountId: null,
 };
 
 export const useTransferWorkflowStore = create<TransferWorkflowStore>(
   (set, get) => ({
     step: Steps.EnterRecipient,
-    data: {
-      amount: undefined,
-      description: '',
-      recepient: null,
-      sourceAccountId: currentUserAccounts[0].id,
-    },
+    data: initialData,
     recepientVerificationStatus: {
       error: false,
       success: false,
     },
-    recentTransfers: getRecentTransfers(
-      transactions,
-      currentUserAccounts[0].id,
-    ),
+    recentTransfers: [],
 
     setStep: (step) => set({ step }),
 
@@ -68,26 +65,20 @@ export const useTransferWorkflowStore = create<TransferWorkflowStore>(
       set(typeof data === 'function' ? { data: data(get().data) } : { data }),
 
     updateRecipientAccount: (accountNumber) => {
-      const { data } = get();
-
       set({
-        data: { ...data, recepient: { ...data.recepient!, accountNumber } },
+        recepientVerificationStatus: { error: false, success: false },
       });
 
       if (accountNumber.length !== MAX_ACCT_NUMBER_LENGTH) {
-        set({ recepientVerificationStatus: { error: false, success: false } });
+        set({
+          data: { ...get().data, destinationAccountNumber: accountNumber },
+          recepientVerificationStatus: { error: false, success: false },
+        });
       } else {
-        const accountFound = accounts.find(
-          (account) => account.accountNumber === accountNumber,
-        );
-        if (accountFound) {
-          set({
-            data: { ...get().data, recepient: accountFound },
-            recepientVerificationStatus: { error: false, success: true },
-          });
-        } else {
-          set({ recepientVerificationStatus: { error: true, success: false } });
-        }
+        set({
+          data: { ...get().data, destinationAccountNumber: accountNumber },
+          recepientVerificationStatus: { error: true, success: false },
+        });
       }
     },
 
@@ -98,15 +89,32 @@ export const useTransferWorkflowStore = create<TransferWorkflowStore>(
     handleSelectRecepient: (value) => {
       set({
         step: Steps.EnterAmount,
-        data: { ...get().data, recepient: value },
+        data: { ...get().data, recepient: value, destinationAccountNumber: value.accountNumber },
       });
     },
 
     handleSwitchSourceAccount: (account) => {
-      const recentTransfers = getRecentTransfers(transactions, account.id);
       set({
         data: { ...get().data, sourceAccountId: account.id },
-        recentTransfers,
+      });
+    },
+
+    setSourceAccountId: (accountId) => {
+      set((state) => ({
+        data: { ...state.data, sourceAccountId: accountId },
+      }));
+    },
+
+    setRecentTransfers: (transfers) => {
+      set({ recentTransfers: transfers });
+    },
+
+    resetTransfer: () => {
+      set({
+        step: Steps.EnterRecipient,
+        data: initialData,
+        recepientVerificationStatus: { error: false, success: false },
+        recentTransfers: [],
       });
     },
 

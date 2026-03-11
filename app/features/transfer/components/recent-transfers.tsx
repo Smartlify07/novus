@@ -36,13 +36,16 @@ export default function RecentTransfers({
               <div className="flex items-center gap-4">
                 <Avatar className="rounded-none">
                   <AvatarFallback className="font-medium rounded-md text-background bg-primary after:bg-primary">
-                    {user?.user.firstName.charAt(0)}
-                    {user?.user.lastName.charAt(0)}
+                    {user
+                      ? `${user?.user.firstName.charAt(0)} ${user?.user.lastName.charAt(0)}`
+                      : transfer.destinationAccountId}
                   </AvatarFallback>
                 </Avatar>
                 <CardContent className="px-0">
                   <CardTitle className="text-base">
-                    {user?.user.firstName} {user?.user.lastName}
+                    {user
+                      ? `${user?.user.firstName} ${user?.user.lastName}`
+                      : transfer.destinationAccountId}
                   </CardTitle>
                   <CardDescription>
                     {splitAccountNumber(user?.accountNumber ?? '')}

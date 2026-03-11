@@ -17,7 +17,7 @@ export default function AccountNumberCard() {
 
   const copyTextToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(accountNumber);
+      await navigator.clipboard.writeText(accountNumber.slice(3));
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     } catch (err) {

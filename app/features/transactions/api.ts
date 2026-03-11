@@ -6,6 +6,23 @@ export type TransactionResponse = {
   pagination: Pagination;
 };
 
+export type TransferPayload = {
+  sourceAccountId: number;
+  destinationAccountNumber: string;
+  amount: number;
+  description: string;
+};
+
+export type TransferResponse = {
+  transactionRef: string;
+  accountId: number;
+  transactionType: string;
+  amount: number;
+  newBalance: number;
+  status: string;
+  timestamp: string;
+};
+
 type GetTransactionsParams = {
   accountId?: number;
   startDate?: string;
@@ -53,4 +70,35 @@ const getTransactions = async (params: GetTransactionsParams): Promise<Transacti
   }
 };
 
-export { getTransactions };
+const transferMoney = async (payload: TransferPayload): Promise<TransferResponse> => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/transactions/transfer`,
+      {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(payload),
+        signal: controller.signal,
+      },
+    );
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to transfer money');
+    }
+
+    const data: TransferResponse = await response.json();
+    return data;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    console.error(error);
+    throw error;
+  }
+};
+
+export { getTransactions, transferMoney };

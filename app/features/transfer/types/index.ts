@@ -9,7 +9,8 @@ export type TransferPayload = {
 
 export type TransferDataState = {
   recepient: AccountWithUser | null;
-  sourceAccountId: number;
+  destinationAccountNumber: string;
+  sourceAccountId: number | null;
   amount: number | undefined;
   description: string;
 };

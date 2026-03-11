@@ -134,7 +134,7 @@ function getExpensePercentageChangeColor(percentageChange: number): string {
 
 function getRecentTransfers(
   transactions: Transaction[],
-  currentUserAccount: Account['id'],
+  currentUserAccount: Account['id'] | undefined,
 ) {
   if (!currentUserAccount) {
     throw Error('No account specified to get recent transfers from');
