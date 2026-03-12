@@ -20,9 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={nunitoSans.variable}>
       <body className={`antialiased`}>
-        <AppProvider>
-          <AuthProvider>{children}</AuthProvider>
-        </AppProvider>
+        <AppProvider>{children}</AppProvider>
         <Toaster />
       </body>
     </html>

@@ -21,6 +21,7 @@ import {
 } from '@/app/features/transactions/api';
 import { toast } from 'sonner';
 import { formatCurrency } from '@/lib/utils';
+import { useAccountStore } from '@/store/account-store';
 
 export default function TranferPage() {
   const step = useTransferWorkflowStore((s) => s.step);
@@ -31,6 +32,7 @@ export default function TranferPage() {
   const setSourceAccountId = useTransferWorkflowStore(
     (s) => s.setSourceAccountId,
   );
+  const setAccountBalance = useAccountStore((s) => s.setAccountBalance);
   const { data: accounts } = useAccounts();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -82,6 +84,7 @@ export default function TranferPage() {
       });
       setTransferResult(result);
       setStep(Steps.Success);
+      setAccountBalance(result.newBalance);
     } catch (error) {
       const message =
         error instanceof Error ? error.message : 'Transfer failed';

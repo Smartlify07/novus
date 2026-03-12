@@ -15,24 +15,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const checkAuthentication = () => {
       const isAuth = checkAuth();
-      const isPublicRoute = PUBLIC_ROUTES.some((route) => 
-        pathname === route || pathname?.startsWith(route)
-      );
+      const isPublicRoute = PUBLIC_ROUTES.some((route) => pathname === route);
 
       if (!isAuth && !isPublicRoute) {
+        console.log('Go to Login');
         router.push('/login');
       } else if (isAuth && (pathname === '/login' || pathname === '/signup')) {
         router.push('/dashboard');
       }
-      
+
       setIsLoading(false);
     };
 
     checkAuthentication();
   }, [pathname, isAuthenticated, router, checkAuth]);
 
+  console.log(isLoading);
   if (isLoading) {
-    return null;
+    return <>Loading...</>;
   }
 
   return <>{children}</>;

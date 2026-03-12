@@ -137,7 +137,8 @@ function getRecentTransfers(
   currentUserAccount: Account['id'] | undefined,
 ) {
   if (!currentUserAccount) {
-    throw Error('No account specified to get recent transfers from');
+    // Return or throw error
+    return [];
   }
   const result = transactions
     .sort((a, b) => getMilliseconds(b.createdAt) - getMilliseconds(a.createdAt))

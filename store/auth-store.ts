@@ -38,18 +38,27 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
-        set({ user: null, token: null, tokenExpiry: null, isAuthenticated: false });
+        set({
+          user: null,
+          token: null,
+          tokenExpiry: null,
+          isAuthenticated: false,
+        });
       },
 
       checkAuth: () => {
         const { token, isAuthenticated, tokenExpiry } = get();
         if (!token || !isAuthenticated) {
+          console.log('No token', 'Not auth', token, tokenExpiry);
           return false;
         }
         if (tokenExpiry && Date.now() >= tokenExpiry) {
+          console.log(token, tokenExpiry);
           get().logout();
           return false;
         }
+        console.log(token, tokenExpiry);
+
         return true;
       },
     }),
@@ -58,9 +67,8 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state) => ({
         user: state.user,
         token: state.token,
-        tokenExpiry: state.tokenExpiry,
         isAuthenticated: state.isAuthenticated,
       }),
-    }
-  )
+    },
+  ),
 );
