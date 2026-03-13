@@ -1,9 +1,10 @@
 'use client';
 
 import { useAuth } from '@/hooks/use-auth';
+import { useUser } from '../../auth/hooks/useUser';
 
 export default function GreetingSection() {
-  const { user } = useAuth();
+  const { data: user } = useUser();
 
   const getGreeting = () => {
     const hour = new Date().getHours();

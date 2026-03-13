@@ -1,13 +1,16 @@
+'use server';
 import { callApi } from '@/lib/api-utils';
 import { SignupFormValues } from '../signup-onboarding/schema';
 import { useAuthStore } from '@/store/auth-store';
+import { User } from '@/types';
+import { cookies } from 'next/headers';
 
 type LoginDetailsType = {
   email: string;
   password: string;
 };
 
-type LoginResponse = {
+export type LoginResponse = {
   user: {
     id: number;
     email: string;
@@ -22,6 +25,15 @@ type LoginResponse = {
   token: string;
   type: string;
   expiresIn: number;
+};
+
+const getAuthHeaders = async () => {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('token')?.value;
+  return {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  };
 };
 
 const postLogin = async (loginDetail: LoginDetailsType) => {
@@ -61,4 +73,15 @@ const postSignUp = async (payload: SignupFormValues) => {
   return callApi('POST', '/auth/register', payload, {}, true);
 };
 
-export { postLogin, postSignUp };
+const getUser = async () => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+      headers: await getAuthHeaders(),
+    });
+    return (await response.json()) as User;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+export { postLogin, postSignUp, getUser };

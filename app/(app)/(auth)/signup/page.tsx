@@ -29,7 +29,6 @@ export default function SignupPage() {
     },
     mode: 'onChange',
   });
-  console.log(form.formState.isSubmitting);
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="bg-primary rounded-r-2xl relative hidden lg:flex lg:flex-col lg:gap-10 lg:p-10">

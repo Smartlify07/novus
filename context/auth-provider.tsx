@@ -18,7 +18,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const isPublicRoute = PUBLIC_ROUTES.some((route) => pathname === route);
 
       if (!isAuth && !isPublicRoute) {
-        console.log('Go to Login');
         router.push('/login');
       } else if (isAuth && (pathname === '/login' || pathname === '/signup')) {
         router.push('/dashboard');
@@ -30,7 +29,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     checkAuthentication();
   }, [pathname, isAuthenticated, router, checkAuth]);
 
-  console.log(isLoading);
   if (isLoading) {
     return <>Loading...</>;
   }

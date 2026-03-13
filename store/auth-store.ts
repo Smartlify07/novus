@@ -49,15 +49,12 @@ export const useAuthStore = create<AuthState>()(
       checkAuth: () => {
         const { token, isAuthenticated, tokenExpiry } = get();
         if (!token || !isAuthenticated) {
-          console.log('No token', 'Not auth', token, tokenExpiry);
           return false;
         }
         if (tokenExpiry && Date.now() >= tokenExpiry) {
-          console.log(token, tokenExpiry);
           get().logout();
           return false;
         }
-        console.log(token, tokenExpiry);
 
         return true;
       },

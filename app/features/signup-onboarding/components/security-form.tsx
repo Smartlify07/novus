@@ -102,19 +102,7 @@ export function SecurityForm({
         />
       </FieldGroup>
       <Field>
-        <Button
-          onClick={async () => {
-            const isValid = await form.trigger(['password', 'confirmPassword']);
-            if (isValid) {
-              form.handleSubmit((data) => {
-                console.log(data);
-              })();
-            }
-          }}
-          type="submit"
-          className="w-full"
-          disabled={isSubmitting}
-        >
+        <Button type="submit" className="w-full" disabled={isSubmitting}>
           {isSubmitting ? <Spinner /> : 'Create account'}
         </Button>
       </Field>
