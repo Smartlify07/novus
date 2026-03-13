@@ -29,6 +29,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { useTransferWorkflowStore } from '@/store/transfer-workflow-store';
 
 export default function DashboardPage() {
   const availableBalanceChange = calculatePercentageChange(10000, 9999);
@@ -41,12 +42,17 @@ export default function DashboardPage() {
   // Alert: This is a premature workaround to get the current Account and set it, until the response from login shows the currentAccount.
   const accounts = useAccounts();
   const setAccount = useAccountStore().setCurrentAccount;
+  const resetTransfer = useTransferWorkflowStore((s) => s.resetTransfer);
 
   useEffect(() => {
     if (!currentAccount && !accounts.isPending && accounts.data) {
       setAccount(accounts?.data[0]);
     }
   }, [accounts.isPending]);
+
+  useEffect(() => {
+    resetTransfer(); // reset transfer step on mount to the first step
+  }, []);
 
   return (
     <div className="p-6 flex flex-col gap-10">
@@ -156,8 +162,8 @@ export default function DashboardPage() {
         />
       </div>
       <CashFlowAnalyticsChart />
-      <TransactionsTable 
-        transactions={transactions.data?.transactions ?? []} 
+      <TransactionsTable
+        transactions={transactions.data?.transactions ?? []}
         isLoading={transactions.isPending}
       />
     </div>

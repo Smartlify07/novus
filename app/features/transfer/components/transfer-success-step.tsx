@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { HugeiconsIcon } from '@hugeicons/react';
@@ -6,7 +5,6 @@ import { CheckmarkCircle01Icon } from '@hugeicons/core-free-icons';
 import { useRouter } from 'next/navigation';
 import { formatCurrency } from '@/lib/utils';
 import { TransferResponse } from '@/app/features/transactions/api';
-import { useTransferWorkflowStore } from '@/store/transfer-workflow-store';
 
 export default function TransferSuccessStep({
   transferResult,
@@ -14,10 +12,7 @@ export default function TransferSuccessStep({
   transferResult: TransferResponse | null;
 }) {
   const router = useRouter();
-  const resetTransfer = useTransferWorkflowStore((s) => s.resetTransfer);
-
-  const handleResetAndNavigate = (path: string) => {
-    resetTransfer();
+  const handleResetAndNavigate = async (path: string) => {
     router.push(path);
   };
 
@@ -42,23 +37,26 @@ export default function TransferSuccessStep({
 
       <Card className="bg-muted/50 rounded-md">
         <CardContent className="flex flex-col gap-4 p-6">
-          <CardTitle className="text-lg font-medium">Transaction Details</CardTitle>
-          
+          <CardTitle className="text-lg font-medium">
+            Transaction Details
+          </CardTitle>
+
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <p className="text-muted-foreground text-sm">Amount Sent</p>
               <p className="text-foreground font-semibold">
-                {transferResult ? formatCurrency(transferResult.amount, 'NGN') : '-'}
+                {transferResult
+                  ? formatCurrency(transferResult.amount, 'NGN')
+                  : '-'}
               </p>
             </div>
-            
+
             <div className="flex items-center justify-between">
               <p className="text-muted-foreground text-sm">Transaction ID</p>
               <p className="text-foreground font-medium">
                 {transferResult?.transactionRef ?? '-'}
               </p>
             </div>
-            
             <div className="flex items-center justify-between">
               <p className="text-muted-foreground text-sm">Status</p>
               <p className="text-green-600 font-medium">
@@ -70,11 +68,18 @@ export default function TransferSuccessStep({
       </Card>
 
       <div className="flex flex-col gap-3">
-        <Button className="w-full" onClick={() => handleResetAndNavigate('/transactions')}>
+        <Button
+          className="w-full"
+          onClick={() => handleResetAndNavigate('/transactions')}
+        >
           View Transaction
         </Button>
-        
-        <Button variant="outline" className="w-full" onClick={() => handleResetAndNavigate('/dashboard')}>
+
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => handleResetAndNavigate('/dashboard')}
+        >
           Return to Dashboard
         </Button>
       </div>
