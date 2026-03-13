@@ -1,7 +1,14 @@
+import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function proxy(request: NextRequest) {
-  const isAuthenticated = false;
+  const cookieStore = await cookies();
+  const hasToken = cookieStore.has('token');
+  const token = cookieStore.get('token');
+  const expiresAt = cookieStore.get('token_expires_at');
+
+  const isAuthenticated =
+    token?.value && expiresAt?.value && Date.now() < Number(expiresAt?.value);
   const { pathname } = request.nextUrl;
   const PUBLIC_ROUTES = ['/login', '/signup', '/'];
   const isPublicRoute = PUBLIC_ROUTES.some((route) => pathname === route);

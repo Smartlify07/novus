@@ -1,0 +1,115 @@
+'use server';
+
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { LoginResponse } from './features/auth/api';
+import { loginFormSchema, signupFormSchema } from './features/auth/schema';
+import {
+  SignupFormValues,
+  signupOnboardingSchema,
+} from './features/signup-onboarding/schema';
+
+export const signUpAction = async (initialState: any, formData: FormData) => {
+  const data = Object.fromEntries(formData) as SignupFormValues;
+  const parsed = signupOnboardingSchema.safeParse(data);
+  if (!parsed.success) {
+    return {
+      errors: parsed.error.flatten().fieldErrors,
+      message: null,
+    };
+  }
+  const signupResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...data,
+        dateOfBirth: new Date(data.dateOfBirth as Date).toISOString(),
+      }),
+    },
+  );
+
+  const result = await signupResponse.json();
+
+  if (!signupResponse.ok) {
+    return {
+      errors:
+        signupResponse.status === 401
+          ? 'Incorrect email or password'
+          : result.message,
+      message:
+        signupResponse.status === 401
+          ? 'Incorrect email or password'
+          : result.message,
+    };
+  } else {
+    return loginAction(initialState, formData);
+  }
+};
+
+export const loginAction = async (initialState: any, formData: FormData) => {
+  const cookieStore = await cookies();
+  const email = formData.get('email') as string;
+  const password = formData.get('password') as string;
+  const parsed = loginFormSchema.safeParse({
+    email: formData.get('email'),
+    password: formData.get('password'),
+  });
+
+  if (!parsed.success) {
+    return {
+      errors: parsed.error.flatten().fieldErrors,
+      message: null,
+    };
+  }
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    },
+  );
+  if (!response.ok) {
+    return {
+      errors:
+        response.status === 401
+          ? 'Incorrect email or password'
+          : (await response.json()).message,
+      message:
+        response.status === 401
+          ? 'Incorrect email or password'
+          : (await response.json()).message,
+    };
+  }
+  const result: LoginResponse = await response.json();
+  cookieStore.set({
+    name: 'token',
+    value: result.token,
+    expires: Date.now() + result.expiresIn * 1000,
+    httpOnly: true,
+    secure: true,
+    sameSite: 'lax',
+  });
+  cookieStore.set({
+    name: 'token_expires_at',
+    value: String(Date.now() + result.expiresIn * 1000),
+    expires: new Date(Date.now() + result.expiresIn * 1000),
+    httpOnly: true,
+    secure: true,
+    sameSite: 'lax',
+  });
+
+  return redirect('/dashboard');
+};
+
+export const logoutAction = async () => {
+  const cookieStore = await cookies();
+  cookieStore.delete('token');
+  return redirect('/login');
+};

@@ -24,21 +24,12 @@ import {
   Notification03Icon,
   Logout01Icon,
 } from '@hugeicons/core-free-icons';
-import { useAuth } from '@/hooks/use-auth';
-import { useRouter } from 'next/navigation';
-import { useAccountStore } from '@/store/account-store';
+import { logoutAction } from '@/app/actions';
+import { useUser } from '@/app/features/auth/hooks/useUser';
 
 export function NavUser() {
-  const { user, logout } = useAuth();
-  const { clearCurrentAccount } = useAccountStore();
+  const { data: user } = useUser();
   const { isMobile } = useSidebar();
-  const router = useRouter();
-
-  const handleLogout = () => {
-    logout();
-    clearCurrentAccount();
-    router.replace('/login');
-  };
 
   const userName = user ? `${user.firstName} ${user.lastName}` : 'Guest';
   const userEmail = user?.email || '';
@@ -112,7 +103,7 @@ export function NavUser() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}>
+            <DropdownMenuItem onClick={logoutAction}>
               <HugeiconsIcon icon={Logout01Icon} strokeWidth={2} />
               Log out
             </DropdownMenuItem>

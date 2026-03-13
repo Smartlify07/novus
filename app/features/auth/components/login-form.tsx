@@ -15,14 +15,15 @@ import { postLogin } from '@/app/features/auth/api';
 import { loginFormSchema } from '@/app/features/auth/schema';
 import { Controller, useForm } from 'react-hook-form';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { Loading03Icon } from '@hugeicons/core-free-icons';
-import { useState } from 'react';
+import { Alert, AlertCircle, Loading03Icon } from '@hugeicons/core-free-icons';
+import { startTransition, useActionState, useEffect, useState } from 'react';
 
 import * as z from 'zod';
 import { useAccounts } from '../../accounts/hooks';
+import { loginAction } from '@/app/actions';
 
 type SchemaInput = z.input<typeof loginFormSchema>;
 
@@ -40,28 +41,35 @@ export function LoginForm({
       email: '',
     },
   });
-  const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
-    try {
-      setIsSubmitting(true);
-      await postLogin(values);
-      router.push('/dashboard');
-    } catch (error) {
-      console.error(error);
-      const errorMessage = getErrorMessage(error);
-      toast.error(errorMessage);
+  const [state, formAction, pending] = useActionState(loginAction, {
+    message: null,
+    errors: null,
+  });
+
+  const action: () => void = form.handleSubmit(async (data) => {
+    form.clearErrors();
+    let formData = new FormData();
+    formData.append('email', data.email);
+    formData.append('password', data.password);
+    startTransition(() => {
+      formAction(formData);
+    });
+  });
+
+  useEffect(() => {
+    if (state?.errors) {
       form.setError('root', {
-        message: errorMessage,
+        type: 'custom',
+        message: state.errors,
       });
-    } finally {
-      setIsSubmitting(false);
     }
-  };
+  }, [state]);
+
   return (
     <form
       id="login-form"
-      onSubmit={form.handleSubmit(onSubmit)}
+      action={action}
+      // onSubmit={form.handleSubmit(onSubmit)}
       className={cn('flex flex-col gap-6', className)}
       {...props}
     >
@@ -152,12 +160,16 @@ export function LoginForm({
           control={form.control}
           name="email"
           render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
+            <Field
+              data-invalid={fieldState.invalid || !!form.formState.errors.root}
+            >
               <FieldLabel htmlFor="email">Email</FieldLabel>
               <Input
                 {...field}
                 id="email"
-                aria-invalid={fieldState.invalid}
+                aria-invalid={
+                  fieldState.invalid || !!form.formState.errors.root
+                }
                 type="email"
                 placeholder="m@example.com"
               />
@@ -172,7 +184,9 @@ export function LoginForm({
           control={form.control}
           name="password"
           render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
+            <Field
+              data-invalid={fieldState.invalid || !!form.formState.errors.root}
+            >
               <div className="flex items-center">
                 <FieldLabel htmlFor="password">Password</FieldLabel>
                 <a
@@ -184,7 +198,9 @@ export function LoginForm({
               </div>
               <Input
                 {...field}
-                aria-invalid={fieldState.invalid}
+                aria-invalid={
+                  fieldState.invalid || !!form.formState.errors.root
+                }
                 id="password"
                 type="password"
               />
@@ -195,9 +211,21 @@ export function LoginForm({
           )}
         />
 
+        {!!form.formState.errors.root && (
+          <div className="bg-destructive/10 flex items-center gap-2 rounded-md px-2 py-2">
+            <HugeiconsIcon
+              icon={AlertCircle}
+              size={16}
+              className="text-destructive"
+            />
+            <FieldError className="font-medium">
+              {form.formState.errors.root.message}
+            </FieldError>
+          </div>
+        )}
         <Field>
-          <Button type="submit" form="login-form" disabled={isSubmitting}>
-            {isSubmitting ? (
+          <Button type="submit" form="login-form" disabled={pending}>
+            {pending ? (
               <HugeiconsIcon icon={Loading03Icon} className="animate-spin" />
             ) : (
               'Login'
