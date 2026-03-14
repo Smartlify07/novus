@@ -23,7 +23,7 @@ import { startTransition, useActionState, useEffect, useState } from 'react';
 
 import * as z from 'zod';
 import { useAccounts } from '../../accounts/hooks';
-import { loginAction } from '@/app/actions';
+import { loginAction } from '@/app/features/auth/actions';
 
 type SchemaInput = z.input<typeof loginFormSchema>;
 

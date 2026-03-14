@@ -24,7 +24,7 @@ import {
   Notification03Icon,
   Logout01Icon,
 } from '@hugeicons/core-free-icons';
-import { logoutAction } from '@/app/actions';
+import { logoutAction } from '@/app/features/auth/actions';
 import { useUser } from '@/app/features/auth/hooks/useUser';
 
 export function NavUser() {

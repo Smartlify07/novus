@@ -7,7 +7,7 @@ import { SecurityForm } from '../../signup-onboarding/components/security-form';
 import { useCreateAccount } from '../../accounts/hooks';
 import { useAccountStore } from '@/store/account-store';
 import { startTransition, useActionState, useEffect } from 'react';
-import { signUpAction } from '@/app/actions';
+import { signUpAction } from '@/app/features/auth/actions';
 
 export const OnboardingSteps = {
   BasicInfo: 1,

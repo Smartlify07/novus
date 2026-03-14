@@ -2,12 +2,12 @@
 
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { LoginResponse } from './features/auth/api';
-import { loginFormSchema, signupFormSchema } from './features/auth/schema';
+import { LoginResponse } from './api';
+import { loginFormSchema, signupFormSchema } from './schema';
 import {
   SignupFormValues,
   signupOnboardingSchema,
-} from './features/signup-onboarding/schema';
+} from '../signup-onboarding/schema';
 
 export const signUpAction = async (initialState: any, formData: FormData) => {
   const data = Object.fromEntries(formData) as SignupFormValues;
