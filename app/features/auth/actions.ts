@@ -8,6 +8,7 @@ import {
   SignupFormValues,
   signupOnboardingSchema,
 } from '../signup-onboarding/schema';
+import { createAccount, setCurrentAccount } from '../accounts/api';
 
 export const signUpAction = async (initialState: any, formData: FormData) => {
   const data = Object.fromEntries(formData) as SignupFormValues;
