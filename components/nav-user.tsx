@@ -34,7 +34,7 @@ export function NavUser() {
   const userName = user ? `${user.firstName} ${user.lastName}` : 'Guest';
   const userEmail = user?.email || '';
   const initials = user
-    ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase()
+    ? `${user.firstName?.[0] ?? ''}${user.lastName?.[0] ?? ''}`.toUpperCase()
     : 'GU';
 
   return (
