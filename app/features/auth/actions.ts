@@ -8,6 +8,7 @@ import {
   SignupFormValues,
   signupOnboardingSchema,
 } from '../signup-onboarding/schema';
+import { createAccount, setCurrentAccount } from '../accounts/api';
 
 export const signUpAction = async (initialState: any, formData: FormData) => {
   const data = Object.fromEntries(formData) as SignupFormValues;
@@ -46,7 +47,7 @@ export const signUpAction = async (initialState: any, formData: FormData) => {
           : result.message,
     };
   } else {
-    return loginAction(initialState, formData);
+    loginAction(initialState, formData);
   }
 };
 
@@ -76,15 +77,16 @@ export const loginAction = async (initialState: any, formData: FormData) => {
     },
   );
   if (!response.ok) {
+    const errorData = await response.json();
     return {
       errors:
         response.status === 401
           ? 'Incorrect email or password'
-          : (await response.json()).message,
+          : errorData.message,
       message:
         response.status === 401
           ? 'Incorrect email or password'
-          : (await response.json()).message,
+          : errorData.message,
     };
   }
   const result: LoginResponse = await response.json();

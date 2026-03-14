@@ -97,6 +97,29 @@ const updateAccount = async (
   }
 };
 
+const setCurrentAccount = async (accountId: number) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/accounts/current`,
+      {
+        method: 'POST',
+        headers: await getAuthHeaders(),
+        body: JSON.stringify({
+          accountId: accountId,
+        }),
+      },
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to set current account');
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 const getAccountBalance = async (
   accountId: number,
 ): Promise<AccountBalanceResponse> => {
@@ -175,4 +198,5 @@ export {
   getAccountBalance,
   getUserAccounts,
   getCurrentAccount,
+  setCurrentAccount,
 };
