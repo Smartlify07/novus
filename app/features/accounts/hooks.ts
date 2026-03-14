@@ -6,7 +6,9 @@ import {
   updateAccount,
   getAccountBalance,
   getUserAccounts,
+  getCurrentAccount,
 } from './api';
+import { useAccountStore } from '@/store/account-store';
 
 type CreateAccountPayload = {
   accountType: 'SAVINGS' | 'CURRENT' | 'FIXED_DEPOSIT';
@@ -19,12 +21,23 @@ type UpdateAccountPayload = Partial<{
 }>;
 
 export const ACCOUNTS_QUERY_KEY = ['accounts'];
-export const ACCOUNT_BALANCE_QUERY_KEY = ['account', 'balance'];
+export const CURRENT_ACCOUNT_QUERY_KEY = ['accounts', 'current'];
+export const ACCOUNT_BALANCE_QUERY_KEY = ['accounts', 'id', 'balance'];
 
 export function useAccounts() {
   return useQuery<Account[]>({
     queryKey: ACCOUNTS_QUERY_KEY,
     queryFn: getUserAccounts,
+  });
+}
+
+export function useCurrentAccount() {
+  return useQuery<Account>({
+    queryKey: CURRENT_ACCOUNT_QUERY_KEY,
+    queryFn: async () => {
+      const res = await getCurrentAccount();
+      return res;
+    },
   });
 }
 
@@ -51,8 +64,13 @@ export function useUpdateAccount() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ accountId, payload }: { accountId: number; payload: UpdateAccountPayload }) =>
-      updateAccount(accountId, payload),
+    mutationFn: ({
+      accountId,
+      payload,
+    }: {
+      accountId: number;
+      payload: UpdateAccountPayload;
+    }) => updateAccount(accountId, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ACCOUNTS_QUERY_KEY });
     },

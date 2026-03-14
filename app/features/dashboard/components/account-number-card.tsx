@@ -2,14 +2,18 @@
 import { Copy, Tick02Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { useState } from 'react';
-import { useAccountStore } from '@/store/account-store';
-import { useAuth } from '@/hooks/use-auth';
 import { maskAccountNumber } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { useCurrentAccount } from '../../accounts/hooks';
+import { useUser } from '../../auth/hooks/useUser';
 
 export default function AccountNumberCard() {
-  const currentAccount = useAccountStore((state) => state.currentAccount);
-  const { user } = useAuth();
+  const {
+    data: currentAccount,
+    error,
+    isPending: isCurrentAccountPending,
+  } = useCurrentAccount();
+  const { data: user, error: userError, isPending: isUserPending } = useUser();
   const [isCopied, setIsCopied] = useState(false);
 
   const accountName = user ? `${user.firstName} ${user.lastName}` : '';

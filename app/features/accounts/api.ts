@@ -1,5 +1,7 @@
+'use server';
+
 import { Account, AccountBalanceResponse } from '@/types';
-import { useAuthStore } from '@/store/auth-store';
+import { cookies } from 'next/headers';
 
 type CreateAccountPayload = {
   accountType: 'SAVINGS' | 'CURRENT' | 'FIXED_DEPOSIT';
@@ -11,8 +13,9 @@ type UpdateAccountPayload = Partial<{
   status: 'ACTIVE' | 'FROZEN' | 'CLOSED';
 }>;
 
-const getAuthHeaders = () => {
-  const token = useAuthStore.getState().token;
+const getAuthHeaders = async () => {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('token')?.value;
   return {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${token}`,
@@ -27,7 +30,7 @@ const createAccount = async (payload: CreateAccountPayload) => {
       `${process.env.NEXT_PUBLIC_API_URL}/accounts`,
       {
         method: 'POST',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
         body: JSON.stringify({ accountType, initialDeposit }),
       },
     );
@@ -51,7 +54,7 @@ const deleteAccount = async (accountId: number) => {
       `${process.env.NEXT_PUBLIC_API_URL}/accounts/${accountId}`,
       {
         method: 'DELETE',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
       },
     );
 
@@ -76,7 +79,7 @@ const updateAccount = async (
       `${process.env.NEXT_PUBLIC_API_URL}/accounts/${accountId}`,
       {
         method: 'PUT',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
         body: JSON.stringify(payload),
       },
     );
@@ -102,7 +105,7 @@ const getAccountBalance = async (
       `${process.env.NEXT_PUBLIC_API_URL}/accounts/${accountId}/balance`,
       {
         method: 'GET',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
       },
     );
 
@@ -125,7 +128,7 @@ const getUserAccounts = async (): Promise<Account[]> => {
       `${process.env.NEXT_PUBLIC_API_URL}/accounts`,
       {
         method: 'GET',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
       },
     );
 
@@ -142,10 +145,34 @@ const getUserAccounts = async (): Promise<Account[]> => {
   }
 };
 
+const getCurrentAccount = async (): Promise<Account> => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/accounts/current`,
+      {
+        method: 'GET',
+        headers: await getAuthHeaders(),
+      },
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to get user accounts');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 export {
   createAccount,
   deleteAccount,
   updateAccount,
   getAccountBalance,
   getUserAccounts,
+  getCurrentAccount,
 };
