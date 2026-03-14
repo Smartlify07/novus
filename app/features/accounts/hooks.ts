@@ -49,17 +49,6 @@ export function useAccountBalance(accountId: number) {
   });
 }
 
-export function useCreateAccount() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (payload: CreateAccountPayload) => createAccount(payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ACCOUNTS_QUERY_KEY });
-    },
-  });
-}
-
 export function useUpdateAccount() {
   const queryClient = useQueryClient();
 

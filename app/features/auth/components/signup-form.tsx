@@ -4,8 +4,6 @@ import { OnboardingFormProps } from '../../signup-onboarding/types';
 import { BasicInfoForm } from '../../signup-onboarding/components/basic-info-form';
 import { PersonalInfoForm } from '../../signup-onboarding/components/personal-info-form';
 import { SecurityForm } from '../../signup-onboarding/components/security-form';
-import { useCreateAccount } from '../../accounts/hooks';
-import { useAccountStore } from '@/store/account-store';
 import { startTransition, useActionState, useEffect } from 'react';
 import { signUpAction } from '@/app/features/auth/actions';
 
@@ -58,9 +56,6 @@ export function SignupForm({
       });
     }
   }, [state]);
-
-  const createAccount = useCreateAccount();
-  const setCurrentAccount = useAccountStore((state) => state.setCurrentAccount);
 
   const renderForm = () => {
     switch (currentStep) {

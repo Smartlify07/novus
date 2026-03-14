@@ -90,7 +90,8 @@ export const basicInfoSchema = z.object({
   lastName: z
     .string()
     .min(1, {
-      error: 'We would love to know what to call you! Please enter your last name.',
+      error:
+        'We would love to know what to call you! Please enter your last name.',
     })
     .regex(
       /^[a-zA-Z\s]*$/,
@@ -166,4 +167,27 @@ export const signupOnboardingSchema = phoneSchema
     }
   });
 
+export const accountTypeSchema = z.object({
+  accountType: z.enum(['SAVINGS', 'CURRENT', 'FIXED_DEPOSIT'], {
+    error: 'Please select an account type',
+  }),
+});
+
+export const initialDepositSchema = z.object({
+  initialDeposit: z
+    .number()
+    .min(1, 'Please enter an amount to deposit'),
+});
+
+export const fundingSourceSchema = z.object({
+  fundingSource: z.enum(['bank_transfer', 'card', 'existing_account'], {
+    error: 'Please select a funding source',
+  }),
+});
+
+export const createAccountSchema = accountTypeSchema
+  .extend(initialDepositSchema.shape)
+  .extend(fundingSourceSchema.shape);
+
 export type SignupFormValues = z.input<typeof signupOnboardingSchema>;
+export type CreateAccountFormValues = z.input<typeof createAccountSchema>;

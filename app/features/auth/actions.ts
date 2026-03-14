@@ -47,11 +47,15 @@ export const signUpAction = async (initialState: any, formData: FormData) => {
           : result.message,
     };
   } else {
-    loginAction(initialState, formData);
+    return loginAction(initialState, formData, '/create-account');
   }
 };
 
-export const loginAction = async (initialState: any, formData: FormData) => {
+export const loginAction = async (
+  initialState: any,
+  formData: FormData,
+  redirectTo = '/dashboard',
+) => {
   const cookieStore = await cookies();
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
@@ -107,7 +111,7 @@ export const loginAction = async (initialState: any, formData: FormData) => {
     sameSite: 'lax',
   });
 
-  return redirect('/dashboard');
+  return redirect(redirectTo);
 };
 
 export const logoutAction = async () => {

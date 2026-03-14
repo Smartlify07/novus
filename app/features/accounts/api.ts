@@ -2,6 +2,7 @@
 
 import { Account, AccountBalanceResponse } from '@/types';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 type CreateAccountPayload = {
   accountType: 'SAVINGS' | 'CURRENT' | 'FIXED_DEPOSIT';
@@ -22,30 +23,25 @@ const getAuthHeaders = async () => {
   };
 };
 
-const createAccount = async (payload: CreateAccountPayload) => {
-  const { accountType, initialDeposit = 0 } = payload;
+const createAccount = async (initialState: any, formData: FormData) => {
+  const payload = Object.fromEntries(formData);
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/accounts`, {
+    method: 'POST',
+    headers: await getAuthHeaders(),
+    body: JSON.stringify(payload),
+  });
 
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/accounts`,
-      {
-        method: 'POST',
-        headers: await getAuthHeaders(),
-        body: JSON.stringify({ accountType, initialDeposit }),
-      },
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to create account');
-    }
-
-    const data: Account = await response.json();
-    return data;
-  } catch (error) {
-    console.error(error);
-    throw error;
+  if (!response.ok) {
+    const errorData = await response.json();
+    return {
+      error: errorData.message,
+      message: errorData.message,
+    };
   }
+
+  const data: Account = await response.json();
+
+  return redirect('/dashboard');
 };
 
 const deleteAccount = async (accountId: number) => {
