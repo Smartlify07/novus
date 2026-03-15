@@ -23,9 +23,11 @@ import TransactionDetailsSheet from '@/app/features/transactions/components/tran
 import { useTransactions } from '@/app/features/transactions/hooks';
 import { useAccountStore } from '@/store/account-store';
 import NewTransactionButton from '@/app/features/transactions/components/new-transaction-button';
+import { useCurrentAccount } from '@/app/features/accounts/hooks';
 
 export default function TransactionsPage() {
-  const { currentAccount } = useAccountStore();
+  const { data: currentAccount } = useCurrentAccount();
+  console.log(currentAccount);
   const { data, isPending } = useTransactions({
     accountId: currentAccount?.id,
   });
@@ -134,7 +136,10 @@ export default function TransactionsPage() {
           </SummaryCard>
         </div>
 
-        <TransactionsDataTable transactions={transactions} isLoading={isPending} />
+        <TransactionsDataTable
+          transactions={transactions}
+          isLoading={isPending}
+        />
       </div>
       {transaction && <TransactionDetailsSheet transaction={transaction} />}
     </Sheet>

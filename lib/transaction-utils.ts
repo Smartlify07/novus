@@ -63,7 +63,7 @@ function getTransactionAmountColor(type: TransactionTypeUnion) {
 function calculateTotalTransactionsTypeAmount(
   transactions: Transaction[],
   type: 'credit' | 'debit',
-  currentAccount: Account | null,
+  currentAccount: Account | null | undefined,
 ): number {
   return transactions
     .filter((tx) =>
@@ -77,7 +77,7 @@ function calculateTotalTransactionsTypeAmount(
 
 function calculateTotalIncome(
   transactions: Transaction[],
-  currentAccount: Account | null,
+  currentAccount: Account | null | undefined,
 ): number {
   return calculateTotalTransactionsTypeAmount(
     transactions,
@@ -88,7 +88,7 @@ function calculateTotalIncome(
 
 function calculateTotalExpenses(
   transactions: Transaction[],
-  currentAccount: Account | null,
+  currentAccount: Account | null | undefined,
 ): number {
   return calculateTotalTransactionsTypeAmount(
     transactions,
@@ -99,8 +99,11 @@ function calculateTotalExpenses(
 
 function calculateTotalTransactionsAmount(
   transactions: Transaction[],
-  currentAccount: Account | null,
+  currentAccount: Account | null | undefined,
 ): number {
+  if (!currentAccount) {
+    return 0;
+  }
   return (
     calculateTotalIncome(transactions, currentAccount) +
     calculateTotalExpenses(transactions, currentAccount)
