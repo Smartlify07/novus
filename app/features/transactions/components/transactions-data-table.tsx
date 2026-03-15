@@ -33,6 +33,7 @@ import { Search } from '@hugeicons/core-free-icons';
 import { useRouter } from 'next/navigation';
 import { useAccountStore } from '@/store/account-store';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useCurrentAccount } from '../../accounts/hooks';
 
 export function TransactionsDataTable({
   transactions,
@@ -44,7 +45,7 @@ export function TransactionsDataTable({
   const [globalFilter, setGlobalFilter] = useState<any>('');
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const { currentAccount } = useAccountStore();
+  const { data: currentAccount } = useCurrentAccount();
   const table = useReactTable({
     data: transactions,
     columns: transactionColumns(currentAccount!),
@@ -148,10 +149,7 @@ export function TransactionsDataTable({
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={6}
-                  className="h-24 text-center"
-                >
+                <TableCell colSpan={6} className="h-24 text-center">
                   No results.
                 </TableCell>
               </TableRow>

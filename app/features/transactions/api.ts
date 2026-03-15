@@ -1,5 +1,7 @@
+'use server';
 import { Transaction, Pagination } from '@/types';
 import { useAuthStore } from '@/store/auth-store';
+import { cookies } from 'next/headers';
 
 export type TransactionResponse = {
   transactions: Transaction[];
@@ -29,15 +31,17 @@ type GetTransactionsParams = {
   endDate?: string;
 };
 
-const getAuthHeaders = () => {
-  const token = useAuthStore.getState().token;
+const getAuthHeaders = async () => {
+  const token = (await cookies()).get('token')?.value;
   return {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${token}`,
   };
 };
 
-const getTransactions = async (params: GetTransactionsParams): Promise<TransactionResponse> => {
+const getTransactions = async (
+  params: GetTransactionsParams,
+): Promise<TransactionResponse> => {
   const { accountId, startDate, endDate } = params;
 
   const searchParams = new URLSearchParams();
@@ -46,14 +50,16 @@ const getTransactions = async (params: GetTransactionsParams): Promise<Transacti
   if (endDate) searchParams.append('endDate', endDate);
 
   const queryString = searchParams.toString();
-  const endpoint = queryString ? `/transactions?${queryString}` : '/transactions';
+  const endpoint = queryString
+    ? `/transactions?${queryString}`
+    : '/transactions';
 
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`,
       {
         method: 'GET',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
       },
     );
 
@@ -70,7 +76,9 @@ const getTransactions = async (params: GetTransactionsParams): Promise<Transacti
   }
 };
 
-const transferMoney = async (payload: TransferPayload): Promise<TransferResponse> => {
+const transferMoney = async (
+  payload: TransferPayload,
+): Promise<TransferResponse> => {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 10000);
 
@@ -79,7 +87,7 @@ const transferMoney = async (payload: TransferPayload): Promise<TransferResponse
       `${process.env.NEXT_PUBLIC_API_URL}/transactions/transfer`,
       {
         method: 'POST',
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
         body: JSON.stringify(payload),
         signal: controller.signal,
       },
