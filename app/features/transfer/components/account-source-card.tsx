@@ -20,7 +20,8 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { useTransferWorkflowStore } from '@/store/transfer-workflow-store';
 import { useAccountStore } from '@/store/account-store';
 import { useAuth } from '@/hooks/use-auth';
-import { useAccounts } from '@/app/features/accounts/hooks';
+import { useAccounts, useCurrentAccount } from '@/app/features/accounts/hooks';
+import { useUser } from '../../auth/hooks/useUser';
 
 export default function AccountSourceCard() {
   const sourceAccountId = useTransferWorkflowStore(
@@ -29,8 +30,8 @@ export default function AccountSourceCard() {
   const handleSwitchSourceAccount = useTransferWorkflowStore(
     (s) => s.handleSwitchSourceAccount,
   );
-  const currentAccount = useAccountStore((state) => state.currentAccount);
-  const { user } = useAuth();
+  const { data: currentAccount } = useCurrentAccount();
+  const { data: user } = useUser();
   const { data: accounts } = useAccounts();
 
   return (

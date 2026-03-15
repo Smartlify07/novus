@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTransferWorkflowStore } from '@/store/transfer-workflow-store';
-import { useAccounts } from '@/app/features/accounts/hooks';
+import { useAccounts, useCurrentAccount } from '@/app/features/accounts/hooks';
 import RecipientBadge from './recepient-badge';
 import AmountInput from './amount-input';
 import AccountSourceCard from './account-source-card';
@@ -9,7 +9,7 @@ import { useAccountStore } from '@/store/account-store';
 export default function AmountEntryStep() {
   const data = useTransferWorkflowStore((s) => s.data);
   const setData = useTransferWorkflowStore((s) => s.setData);
-  const { currentAccount } = useAccountStore();
+  const { data: currentAccount } = useCurrentAccount();
   const sourceAccountBalance = currentAccount?.balance ?? 0;
 
   const username = data.recepient

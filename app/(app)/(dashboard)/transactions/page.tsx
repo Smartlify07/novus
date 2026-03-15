@@ -21,7 +21,6 @@ import { Sheet } from '@/components/ui/sheet';
 import { useTransactionDetails } from '@/context/transaction-details-provider';
 import TransactionDetailsSheet from '@/app/features/transactions/components/transaction-details-sheet';
 import { useTransactions } from '@/app/features/transactions/hooks';
-import { useAccountStore } from '@/store/account-store';
 import NewTransactionButton from '@/app/features/transactions/components/new-transaction-button';
 import { useCurrentAccount } from '@/app/features/accounts/hooks';
 
