@@ -99,6 +99,7 @@ export function LoanListItem({ ...props }: (typeof LOANS)[number]) {
   } else {
     date = '';
   }
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
@@ -151,24 +152,26 @@ export function LoanListItem({ ...props }: (typeof LOANS)[number]) {
           </p>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <p className="text-muted-foreground text-xs">
-              {props.paymentsCompleted} of {props.termMonths} payments made
-            </p>
-            <p className="text-muted-foreground text-xs">
-              {Math.round(percentageCompleted)}% complete
-            </p>
+        {props.status === 'ACTIVE' && (
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <p className="text-muted-foreground text-xs">
+                {props.paymentsCompleted} of {props.termMonths} payments made
+              </p>
+              <p className="text-muted-foreground text-xs">
+                {Math.round(percentageCompleted)}% complete
+              </p>
+            </div>
+            <div className="w-full h-1 bg-muted rounded-full">
+              <div
+                className="rounded-full h-1 bg-primary "
+                style={{
+                  width: `${Math.round(percentageCompleted)}%`,
+                }}
+              ></div>
+            </div>
           </div>
-          <div className="w-full h-1 bg-muted rounded-full">
-            <div
-              className="rounded-full h-1 bg-primary "
-              style={{
-                width: `${Math.round(percentageCompleted)}%`,
-              }}
-            ></div>
-          </div>
-        </div>
+        )}
       </CardContent>
       <CardFooter className="bg-card mx-4 grid grid-cols-3 items-start px-0">
         <div className="flex flex-col gap-1 border-r pr-4">

@@ -5,7 +5,7 @@ import YourLoansSection from '@/app/features/loans/components/your-loans-section
 
 export default function LoansPage() {
   return (
-    <div className="p-6 flex flex-col gap-10">
+    <div className="px-6 py-10 flex flex-col gap-10">
       <Header />
       <SummaryCards />
       <Cta />

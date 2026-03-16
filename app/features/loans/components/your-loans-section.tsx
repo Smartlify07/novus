@@ -3,9 +3,10 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import React, { useState } from 'react';
 import LoansList from './loans-list';
+import { Badge } from '@/components/ui/badge';
 
 export type Tabs = 'active' | 'closed' | 'all';
-const tabs = ['active', 'closed', 'all'];
+const tabs = ['all', 'active', 'closed'];
 export default function YourLoansSection() {
   const [activeTab, setActiveTab] = useState<Tabs>('active');
   const changeTab = (tab: Tabs) => {
@@ -19,14 +20,14 @@ export default function YourLoansSection() {
 
         <div className="flex items-center gap-2">
           {tabs.map((tab) => (
-            <Button
+            <Badge
               key={tab}
               onClick={() => changeTab(tab as Tabs)}
               variant={activeTab === tab ? 'default' : 'outline'}
-              className="capitalize rounded-full text-xs"
+              className="capitalize rounded-full text-xs cursor-pointer"
             >
               {tab}
-            </Button>
+            </Badge>
           ))}
         </div>
       </div>
