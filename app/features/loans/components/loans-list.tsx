@@ -13,7 +13,7 @@ import {
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { format } from 'date-fns';
-import React from 'react';
+import { Tabs } from './your-loans-section';
 const LOANS = [
   {
     id: 'LND-2024-001',
@@ -65,10 +65,16 @@ const LOANS = [
   },
 ];
 
-export default function LoansList() {
+export default function LoansList({ currentTab }: { currentTab: Tabs }) {
   return (
     <div className="flex flex-col gap-4">
-      {LOANS.map((loan) => (
+      {LOANS.filter((loan) => {
+        if (currentTab === 'all') {
+          return true;
+        } else {
+          return loan.status === currentTab.toUpperCase();
+        }
+      }).map((loan) => (
         <LoanListItem key={loan.id} {...loan} />
       ))}
     </div>

@@ -37,7 +37,7 @@ export default function SummaryCard({
             {isLoading ? (
               <Skeleton className="h-4 w-24" />
             ) : (
-              <CardTitle className="text-muted-foreground shrink-0">
+              <CardTitle className="text-muted-foreground font-normal shrink-0 tracking-tighter">
                 {title}
               </CardTitle>
             )}
@@ -46,13 +46,13 @@ export default function SummaryCard({
             {isLoading ? (
               <Skeleton className="h-8 w-32" />
             ) : (
-              <CardTitle className="text-2xl font-semibold tracking-tight text-foreground">
+              <CardTitle className="text-2xl font-normal tracking-tighter text-foreground">
                 {value}
               </CardTitle>
             )}
           </CardContent>
         </div>
-        <CardFooter className="rounded-none bg-transparent border-none px-4 pt-1 pb-2">
+        <CardFooter className="rounded-none bg-card border-none px-4 pt-1 pb-2">
           {isLoading ? <Skeleton className="h-5 w-40" /> : children}
         </CardFooter>
       </div>

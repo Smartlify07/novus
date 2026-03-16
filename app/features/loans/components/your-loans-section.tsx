@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import React, { useState } from 'react';
 import LoansList from './loans-list';
 
-type Tabs = 'active' | 'closed' | 'all';
+export type Tabs = 'active' | 'closed' | 'all';
 const tabs = ['active', 'closed', 'all'];
 export default function YourLoansSection() {
   const [activeTab, setActiveTab] = useState<Tabs>('active');
@@ -31,7 +31,7 @@ export default function YourLoansSection() {
         </div>
       </div>
 
-      <LoansList />
+      <LoansList currentTab={activeTab} />
     </section>
   );
 }
