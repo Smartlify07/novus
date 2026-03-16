@@ -16,7 +16,7 @@ export default function SummaryCard({
 }: {
   title: string;
   value: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   children?: React.ReactNode;
   isLoading?: boolean;
 }) {
@@ -25,9 +25,11 @@ export default function SummaryCard({
       {isLoading ? (
         <Skeleton className="size-10 rounded-full" />
       ) : (
-        <div className="rounded-full bg-primary/5 [&>svg]:text-primary size-10 flex items-center justify-center">
-          {icon}
-        </div>
+        icon && (
+          <div className="rounded-full bg-primary/5 [&>svg]:text-primary size-10 flex items-center justify-center">
+            {icon}
+          </div>
+        )
       )}
       <div className="flex flex-col gap-1">
         <div className="flex flex-col gap-1">
