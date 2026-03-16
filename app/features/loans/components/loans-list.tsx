@@ -1,0 +1,55 @@
+import React from 'react';
+const LOANS = [
+  {
+    id: 'LND-2024-001',
+    type: 'PERSONAL',
+    icon: '👤',
+    iconBg: 'var(--sage-mist)',
+    principalAmount: 1200000,
+    disbursedAmount: 1200000,
+    termMonths: 12,
+    monthlyRate: 0.034,
+    disbursedDate: '2025-03-01',
+    purpose: 'Home renovation and furniture purchase for new apartment',
+    status: 'ACTIVE',
+    paymentsCompleted: 5,
+    nextDueDate: '2025-08-15',
+    processingFee: 12000,
+  },
+  {
+    id: 'LND-2024-002',
+    type: 'BUSINESS',
+    icon: '💼',
+    iconBg: 'var(--sand-light)',
+    principalAmount: 3500000,
+    disbursedAmount: 3500000,
+    termMonths: 24,
+    monthlyRate: 0.034,
+    disbursedDate: '2024-08-15',
+    purpose: 'Procurement of inventory and warehouse expansion',
+    status: 'ACTIVE',
+    paymentsCompleted: 9,
+    nextDueDate: '2025-05-15',
+    processingFee: 35000,
+  },
+  {
+    id: 'LND-2023-003',
+    type: 'EDUCATION',
+    icon: '🎓',
+    iconBg: 'var(--cream)',
+    principalAmount: 450000,
+    disbursedAmount: 450000,
+    termMonths: 6,
+    monthlyRate: 0.034,
+    disbursedDate: '2023-09-01',
+    purpose: 'University tuition and academic materials',
+    status: 'CLOSED',
+    paymentsCompleted: 6,
+    nextDueDate: null,
+    processingFee: 4500,
+  },
+];
+
+export default function LoansList() {
+  return <div>LoansList</div>;
+}

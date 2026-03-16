@@ -4,7 +4,7 @@ import React from 'react';
 export default function Cta() {
   return (
     <section className="bg-primary/5 rounded-md flex flex-col p-6 gap-4">
-      <h4 className="text-sm text-muted-foreground uppercase">
+      <h4 className="text-xs text-muted-foreground uppercase">
         New Application
       </h4>
       <div className="flex flex-col gap-4">
