@@ -9,6 +9,7 @@ import Stepper, {
   StepTrigger,
 } from '@/app/features/loans/loan-application/components/stepper';
 import { cn } from '@/lib/utils';
+import { useLoanApplicationWorkflowStore } from '@/store/loan-application-workflow-store';
 import { Check } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { useState } from 'react';
@@ -43,7 +44,10 @@ export default function LoanApplicationPage() {
       >
         <div className="flex items-center gap-2">
           {steps.map((item, index) => (
-            <StepGroup key={item.id} className="flex-row items-center gap-1">
+            <StepGroup
+              key={item.id}
+              className="flex flex-row items-center gap-1"
+            >
               <div className="flex flex-col gap-1 items-center">
                 <StepTrigger
                   variant={
@@ -55,7 +59,6 @@ export default function LoanApplicationPage() {
                   }
                   onClick={() => {
                     setStep(item);
-                    console.log('click');
                   }}
                   value={item.value}
                 >
@@ -71,7 +74,7 @@ export default function LoanApplicationPage() {
               {index !== steps.length - 1 && (
                 <Connector
                   className={cn(
-                    'w-24',
+                    'flex flex-1 basis-full min-w-20',
                     item.id === step.id
                       ? 'bg-primary'
                       : item.id < step.id
@@ -79,7 +82,7 @@ export default function LoanApplicationPage() {
                         : '',
                   )}
                   value={item.value}
-                ></Connector>
+                />
               )}
             </StepGroup>
           ))}

@@ -47,6 +47,28 @@ export type User = {
   roles: string[];
 };
 
+export type LoanType = 'PERSONAL' | 'BUSINESS' | 'MORTGAGE';
+export type LoanStatus =
+  | 'APPROVED'
+  | 'PENDING'
+  | 'REJECTED'
+  | 'ACTIVE'
+  | 'CLOSED';
+export type Loan = {
+  id: number;
+  loanNumber: string;
+  loanType: LoanType;
+  principalAmount: number;
+  interestRate: number;
+  termMonths: number;
+  monthlyPayment: number;
+  outstandingBalance: number;
+  status: LoanStatus;
+  applicationDate: string;
+  disbursementDate: string;
+  maturityDate: string;
+};
+
 export type AccountWithUser = Account & {
   user: Pick<User, 'id' | 'email' | 'firstName' | 'lastName'>;
 };

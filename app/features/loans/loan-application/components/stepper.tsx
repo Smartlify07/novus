@@ -6,14 +6,34 @@ type StepperContextType = {
   step: undefined | string | number;
   onChange: (step: StepperContextType['step']) => void;
 };
-const StepperContext = createContext<StepperContextType>({
+export const StepperContext = createContext<StepperContextType>({
   step: undefined,
   onChange: (step) => {},
 });
 
-const useStepper = () => {
+export const useStepper = () => {
   return useContext(StepperContext);
 };
+
+export function StepperProvider({
+  children,
+  defaultValue,
+}: {
+  children?: React.ReactNode;
+  defaultValue: string;
+}) {
+  const [step, setStep] = useState<StepperContextType['step']>(defaultValue);
+  const onChange = (step: StepperContextType['step']) => {
+    setStep(step);
+  };
+
+  return (
+    <StepperContext.Provider value={{ step, onChange }}>
+      {children}
+    </StepperContext.Provider>
+  );
+}
+
 export default function Stepper({
   defaultValue,
   children,
@@ -23,16 +43,10 @@ export default function Stepper({
   children?: React.ReactNode;
   className?: string;
 }) {
-  const [step, setStep] = useState<StepperContextType['step']>(defaultValue);
-  const onChange = (step: StepperContextType['step']) => {
-    setStep(step);
-  };
-
-  console.log(step);
   return (
-    <StepperContext.Provider value={{ step, onChange }}>
-      <div className={cn('max-w-sm', className)}>{children}</div>
-    </StepperContext.Provider>
+    <StepperProvider defaultValue={defaultValue}>
+      <div className={cn('max-w-xl', className)}>{children}</div>
+    </StepperProvider>
   );
 }
 
@@ -117,11 +131,21 @@ export function StepContent({
 export function Connector({
   className,
   value,
-}: { value: StepperContextType['step'] } & React.ComponentProps<'div'>) {
-  const { step } = useStepper();
+  active = false,
+  completed = false,
+}: {
+  value: StepperContextType['step'];
+  active?: boolean;
+  completed?: boolean;
+} & React.ComponentProps<'div'>) {
   return (
     <div
-      className={cn('h-0.5 rounded-full flex-1 bg-muted mb-4', className)}
-    ></div>
+      className={cn(
+        'h-0.5 min-w-8 flex-1 rounded-full bg-muted mb-4',
+        active && 'bg-primary',
+        completed && 'bg-primary',
+        className,
+      )}
+    />
   );
 }

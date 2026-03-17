@@ -11,12 +11,14 @@ import {
   FieldContent,
   FieldDescription,
   FieldLabel,
-  FieldSeparator,
   FieldTitle,
 } from '@/components/ui/field';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { useLoanApplicationWorkflowStore } from '@/store/loan-application-workflow-store';
 import { Briefcase, House02Icon, User02Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon, IconSvgElement } from '@hugeicons/react';
+import { useStepper } from './stepper';
+import { LoanType } from '@/types';
 
 const loans: {
   id: number;
@@ -51,6 +53,9 @@ const loans: {
 ];
 
 export default function LoanTypeStep() {
+  const { loanType, setLoanType } = useLoanApplicationWorkflowStore();
+  const { onChange } = useStepper();
+  console.log(loanType);
   return (
     <Card className="p-6 max-w-xl flex flex-col gap-6">
       <div className="flex flex-col gap-2">
@@ -61,27 +66,42 @@ export default function LoanTypeStep() {
           Select the loan category that best matches your goal
         </CardDescription>
       </div>
-      <LoanTypeChoiceCard />
+      <LoanTypeChoiceCard
+        onSelect={(value) => {
+          setLoanType(value as LoanType);
+        }}
+      />
 
       <CardFooter className="bg-card rounded-none px-0  flex items-center justify-between">
         <p className="text-muted-foreground text-sm">
           Step <span className="text-foreground">1</span> of 5
         </p>
 
-        <Button variant={'default'}>Continue</Button>
+        <Button
+          variant={'default'}
+          onClick={() => {
+            onChange('amount');
+          }}
+        >
+          Continue
+        </Button>
       </CardFooter>
     </Card>
   );
 }
 
-export function LoanTypeChoiceCard() {
+export function LoanTypeChoiceCard({
+  onSelect,
+}: {
+  onSelect: (value: string) => void;
+}) {
   return (
     <RadioGroup
-      defaultValue={loans[0].type}
+      onValueChange={(value) => onSelect(value)}
       className=" grid grid-cols-2 gap-4"
     >
       {loans.map((loan) => (
-        <FieldLabel className="" htmlFor={loan.type}>
+        <FieldLabel key={loan.id} htmlFor={loan.type}>
           <Field orientation="horizontal" className="items-start">
             <div className="flex flex-col gap-4 items-start">
               <div className="rounded-md size-12 flex items-center justify-center bg-primary/5">
