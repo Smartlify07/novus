@@ -1,5 +1,6 @@
 'use client';
 import Header from '@/app/features/loans/loan-application/components/header';
+import LoanTypeStep from '@/app/features/loans/loan-application/components/loan-type-step';
 import Stepper, {
   Connector,
   StepContent,
@@ -36,7 +37,10 @@ export default function LoanApplicationPage() {
   return (
     <div className="py-10 px-6 flex flex-col gap-10">
       <Header />
-      <Stepper className="max-w-xl" defaultValue={step.value}>
+      <Stepper
+        className="max-w-xl flex flex-col gap-10"
+        defaultValue={steps[0].value}
+      >
         <div className="flex items-center gap-2">
           {steps.map((item, index) => (
             <StepGroup key={item.id} className="flex-row items-center gap-1">
@@ -80,7 +84,9 @@ export default function LoanApplicationPage() {
             </StepGroup>
           ))}
         </div>
-        <StepContent value="type">Type of loan</StepContent>
+        <StepContent value="type">
+          <LoanTypeStep />
+        </StepContent>
         <StepContent value="amount">Amount</StepContent>
         <StepContent value="term">Term</StepContent>
         <StepContent value="purpose">Purpose</StepContent>
