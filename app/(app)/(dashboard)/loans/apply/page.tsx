@@ -9,7 +9,6 @@ import Stepper, {
   StepTrigger,
 } from '@/app/features/loans/loan-application/components/stepper';
 import { cn } from '@/lib/utils';
-import { useLoanApplicationWorkflowStore } from '@/store/loan-application-workflow-store';
 import { Check } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { useState } from 'react';
