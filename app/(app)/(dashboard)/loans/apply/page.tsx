@@ -1,5 +1,6 @@
 'use client';
 import Header from '@/app/features/loans/loan-application/components/header';
+import LoanAmountStep from '@/app/features/loans/loan-application/components/loan-amount-step';
 import LoanTypeStep from '@/app/features/loans/loan-application/components/loan-type-step';
 import Stepper, {
   Connector,
@@ -89,7 +90,9 @@ export default function LoanApplicationPage() {
         <StepContent value="type">
           <LoanTypeStep />
         </StepContent>
-        <StepContent value="amount">Amount</StepContent>
+        <StepContent value="amount">
+          <LoanAmountStep />
+        </StepContent>
         <StepContent value="term">Term</StepContent>
         <StepContent value="purpose">Purpose</StepContent>
         <StepContent value="review">Review</StepContent>
