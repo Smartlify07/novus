@@ -21,7 +21,7 @@ export default function LoanAmountSlider({
           setValue(value);
           onValueChange(value);
         }}
-        step={0.1}
+        step={100000}
       />
 
       <div className="flex items-center w-full justify-between [&>p]:text-muted-foreground [&>p]:text-xs">
