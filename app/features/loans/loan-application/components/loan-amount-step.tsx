@@ -9,10 +9,11 @@ import LoanAmountSlider from './loan-amount-slider';
 import LoanAmountDisplay from './loan-amount-display';
 import { useState } from 'react';
 import LiveEstimateCard from './live-estimate-card';
+import { useStepper } from './stepper';
 
 export default function LoanAmountStep() {
   const [value, setValue] = useState([50000]);
-  console.log(value);
+  const stepper = useStepper();
   return (
     <Card className="p-6 max-w-xl flex flex-col gap-6">
       <div className="flex flex-col gap-2">
@@ -33,7 +34,12 @@ export default function LoanAmountStep() {
           Step <span className="text-foreground">2</span> of 5
         </p>
 
-        <Button variant={'default'} onClick={() => {}}>
+        <Button
+          variant={'default'}
+          onClick={() => {
+            stepper.onChange('term');
+          }}
+        >
           Continue
         </Button>
       </CardFooter>

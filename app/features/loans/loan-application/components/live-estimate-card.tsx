@@ -17,8 +17,8 @@ export default function LiveEstimateCard({
   const interest = calculateInterest(principalAmount, 3.4, 12);
 
   return (
-    <Card className="bg-primary/5">
-      <CardTitle className="uppercase tracking-tight text-sm">
+    <Card className="bg-primary/5 p-6">
+      <CardTitle className="uppercase tracking-tight text-xs text-muted-foreground">
         Live estimate
       </CardTitle>
 
@@ -34,7 +34,7 @@ export default function LiveEstimateCard({
 function EstimateBlock({ label, value }: { label: string; value: number }) {
   return (
     <div className="flex flex-col gap-1">
-      <p className="text-sm text-muted-foreground">{label}</p>
+      <p className="text-xs text-muted-foreground">{label}</p>
       <h3 className="text-lg tracking-tighter">
         {formatCurrency(value, 'NGN')}
       </h3>
