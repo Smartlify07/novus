@@ -65,7 +65,9 @@ function StepperNav() {
 }
 
 export default function LoanApplicationPage() {
-  const isSubmitted = useLoanApplicationWorkflowStore((state) => state.isSubmitted);
+  const isSubmitted = useLoanApplicationWorkflowStore(
+    (state) => state.isSubmitted,
+  );
 
   if (isSubmitted) {
     return <ApplicationSuccess />;
