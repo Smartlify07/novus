@@ -10,6 +10,7 @@ type LoanApplicationWorkflowStore = Nullable<LoanApplicationPayload> & {
   setTermMonths: (months: number) => void;
   setStep: (step: LoanApplicationWorkflowStore['step']) => void;
   setPrincipalAmount: (principalAmount: number) => void;
+  setPurpose: (purpose: string) => void;
 };
 export const useLoanApplicationWorkflowStore =
   create<LoanApplicationWorkflowStore>((set, get) => ({
@@ -23,4 +24,5 @@ export const useLoanApplicationWorkflowStore =
     setTermMonths: (months) => set({ termMonths: months }),
     setStep: (step) => set({ step }),
     setPrincipalAmount: (principalAmount) => set({ principalAmount }),
+    setPurpose: (purpose) => set({ purpose }),
   }));
