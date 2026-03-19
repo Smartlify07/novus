@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 import React from 'react';
 
 export default function Header() {
@@ -19,8 +20,8 @@ export default function Header() {
         <Button className="" variant={'outline'}>
           Export
         </Button>
-        <Button className="" variant={'default'}>
-          Apply for a loan
+        <Button asChild className="" variant={'default'}>
+          <Link href="/loans/apply">Apply for a loan</Link>
         </Button>
       </div>
     </section>
