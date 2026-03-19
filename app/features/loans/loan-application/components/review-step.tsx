@@ -20,6 +20,7 @@ export default function ReviewStep() {
   const stepper = useStepper();
   const store = useLoanApplicationWorkflowStore();
   const loanType = store.loanType;
+  const purpose = store.purpose ?? '';
   const principalAmount = store.principalAmount ?? 0;
   const termMonths = store.termMonths ?? 12;
 
@@ -107,6 +108,11 @@ export default function ReviewStep() {
             {formatCurrency(totalRepayable, 'NGN')}
           </p>
         </div>
+      </Card>
+
+      <Card className="p-6 bg-primary/5 flex flex-col gap-2">
+        <p className="text-xs text-muted-foreground uppercase">Purpose</p>
+        <p className="text-sm font-medium text-foreground">{purpose}</p>
       </Card>
 
       <CardFooter className="bg-card rounded-none px-0 flex items-center justify-between">
