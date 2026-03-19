@@ -9,16 +9,32 @@ import {
 } from '@/components/ui/card';
 import { useStepper } from './stepper';
 import { useLoanApplicationWorkflowStore } from '@/store/loan-application-workflow-store';
-import { calculateInterest, calculateMonthlyPayment } from '@/lib/loan-utils';
+import {
+  calculateInterest,
+  calculateMonthlyPayment,
+  calculateTotalRepayableAmount,
+} from '@/lib/loan-utils';
 import { formatCurrency } from '@/lib/utils';
 
 export default function ReviewStep() {
   const stepper = useStepper();
-  const { loanType, principalAmount, termMonths } =
-    useLoanApplicationWorkflowStore();
-  console.log(loanType, principalAmount, termMonths);
+  const store = useLoanApplicationWorkflowStore();
+  const loanType = store.loanType;
+  const principalAmount = store.principalAmount ?? 0;
+  const termMonths = store.termMonths ?? 12;
+
   const interestRate = 3.4;
   const monthlyPayment = calculateMonthlyPayment(
+    principalAmount,
+    interestRate,
+    termMonths,
+  );
+  const totalInterest = calculateInterest(
+    principalAmount,
+    interestRate,
+    termMonths,
+  );
+  const totalRepayable = calculateTotalRepayableAmount(
     principalAmount,
     interestRate,
     termMonths,
@@ -50,7 +66,7 @@ export default function ReviewStep() {
           </CardTitle>
         </div>
 
-        <CardFooter className="bg-transparent  border-t-0 rounded-none px-0 pt-0 grid grid-cols-3 gap-4">
+        <CardFooter className="bg-transparent border-t-0 rounded-none px-0 pt-0 grid grid-cols-3 gap-4">
           <div className="flex flex-col gap-1">
             <p className="text-xs text-muted-foreground tracking-tight">Term</p>
             <p className="text-base font-medium tracking-tight">
@@ -70,6 +86,27 @@ export default function ReviewStep() {
             </p>
           </div>
         </CardFooter>
+      </Card>
+
+      <Card className="p-6 flex flex-col gap-3">
+        <div className="flex items-center justify-between pb-3 border-b">
+          <p className="text-sm text-muted-foreground">Principal</p>
+          <p className="text-sm text-foreground">
+            {formatCurrency(principalAmount, 'NGN')}
+          </p>
+        </div>
+        <div className="flex items-center justify-between pb-3 border-b">
+          <p className="text-sm text-muted-foreground">Total Interest</p>
+          <p className="text-sm text-foreground">
+            {formatCurrency(totalInterest, 'NGN')}
+          </p>
+        </div>
+        <div className="flex items-center justify-between font-bold">
+          <p className="text-sm text-foreground">Total Repayable</p>
+          <p className="text-sm text-primary">
+            {formatCurrency(totalRepayable, 'NGN')}
+          </p>
+        </div>
       </Card>
 
       <CardFooter className="bg-card rounded-none px-0 flex items-center justify-between">
