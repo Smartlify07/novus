@@ -2,13 +2,18 @@
 import { cn } from '@/lib/utils';
 import React, { createContext, useContext, useState } from 'react';
 
+export type StepData = {
+  id: number;
+  value: string;
+};
+
 type StepperContextType = {
-  step: undefined | string | number;
-  onChange: (step: StepperContextType['step']) => void;
+  step: StepData | null;
+  onChange: (step: StepData) => void;
 };
 export const StepperContext = createContext<StepperContextType>({
-  step: undefined,
-  onChange: (step) => {},
+  step: null,
+  onChange: () => {},
 });
 
 export const useStepper = () => {
@@ -20,11 +25,11 @@ export function StepperProvider({
   defaultValue,
 }: {
   children?: React.ReactNode;
-  defaultValue: string;
+  defaultValue: StepData;
 }) {
   const [step, setStep] = useState<StepperContextType['step']>(defaultValue);
   const onChange = (step: StepperContextType['step']) => {
-    setStep(step);
+    if (step) setStep(step);
   };
 
   return (
@@ -39,7 +44,7 @@ export default function Stepper({
   children,
   className,
 }: {
-  defaultValue: string;
+  defaultValue: StepData;
   children?: React.ReactNode;
   className?: string;
 }) {
@@ -53,30 +58,36 @@ export default function Stepper({
 export function StepTrigger({
   className,
   children,
-  variant = 'default',
   value,
+  stepId,
   onClick,
   ...props
 }: {
   className?: string;
-  variant?: 'default' | 'success' | 'active';
   children?: React.ReactNode;
-  value: string | number;
+  value: string;
+  stepId: number;
   onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
 } & React.ComponentProps<'div'>) {
-  const values = useStepper();
+  const { step, onChange } = useStepper();
+  const isActive = step?.id === stepId;
+  const isCompleted = step !== null && step.id > stepId;
   return (
     <div
       {...props}
+      data-active={isActive}
+      data-completed={isCompleted}
       className={cn(
         'size-8 rounded-full flex items-center justify-center text-sm',
-        variant === 'default' && 'bg-card ring-border ring-1 text-foreground',
-        variant === 'active' && 'bg-primary text-primary-foreground',
-        variant === 'success' && 'bg-foreground text-primary-foreground',
+        isActive && 'bg-primary text-primary-foreground',
+        isCompleted && 'bg-foreground text-primary-foreground',
+        !isActive &&
+          !isCompleted &&
+          'bg-card ring-border ring-1 text-foreground',
         className,
       )}
       onClick={(e) => {
-        values.onChange(value);
+        onChange({ id: stepId, value });
         onClick?.(e);
       }}
     >
@@ -112,13 +123,14 @@ export function StepContent({
   children,
   className,
   value,
+  stepId,
   ...props
 }: React.ComponentProps<'div'> & {
-  value: string | number;
+  value: string;
+  stepId: number;
 }) {
-  const values = useStepper();
-  console.log(values.step);
-  if (values.step !== value) {
+  const { step } = useStepper();
+  if (step?.id !== stepId) {
     return null;
   }
   return (
@@ -130,20 +142,21 @@ export function StepContent({
 
 export function Connector({
   className,
-  value,
-  active = false,
-  completed = false,
+  stepId,
 }: {
-  value: StepperContextType['step'];
-  active?: boolean;
-  completed?: boolean;
+  stepId: number;
 } & React.ComponentProps<'div'>) {
+  const { step } = useStepper();
+  const isActive = step?.id === stepId;
+  const isCompleted = step !== null && step.id > stepId;
+
   return (
     <div
+      data-active={isActive}
       className={cn(
         'h-0.5 min-w-8 flex-1 rounded-full bg-muted mb-4',
-        active && 'bg-primary',
-        completed && 'bg-primary',
+        isActive && 'bg-primary',
+        isCompleted && 'bg-foreground',
         className,
       )}
     />

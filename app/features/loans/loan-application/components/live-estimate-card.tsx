@@ -9,17 +9,20 @@ import React from 'react';
 
 export default function LiveEstimateCard({
   principalAmount,
+  months = 12,
+  title = 'Live estimate',
 }: {
   principalAmount: number;
+  months?: number;
+  title?: string;
 }) {
-  const monthly = calculateMonthlyPayment(principalAmount, 3.4, 12);
-  const total = calculateTotalRepayableAmount(principalAmount, 3.4, 12);
-  const interest = calculateInterest(principalAmount, 3.4, 12);
-
+  const monthly = calculateMonthlyPayment(principalAmount, 3.4, months);
+  const total = calculateTotalRepayableAmount(principalAmount, 3.4, months);
+  const interest = calculateInterest(principalAmount, 3.4, months);
   return (
     <Card className="bg-primary/5 p-6">
       <CardTitle className="uppercase tracking-tight text-xs text-muted-foreground">
-        Live estimate
+        {title}
       </CardTitle>
 
       <div className="grid grid-cols-3 gap-4">
