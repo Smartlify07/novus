@@ -109,7 +109,7 @@ export default function ApplicationSuccess() {
           </div>
         </Card>
 
-        <div className="w-full p-4 bg-muted rounded-lg">
+        <div className="w-full p-4 bg-primary/5 rounded-lg">
           <p className="text-xs text-muted-foreground text-center">
             We may contact you for additional documents during the review
             process. Check your email and notifications for updates.
