@@ -1,5 +1,6 @@
 'use client';
 import Header from '@/app/features/loans/loan-application/components/header';
+import LoanTypeStep from '@/app/features/loans/loan-application/components/loan-type-step';
 import Stepper, {
   Connector,
   StepContent,
@@ -36,10 +37,16 @@ export default function LoanApplicationPage() {
   return (
     <div className="py-10 px-6 flex flex-col gap-10">
       <Header />
-      <Stepper className="max-w-xl" defaultValue={step.value}>
+      <Stepper
+        className="max-w-xl flex flex-col gap-10"
+        defaultValue={steps[0].value}
+      >
         <div className="flex items-center gap-2">
           {steps.map((item, index) => (
-            <StepGroup key={item.id} className="flex-row items-center gap-1">
+            <StepGroup
+              key={item.id}
+              className="flex flex-row items-center gap-1"
+            >
               <div className="flex flex-col gap-1 items-center">
                 <StepTrigger
                   variant={
@@ -51,7 +58,6 @@ export default function LoanApplicationPage() {
                   }
                   onClick={() => {
                     setStep(item);
-                    console.log('click');
                   }}
                   value={item.value}
                 >
@@ -67,7 +73,7 @@ export default function LoanApplicationPage() {
               {index !== steps.length - 1 && (
                 <Connector
                   className={cn(
-                    'w-24',
+                    'flex flex-1 basis-full min-w-20',
                     item.id === step.id
                       ? 'bg-primary'
                       : item.id < step.id
@@ -75,12 +81,14 @@ export default function LoanApplicationPage() {
                         : '',
                   )}
                   value={item.value}
-                ></Connector>
+                />
               )}
             </StepGroup>
           ))}
         </div>
-        <StepContent value="type">Type of loan</StepContent>
+        <StepContent value="type">
+          <LoanTypeStep />
+        </StepContent>
         <StepContent value="amount">Amount</StepContent>
         <StepContent value="term">Term</StepContent>
         <StepContent value="purpose">Purpose</StepContent>
