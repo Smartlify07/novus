@@ -10,9 +10,12 @@ import LoanAmountDisplay from './loan-amount-display';
 import { useState } from 'react';
 import LiveEstimateCard from './live-estimate-card';
 import { useStepper } from './stepper';
+import { useLoanApplicationWorkflowStore } from '@/store/loan-application-workflow-store';
 
 export default function LoanAmountStep() {
-  const [value, setValue] = useState([50000]);
+  const { setPrincipalAmount, principalAmount } =
+    useLoanApplicationWorkflowStore();
+  const [value, setValue] = useState([principalAmount || 50000]);
   const stepper = useStepper();
   return (
     <Card className="p-6 max-w-xl flex flex-col gap-6">
@@ -34,14 +37,25 @@ export default function LoanAmountStep() {
           Step <span className="text-foreground">2</span> of 5
         </p>
 
-        <Button
-          variant={'default'}
-          onClick={() => {
-            stepper.onChange('term');
-          }}
-        >
-          Continue
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant={'outline'}
+            onClick={() => {
+              stepper.onChange({ id: 1, value: 'type' });
+            }}
+          >
+            Back
+          </Button>
+          <Button
+            variant={'default'}
+            onClick={() => {
+              stepper.onChange({ id: 3, value: 'term' });
+              setPrincipalAmount(value[0]);
+            }}
+          >
+            Continue
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   );

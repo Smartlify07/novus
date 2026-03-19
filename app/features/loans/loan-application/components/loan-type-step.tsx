@@ -55,7 +55,6 @@ const loans: {
 export default function LoanTypeStep() {
   const { loanType, setLoanType } = useLoanApplicationWorkflowStore();
   const { onChange } = useStepper();
-  console.log(loanType);
   return (
     <Card className="p-6 max-w-xl flex flex-col gap-6">
       <div className="flex flex-col gap-2">
@@ -70,6 +69,7 @@ export default function LoanTypeStep() {
         onSelect={(value) => {
           setLoanType(value as LoanType);
         }}
+        value={loanType}
       />
 
       <CardFooter className="bg-card rounded-none px-0  flex items-center justify-between">
@@ -80,7 +80,7 @@ export default function LoanTypeStep() {
         <Button
           variant={'default'}
           onClick={() => {
-            onChange('amount');
+            onChange({ id: 2, value: 'amount' });
           }}
         >
           Continue
@@ -92,11 +92,14 @@ export default function LoanTypeStep() {
 
 export function LoanTypeChoiceCard({
   onSelect,
+  value,
 }: {
   onSelect: (value: string) => void;
+  value: string | null;
 }) {
   return (
     <RadioGroup
+      value={value}
       onValueChange={(value) => onSelect(value)}
       className=" grid grid-cols-2 gap-4"
     >

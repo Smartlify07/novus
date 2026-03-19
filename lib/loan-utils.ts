@@ -7,7 +7,7 @@ export function calculateMonthlyPayment(
   const futureValueFactor = Math.pow(1 + rateResult, numberOfMonths);
   const numerator = rateResult * futureValueFactor;
   const denominator = futureValueFactor - 1;
-  return Math.round(principal * (numerator / denominator));
+  return Math.max(Math.round(principal * (numerator / denominator)), 0);
 }
 
 export function calculateTotalRepayableAmount(
