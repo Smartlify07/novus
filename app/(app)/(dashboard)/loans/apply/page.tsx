@@ -4,6 +4,7 @@ import LoanAmountStep from '@/app/features/loans/loan-application/components/loa
 import LoanTypeStep from '@/app/features/loans/loan-application/components/loan-type-step';
 import RepaymentPeriodStep from '@/app/features/loans/loan-application/components/repayment-period-step';
 import PurposeStep from '@/app/features/loans/loan-application/components/purpose-step';
+import ReviewStep from '@/app/features/loans/loan-application/components/review-step';
 import Stepper, {
   Connector,
   StepContent,
@@ -12,8 +13,6 @@ import Stepper, {
   StepTrigger,
   useStepper,
 } from '@/app/features/loans/loan-application/components/stepper';
-import { Button } from '@/components/ui/button';
-import { CardFooter } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { Check } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
@@ -58,38 +57,6 @@ function StepperNav() {
           )}
         </StepGroup>
       ))}
-    </div>
-  );
-}
-
-function ReviewStep() {
-  const stepper = useStepper();
-  return (
-    <div className="max-w-xl flex flex-col gap-6">
-      <div className="flex flex-col gap-2">
-        <h2 className="text-2xl tracking-tighter font-semibold">
-          Review your loan application
-        </h2>
-        <p className="text-muted-foreground tracking-tight">
-          Confirm all details before submitting
-        </p>
-      </div>
-      <CardFooter className="bg-card rounded-none px-0 flex items-center justify-between mt-6">
-        <p className="text-muted-foreground text-sm">
-          Step <span className="text-foreground">5</span> of 5
-        </p>
-        <div className="flex items-center gap-2">
-          <Button
-            variant={'outline'}
-            onClick={() => {
-              stepper.onChange({ id: 4, value: 'purpose' });
-            }}
-          >
-            Back
-          </Button>
-          <Button variant={'default'}>Submit Application</Button>
-        </div>
-      </CardFooter>
     </div>
   );
 }

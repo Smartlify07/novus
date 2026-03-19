@@ -124,6 +124,7 @@ export default function RepaymentPeriodStep() {
             disabled={!selectedMonths}
             onClick={() => {
               stepper.onChange({ id: 4, value: 'purpose' });
+              setTermMonths(termMonths);
             }}
           >
             Continue
