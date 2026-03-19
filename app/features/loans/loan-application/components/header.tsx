@@ -7,7 +7,7 @@ export default function Header() {
         Apply
       </h3>
       <h1 className="text-3xl tracking-tighter">New Loan Application</h1>
-      <p className="text-muted-foreground tracking-tighter text-sm">
+      <p className="text-muted-foreground tracking-tight text-sm">
         Complete the steps below to get a loan
       </p>
     </header>
