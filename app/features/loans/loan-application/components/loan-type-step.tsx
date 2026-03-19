@@ -55,6 +55,10 @@ const loans: {
 export default function LoanTypeStep() {
   const { loanType, setLoanType } = useLoanApplicationWorkflowStore();
   const { onChange } = useStepper();
+<<<<<<< HEAD
+=======
+  console.log(loanType);
+>>>>>>> e227e3c4c3809eae3dfb4a085e757138e252860e
   return (
     <Card className="p-6 max-w-xl flex flex-col gap-6">
       <div className="flex flex-col gap-2">
@@ -69,7 +73,10 @@ export default function LoanTypeStep() {
         onSelect={(value) => {
           setLoanType(value as LoanType);
         }}
+<<<<<<< HEAD
         value={loanType}
+=======
+>>>>>>> e227e3c4c3809eae3dfb4a085e757138e252860e
       />
 
       <CardFooter className="bg-card rounded-none px-0  flex items-center justify-between">
@@ -80,7 +87,11 @@ export default function LoanTypeStep() {
         <Button
           variant={'default'}
           onClick={() => {
+<<<<<<< HEAD
             onChange({ id: 2, value: 'amount' });
+=======
+            onChange('amount');
+>>>>>>> e227e3c4c3809eae3dfb4a085e757138e252860e
           }}
         >
           Continue
@@ -92,6 +103,7 @@ export default function LoanTypeStep() {
 
 export function LoanTypeChoiceCard({
   onSelect,
+<<<<<<< HEAD
   value,
 }: {
   onSelect: (value: string) => void;
@@ -100,6 +112,13 @@ export function LoanTypeChoiceCard({
   return (
     <RadioGroup
       value={value}
+=======
+}: {
+  onSelect: (value: string) => void;
+}) {
+  return (
+    <RadioGroup
+>>>>>>> e227e3c4c3809eae3dfb4a085e757138e252860e
       onValueChange={(value) => onSelect(value)}
       className=" grid grid-cols-2 gap-4"
     >
