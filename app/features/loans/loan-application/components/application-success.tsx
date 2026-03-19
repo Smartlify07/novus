@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -12,7 +13,6 @@ import { calculateMonthlyPayment } from '@/lib/loan-utils';
 import { formatCurrency } from '@/lib/utils';
 
 export default function ApplicationSuccess() {
-  const router = useRouter();
   const store = useLoanApplicationWorkflowStore();
   const loanType = store.loanType;
   const principalAmount = store.principalAmount ?? 0;
@@ -117,19 +117,11 @@ export default function ApplicationSuccess() {
         </div>
 
         <div className="flex items-center gap-3 w-full">
-          <Button
-            variant="outline"
-            className="flex-1"
-            onClick={() => router.push('/dashboard')}
-          >
-            Go to Dashboard
+          <Button variant="outline" className="flex-1" asChild>
+            <Link href="/dashboard">Go to Dashboard</Link>
           </Button>
-          <Button
-            variant="default"
-            className="flex-1"
-            onClick={() => router.push('/loans')}
-          >
-            View Loan Applications
+          <Button variant="default" className="flex-1" asChild>
+            <Link href="/loans">View Loan Applications</Link>
           </Button>
         </div>
       </div>
