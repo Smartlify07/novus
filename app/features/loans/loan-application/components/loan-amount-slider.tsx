@@ -12,7 +12,6 @@ export default function LoanAmountSlider({
   const { principalAmount, setPrincipalAmount } =
     useLoanApplicationWorkflowStore();
   const [value, setValue] = useState([principalAmount || 50000]);
-  console.log(value);
   return (
     <div className="flex flex-col gap-2">
       <Slider
