@@ -73,10 +73,10 @@ export default function RepaymentPeriodStep() {
                 : 'border-input hover:bg-muted'
             }`}
           >
-            <span className="text-4xl font-medium tracking-tight">
+            <span className="text-2xl font-medium tracking-tight">
               {period.months}
             </span>
-            <span className="text-sm text-muted-foreground">
+            <span className="text-xs text-muted-foreground">
               {period.years}
             </span>
           </button>
