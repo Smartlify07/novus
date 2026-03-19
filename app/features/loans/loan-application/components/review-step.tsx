@@ -57,9 +57,9 @@ export default function ReviewStep() {
         </CardDescription>
       </div>
 
-      <Card className="p-6 flex flex-col gap-4 bg-primary/5">
+      <Card className="p-6 flex flex-col gap-4 bg-primary/5 ring-0">
         <div className="flex flex-col gap-2">
-          <CardDescription className="text-sm uppercase tracking-tight">
+          <CardDescription className="text-xs uppercase tracking-tight">
             {formatLoanType(loanType)} Loan
           </CardDescription>
           <CardTitle className="text-5xl tracking-tighter">
@@ -110,9 +110,17 @@ export default function ReviewStep() {
         </div>
       </Card>
 
-      <Card className="p-6 bg-primary/5 flex flex-col gap-2">
+      <Card className="p-6 bg-primary/5 flex flex-col gap-2 ring-0">
         <p className="text-xs text-muted-foreground uppercase">Purpose</p>
         <p className="text-sm font-medium text-foreground">{purpose}</p>
+      </Card>
+
+      <Card className="p-4 bg-primary/5 ring-0">
+        <p className="text-xs text-muted-foreground">
+          Rates shown are indicative and based on a 3.4% monthly interest rate.
+          Your final offer may vary based on credit assessment. Lendly does not
+          guarantee approval. All figures are pre-disbursement estimates.
+        </p>
       </Card>
 
       <CardFooter className="bg-card rounded-none px-0 flex items-center justify-between">
@@ -129,7 +137,7 @@ export default function ReviewStep() {
           >
             Back
           </Button>
-          <Button variant={'default'}>Continue</Button>
+          <Button variant={'default'}>Submit Application</Button>
         </div>
       </CardFooter>
     </Card>
