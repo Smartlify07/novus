@@ -1,6 +1,8 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { HugeiconsIcon } from '@hugeicons/react';
@@ -10,6 +12,7 @@ import { calculateMonthlyPayment } from '@/lib/loan-utils';
 import { formatCurrency } from '@/lib/utils';
 
 export default function ApplicationSuccess() {
+  const router = useRouter();
   const store = useLoanApplicationWorkflowStore();
   const loanType = store.loanType;
   const principalAmount = store.principalAmount ?? 0;
@@ -33,16 +36,16 @@ export default function ApplicationSuccess() {
     <div className="flex flex-col items-center py-10 px-6">
       <div className="flex flex-col items-center gap-6 max-w-lg w-full">
         <div className="flex flex-col items-center gap-4 text-center">
-          <div className="relative">
+          <div className="bg-primary/5 rounded-full size-20 flex items-center justify-center">
             <HugeiconsIcon
               icon={Clock04Icon}
-              size={80}
+              size={56}
               className="text-primary"
             />
           </div>
 
           <div className="flex flex-col gap-2">
-            <h1 className="text-4xl tracking-tighter font-semibold">
+            <h1 className="text-4xl tracking-tight font-normal">
               Application Submitted
             </h1>
             <p className="text-sm text-muted-foreground">
@@ -57,7 +60,7 @@ export default function ApplicationSuccess() {
         </div>
 
         <Card className="w-full p-4 flex flex-col gap-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
             <Badge variant="secondary" className="gap-2">
               <HugeiconsIcon icon={Clock04Icon} size={14} />
               In review
@@ -65,7 +68,7 @@ export default function ApplicationSuccess() {
             <p className="text-xs text-muted-foreground">Ref: {loanRef}</p>
           </div>
 
-          <Separator />
+          <Separator className="data-[orientation=horizontal]:h-[0.5px]" />
 
           <div className="flex flex-col">
             <div className="flex items-center justify-between py-2">
@@ -74,7 +77,7 @@ export default function ApplicationSuccess() {
                 {formatLoanType(loanType)} Loan
               </p>
             </div>
-            <Separator />
+            <Separator className="data-[orientation=horizontal]:h-[0.5px]" />
 
             <div className="flex items-center justify-between py-2">
               <p className="text-sm text-muted-foreground">Amount requested</p>
@@ -82,7 +85,7 @@ export default function ApplicationSuccess() {
                 {formatCurrency(principalAmount, 'NGN')}
               </p>
             </div>
-            <Separator />
+            <Separator className="data-[orientation=horizontal]:h-[0.5px]" />
 
             <div className="flex items-center justify-between py-2">
               <p className="text-sm text-muted-foreground">Repayment term</p>
@@ -90,7 +93,7 @@ export default function ApplicationSuccess() {
                 {termMonths} months
               </p>
             </div>
-            <Separator />
+            <Separator className="data-[orientation=horizontal]:h-[0.5px]" />
 
             <div className="flex items-center justify-between py-2">
               <p className="text-sm text-muted-foreground">
@@ -105,6 +108,30 @@ export default function ApplicationSuccess() {
             </div>
           </div>
         </Card>
+
+        <div className="w-full p-4 bg-muted rounded-lg">
+          <p className="text-xs text-muted-foreground text-center">
+            We may contact you for additional documents during the review
+            process. Check your email and notifications for updates.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3 w-full">
+          <Button
+            variant="outline"
+            className="flex-1"
+            onClick={() => router.push('/dashboard')}
+          >
+            Go to Dashboard
+          </Button>
+          <Button
+            variant="default"
+            className="flex-1"
+            onClick={() => router.push('/loans')}
+          >
+            View Loan Applications
+          </Button>
+        </div>
       </div>
     </div>
   );
