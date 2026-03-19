@@ -5,6 +5,7 @@ import LoanTypeStep from '@/app/features/loans/loan-application/components/loan-
 import RepaymentPeriodStep from '@/app/features/loans/loan-application/components/repayment-period-step';
 import PurposeStep from '@/app/features/loans/loan-application/components/purpose-step';
 import ReviewStep from '@/app/features/loans/loan-application/components/review-step';
+import ApplicationSummary from '@/app/features/loans/loan-application/components/application-summary';
 import Stepper, {
   Connector,
   StepContent,
@@ -63,29 +64,36 @@ function StepperNav() {
 
 export default function LoanApplicationPage() {
   return (
-    <div className="py-10 px-6 flex flex-col gap-10">
-      <Header />
-      <Stepper
-        className="max-w-xl flex flex-col gap-10"
-        defaultValue={steps[0]}
-      >
-        <StepperNav />
-        <StepContent stepId={1} value="type">
-          <LoanTypeStep />
-        </StepContent>
-        <StepContent stepId={2} value="amount">
-          <LoanAmountStep />
-        </StepContent>
-        <StepContent stepId={3} value="term">
-          <RepaymentPeriodStep />
-        </StepContent>
-        <StepContent stepId={4} value="purpose">
-          <PurposeStep />
-        </StepContent>
-        <StepContent stepId={5} value="review">
-          <ReviewStep />
-        </StepContent>
-      </Stepper>
+    <div className="py-10 px-6 flex gap-10">
+      <div className="flex flex-col gap-10 flex-1">
+        <Header />
+        <Stepper
+          className="max-w-xl flex flex-col gap-10"
+          defaultValue={steps[0]}
+        >
+          <StepperNav />
+          <StepContent stepId={1} value="type">
+            <LoanTypeStep />
+          </StepContent>
+          <StepContent stepId={2} value="amount">
+            <LoanAmountStep />
+          </StepContent>
+          <StepContent stepId={3} value="term">
+            <RepaymentPeriodStep />
+          </StepContent>
+          <StepContent stepId={4} value="purpose">
+            <PurposeStep />
+          </StepContent>
+          <StepContent stepId={5} value="review">
+            <ReviewStep />
+          </StepContent>
+        </Stepper>
+      </div>
+      <div className="w-80 shrink-0">
+        <div className="sticky top-6 mt-[8.5rem]">
+          <ApplicationSummary />
+        </div>
+      </div>
     </div>
   );
 }
