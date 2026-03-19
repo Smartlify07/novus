@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { useStepper } from './stepper';
+import { useLoanApplicationWorkflowStore } from '@/store/loan-application-workflow-store';
 
 const quickSelectItems = [
   'Housing',
@@ -26,12 +27,16 @@ const MAX_CHARS = 500;
 
 export default function PurposeStep() {
   const stepper = useStepper();
-  const [value, setValue] = useState('');
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const { purpose, setPurpose } = useLoanApplicationWorkflowStore();
+  const [value, setValue] = useState(purpose || '');
+  const [selectedItem, setSelectedItem] = useState<string | null>(
+    purpose || null,
+  );
 
   const handleQuickSelect = (item: string) => {
     setValue(item);
     setSelectedItem(item);
+    setPurpose(item);
   };
 
   return (
@@ -48,11 +53,12 @@ export default function PurposeStep() {
       <div className="flex flex-col gap-4">
         <Textarea
           placeholder="Describe briefly how you plan to use the funds"
-          className="h-[200px] resize-none"
+          className="h-50 resize-none"
           value={value}
           onChange={(e) => {
             if (e.target.value.length <= MAX_CHARS) {
               setValue(e.target.value);
+              setPurpose(e.target.value);
             }
           }}
         />
