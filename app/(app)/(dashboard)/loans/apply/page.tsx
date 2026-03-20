@@ -68,6 +68,9 @@ export default function LoanApplicationPage() {
   const isSubmitted = useLoanApplicationWorkflowStore(
     (state) => state.isSubmitted,
   );
+  const setIsSubmitted = useLoanApplicationWorkflowStore(
+    (state) => state.setIsSubmitted,
+  );
 
   if (isSubmitted) {
     return <ApplicationSuccess />;
@@ -95,7 +98,7 @@ export default function LoanApplicationPage() {
             <PurposeStep />
           </StepContent>
           <StepContent stepId={5} value="review">
-            <ReviewStep />
+            <ReviewStep onSubmitSuccess={() => setIsSubmitted(true)} />
           </StepContent>
         </Stepper>
       </div>

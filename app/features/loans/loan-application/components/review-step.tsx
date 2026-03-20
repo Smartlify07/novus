@@ -15,15 +15,32 @@ import {
   calculateTotalRepayableAmount,
 } from '@/lib/loan-utils';
 import { formatCurrency } from '@/lib/utils';
+import { toast } from 'sonner';
+import { Spinner } from '@/components/ui/spinner';
+import { useSubmitLoanApplication } from '../hooks';
+import { LoanApplicationPayload } from '../types';
+import { useCurrentAccount } from '@/app/features/accounts/hooks';
+import { useQueryClient } from '@tanstack/react-query';
 
-export default function ReviewStep() {
+type ReviewStepProps = {
+  onSubmitSuccess?: () => void;
+};
+
+export default function ReviewStep({ onSubmitSuccess }: ReviewStepProps) {
+  const queryClient = useQueryClient();
+  const { mutate: submitApplication, isPending } = useSubmitLoanApplication({
+    onSuccess: () => {
+      onSubmitSuccess?.();
+      queryClient.invalidateQueries({ queryKey: ['loans'] });
+    },
+  });
   const stepper = useStepper();
   const store = useLoanApplicationWorkflowStore();
+  const { data: account } = useCurrentAccount();
   const loanType = store.loanType;
   const purpose = store.purpose ?? '';
   const principalAmount = store.principalAmount ?? 0;
   const termMonths = store.termMonths ?? 12;
-  const setIsSubmitted = store.setIsSubmitted;
 
   const interestRate = 3.4;
   const monthlyPayment = calculateMonthlyPayment(
@@ -41,6 +58,23 @@ export default function ReviewStep() {
     interestRate,
     termMonths,
   );
+
+  const handleSubmit = () => {
+    const payload: LoanApplicationPayload = {
+      accountId: account?.id!,
+      loanType: store.loanType!,
+      principalAmount: store.principalAmount ?? 0,
+      termMonths: store.termMonths ?? 12,
+      purpose: store.purpose ?? '',
+    };
+
+    console.log(payload);
+    submitApplication(payload, {
+      onError: (error) => {
+        toast.error(error.message || 'Failed to submit application');
+      },
+    });
+  };
 
   const formatLoanType = (type: string | null) => {
     if (!type) return '';
@@ -140,10 +174,10 @@ export default function ReviewStep() {
           </Button>
           <Button
             variant={'default'}
-            onClick={() => {
-              setIsSubmitted(true);
-            }}
+            onClick={handleSubmit}
+            disabled={isPending}
           >
+            {isPending && <Spinner className="" />}
             Submit Application
           </Button>
         </div>
