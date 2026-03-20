@@ -2,7 +2,7 @@ import { Slider } from '@/components/ui/slider';
 import { useLoanApplicationWorkflowStore } from '@/store/loan-application-workflow-store';
 import React, { useState } from 'react';
 
-const MAX_AMOUNT = 10_000_000;
+const MAX_AMOUNT = 1_000_000;
 const MIN_AMOUNT = 50_000;
 export default function LoanAmountSlider({
   onValueChange,
@@ -11,20 +11,20 @@ export default function LoanAmountSlider({
 }) {
   const { principalAmount, setPrincipalAmount } =
     useLoanApplicationWorkflowStore();
-  const [value, setValue] = useState([principalAmount || 50000]);
+  const [value, setValue] = useState([principalAmount || MIN_AMOUNT]);
   return (
     <div className="flex flex-col gap-2">
       <Slider
-        defaultValue={[500000]}
-        min={50000}
-        max={10000000}
+        defaultValue={[MIN_AMOUNT]}
+        min={MIN_AMOUNT}
+        max={MAX_AMOUNT}
         value={value}
         onValueChange={(value) => {
           setValue(value);
           onValueChange(value);
           setPrincipalAmount(value[0]);
         }}
-        step={100000}
+        step={10000}
       />
 
       <div className="flex items-center w-full justify-between [&>p]:text-muted-foreground [&>p]:text-xs">
