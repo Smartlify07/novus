@@ -23,6 +23,7 @@ export default function ReviewStep() {
   const purpose = store.purpose ?? '';
   const principalAmount = store.principalAmount ?? 0;
   const termMonths = store.termMonths ?? 12;
+  const setIsSubmitted = store.setIsSubmitted;
 
   const interestRate = 3.4;
   const monthlyPayment = calculateMonthlyPayment(
@@ -137,7 +138,14 @@ export default function ReviewStep() {
           >
             Back
           </Button>
-          <Button variant={'default'}>Submit Application</Button>
+          <Button
+            variant={'default'}
+            onClick={() => {
+              setIsSubmitted(true);
+            }}
+          >
+            Submit Application
+          </Button>
         </div>
       </CardFooter>
     </Card>

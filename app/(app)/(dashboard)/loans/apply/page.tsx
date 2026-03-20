@@ -5,6 +5,7 @@ import LoanTypeStep from '@/app/features/loans/loan-application/components/loan-
 import RepaymentPeriodStep from '@/app/features/loans/loan-application/components/repayment-period-step';
 import PurposeStep from '@/app/features/loans/loan-application/components/purpose-step';
 import ReviewStep from '@/app/features/loans/loan-application/components/review-step';
+import ApplicationSuccess from '@/app/features/loans/loan-application/components/application-success';
 import ApplicationSummary from '@/app/features/loans/loan-application/components/application-summary';
 import Stepper, {
   Connector,
@@ -17,6 +18,7 @@ import Stepper, {
 import { cn } from '@/lib/utils';
 import { Check } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
+import { useLoanApplicationWorkflowStore } from '@/store/loan-application-workflow-store';
 
 const steps = [
   {
@@ -63,6 +65,14 @@ function StepperNav() {
 }
 
 export default function LoanApplicationPage() {
+  const isSubmitted = useLoanApplicationWorkflowStore(
+    (state) => state.isSubmitted,
+  );
+
+  if (isSubmitted) {
+    return <ApplicationSuccess />;
+  }
+
   return (
     <div className="py-10 px-6 flex gap-10">
       <div className="flex flex-col gap-10 flex-1">
