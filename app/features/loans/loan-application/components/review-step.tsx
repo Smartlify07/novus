@@ -41,6 +41,7 @@ export default function ReviewStep({ onSubmitSuccess }: ReviewStepProps) {
   const purpose = store.purpose ?? '';
   const principalAmount = store.principalAmount ?? 0;
   const termMonths = store.termMonths ?? 12;
+  const setIsSubmitted = store.setIsSubmitted;
 
   const interestRate = 3.4;
   const monthlyPayment = calculateMonthlyPayment(
