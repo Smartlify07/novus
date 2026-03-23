@@ -9,13 +9,7 @@ import { cn, formatCurrency } from '@/lib/utils';
 import { HugeiconsIcon, IconSvgElement } from '@hugeicons/react';
 import { format } from 'date-fns';
 import { Tabs } from './your-loans-section';
-import {
-  calculateMonthlyPayment,
-  loanMeta,
-  nextDueDate,
-  percentagePaid,
-  totalPaid,
-} from '@/lib/loan-utils';
+import { percentagePaid, totalPaid } from '@/lib/loan-utils';
 import { useLoans } from '../hooks';
 import { Loan, LoanStatus, LoanType } from '@/types';
 import {
@@ -412,7 +406,7 @@ function LoanListItemHeader({
             {termMonths} Months
           </Badge>
           <Badge variant={'secondary'} className="text-muted-foreground">
-            {interestRate} % / mo
+            {interestRate}% / mo
           </Badge>
         </div>
       </div>
