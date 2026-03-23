@@ -13,11 +13,12 @@ import { percentagePaid, totalPaid } from '@/lib/loan-utils';
 import { useLoans } from '../hooks';
 import { Loan, LoanStatus, LoanType } from '@/types';
 import {
-  Alert,
   AlertCircle,
   Briefcase,
   House02Icon,
   InformationCircleIcon,
+  MoneyBag01Icon,
+  MoneyBag02Icon,
   User,
 } from '@hugeicons/core-free-icons';
 
@@ -165,19 +166,39 @@ export default function LoansList({ currentTab }: { currentTab: Tabs }) {
   const { data } = useLoans();
 
   const today = new Date();
+  const filteredLoans = data?.loans?.filter((loan) => {
+    if (currentTab === 'ALL') {
+      return true;
+    } else {
+      return loan.status === currentTab.toUpperCase();
+    }
+  });
+
+  if (!filteredLoans?.length) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <HugeiconsIcon
+          icon={MoneyBag02Icon}
+          size={48}
+          className="text-primary mb-4"
+        />
+        <h3 className="text-lg font-medium text-foreground mb-1">
+          No loans found
+        </h3>
+        <p className="text-sm text-muted-foreground">
+          {currentTab === 'ALL'
+            ? "You don't have any loans yet."
+            : `You don't have any ${currentTab.toLowerCase()} loans.`}
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-4">
-      {data?.loans
-        ?.filter((loan) => {
-          if (currentTab === 'all') {
-            return true;
-          } else {
-            return loan.status === currentTab.toUpperCase();
-          }
-        })
-        .map((loan) => (
-          <LoanListItem today={today} key={loan.id} {...loan} />
-        ))}
+      {filteredLoans.map((loan) => (
+        <LoanListItem today={today} key={loan.id} {...loan} />
+      ))}
     </div>
   );
 }
