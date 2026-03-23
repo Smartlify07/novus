@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import React, { useState } from 'react';
 import LoansList from './loans-list';
 import { Badge } from '@/components/ui/badge';
-import { LoanStatus, LoanType } from '@/types';
+import { Loan, LoanStatus, LoanType } from '@/types';
 
 export type Tabs = LoanStatus | 'ALL';
 
@@ -16,7 +16,11 @@ const tabs: Tabs[] = [
   'REJECTED',
   'CLOSED',
 ];
-export default function YourLoansSection() {
+export default function YourLoansSection({
+  onLoanClick,
+}: {
+  onLoanClick?: (loan: Loan) => void;
+}) {
   const [activeTab, setActiveTab] = useState<Tabs>('ALL');
   const changeTab = (tab: Tabs) => {
     setActiveTab(tab);
@@ -41,7 +45,7 @@ export default function YourLoansSection() {
         </div>
       </div>
 
-      <LoansList currentTab={activeTab} />
+      <LoansList currentTab={activeTab} onLoanClick={onLoanClick} />
     </section>
   );
 }
