@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 export type Tabs = 'active' | 'closed' | 'all';
 const tabs = ['all', 'active', 'closed'];
 export default function YourLoansSection() {
-  const [activeTab, setActiveTab] = useState<Tabs>('active');
+  const [activeTab, setActiveTab] = useState<Tabs>('all');
   const changeTab = (tab: Tabs) => {
     setActiveTab(tab);
   };
@@ -24,7 +24,7 @@ export default function YourLoansSection() {
               key={tab}
               onClick={() => changeTab(tab as Tabs)}
               variant={activeTab === tab ? 'default' : 'outline'}
-              className="capitalize rounded-full text-xs cursor-pointer"
+              className="capitalize rounded-full text-xs cursor-pointer py-2 px-4"
             >
               {tab}
             </Badge>

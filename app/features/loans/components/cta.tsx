@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 import React from 'react';
 
 export default function Cta() {
@@ -25,7 +26,9 @@ export default function Cta() {
             </p>
           </div>
         </div>
-        <Button className="self-start">Start Application</Button>
+        <Button className="self-start">
+          <Link href={'/loans/apply'}>Start Application</Link>
+        </Button>
       </div>
     </section>
   );
