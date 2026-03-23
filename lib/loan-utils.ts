@@ -1,3 +1,5 @@
+import { Loan } from '@/types';
+
 export function calculateMonthlyPayment(
   principal: number,
   rate: number,
@@ -34,4 +36,16 @@ export function calculateInterest(
     principal;
 
   return Math.round(total);
+}
+
+export function totalPaid(loan: Loan): number {
+  return loan.principalAmount - loan.outstandingBalance;
+}
+
+export function percentagePaid(loan: Loan) {
+  if (loan.principalAmount === 0) {
+    return 0;
+  } else {
+    return (totalPaid(loan) / loan.principalAmount) * 100;
+  }
 }

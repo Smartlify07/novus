@@ -1,9 +1,10 @@
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 import React from 'react';
 
 export default function Cta() {
   return (
-    <section className="bg-primary/5 rounded-md flex flex-col p-6 gap-4">
+    <section className="bg-muted/50 rounded-lg flex flex-col p-6 gap-2">
       <h4 className="text-xs tracking-tight text-muted-foreground uppercase">
         New Application
       </h4>
@@ -19,13 +20,17 @@ export default function Cta() {
             </p>
           </div>
           <div className="flex flex-col gap-1">
-            <h1 className="text-2xl font-medium tracking-tight">3.4%</h1>
+            <h1 className="text-2xl font-medium tracking-tight self-end">
+              3.4%
+            </h1>
             <p className="text-xs uppercase tracking-tight text-muted-foreground">
               From / Month
             </p>
           </div>
         </div>
-        <Button className="self-start">Start Application</Button>
+        <Button className="self-start">
+          <Link href={'/loans/apply'}>Start Application</Link>
+        </Button>
       </div>
     </section>
   );

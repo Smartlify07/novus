@@ -48,12 +48,14 @@ export type User = {
 };
 
 export type LoanType = 'PERSONAL' | 'BUSINESS' | 'MORTGAGE';
+
 export type LoanStatus =
   | 'APPROVED'
   | 'PENDING'
   | 'REJECTED'
   | 'ACTIVE'
   | 'CLOSED';
+
 export type Loan = {
   id: number;
   loanNumber: string;
