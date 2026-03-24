@@ -20,13 +20,12 @@ import {
   House02Icon,
   Briefcase,
   Refresh,
-  ArrowRight,
+  ArrowRight02Icon,
 } from '@hugeicons/core-free-icons';
 import { Card } from '@/components/ui/card';
-import { format, addMonths } from 'date-fns';
+import { format } from 'date-fns';
 import {
   LoanStatusAlert,
-  LoanStatusAlertIcon,
   LoanStatusAlertLabel,
   LoanStatusAlertMessage,
   LOAN_STATUS_COLORS,
@@ -77,7 +76,8 @@ export default function LoanDetailsSheet({
 
               {loan.status === 'ACTIVE' && (
                 <Button className="">
-                  Make Payment <HugeiconsIcon icon={ArrowRight} size={16} />
+                  Make Payment{' '}
+                  <HugeiconsIcon icon={ArrowRight02Icon} size={16} />
                 </Button>
               )}
 
@@ -117,7 +117,7 @@ function LoanDetailsHeader({
           <SheetTitle className="text-xs uppercase text-muted-foreground">
             {loanType} loan
           </SheetTitle>
-          <p className="text-sm font-medium text-foreground">{loanNumber}</p>
+          <p className="text-xs font-medium text-foreground">{loanNumber}</p>
         </div>
       </div>
     </SheetHeader>
@@ -126,7 +126,7 @@ function LoanDetailsHeader({
 
 function LoanDetailsAmountCard({ loan }: { loan: Loan }) {
   return (
-    <Card className="flex flex-col gap-3 px-4 py-4 bg-muted">
+    <Card className="flex flex-col gap-3 px-4 py-4 bg-primary/5">
       <div className="flex flex-col gap-1">
         <span className="text-xs text-muted-foreground uppercase">
           Principal amount
