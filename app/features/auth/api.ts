@@ -36,8 +36,16 @@ const getAuthHeaders = async () => {
   };
 };
 
+const TIMEOUT = 10000;
+
 const postLogin = async (loginDetail: LoginDetailsType) => {
   const { email, password } = loginDetail;
+  // const promise = new Promise((_, reject) => {
+  //   setTimeout(() => reject('Request Timed Out'), TIMEOUT);
+  // });
+  const controller = new AbortController();
+  const signal = controller.signal;
+  const timeoutId = setTimeout(() => controller.abort(), 3000);
 
   try {
     const response = await fetch(
@@ -48,6 +56,7 @@ const postLogin = async (loginDetail: LoginDetailsType) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
+        signal,
       },
     );
     if (!response.ok) {
@@ -59,8 +68,7 @@ const postLogin = async (loginDetail: LoginDetailsType) => {
       }
     }
     const data: LoginResponse = await response.json();
-
-    useAuthStore.getState().setAuth(data.user, data.token, data.expiresIn);
+    clearTimeout(timeoutId); // Clear the timeout if the fetch is successful
 
     return data;
   } catch (error) {

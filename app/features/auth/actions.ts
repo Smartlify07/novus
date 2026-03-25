@@ -8,7 +8,6 @@ import {
   SignupFormValues,
   signupOnboardingSchema,
 } from '../signup-onboarding/schema';
-import { createAccount, setCurrentAccount } from '../accounts/api';
 
 export const signUpAction = async (initialState: any, formData: FormData) => {
   const data = Object.fromEntries(formData) as SignupFormValues;
@@ -19,35 +18,59 @@ export const signUpAction = async (initialState: any, formData: FormData) => {
       message: null,
     };
   }
-  const signupResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+  try {
+    const signupResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...data,
+          dateOfBirth: new Date(data.dateOfBirth as Date).toISOString(),
+        }),
+        signal: controller.signal,
       },
-      body: JSON.stringify({
-        ...data,
-        dateOfBirth: new Date(data.dateOfBirth as Date).toISOString(),
-      }),
-    },
-  );
+    );
+    clearTimeout(timeoutId);
 
-  const result = await signupResponse.json();
+    const result = await signupResponse.json();
 
-  if (!signupResponse.ok) {
-    return {
-      errors:
-        signupResponse.status === 401
-          ? 'Incorrect email or password'
-          : result.message,
-      message:
-        signupResponse.status === 401
-          ? 'Incorrect email or password'
-          : result.message,
-    };
-  } else {
+    if (!signupResponse.ok) {
+      return {
+        errors:
+          signupResponse.status === 401
+            ? 'Incorrect email or password'
+            : result.message,
+        message:
+          signupResponse.status === 401
+            ? 'Incorrect email or password'
+            : result.message,
+      };
+    }
+
     return loginAction(initialState, formData, '/create-account');
+  } catch (error) {
+    clearTimeout(timeoutId);
+
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      return {
+        errors:
+          'Request timed out. Please check your connection and try again.',
+        message:
+          'Request timed out. Please check your connection and try again.',
+      };
+    }
+
+    return {
+      errors: 'An unexpected error occurred. Please try again.',
+      message: 'An unexpected error occurred. Please try again.',
+    };
   }
 };
 
@@ -63,55 +86,79 @@ export const loginAction = async (
     email: formData.get('email'),
     password: formData.get('password'),
   });
-
   if (!parsed.success) {
     return {
       errors: parsed.error.flatten().fieldErrors,
       message: null,
     };
   }
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+        signal: controller.signal,
       },
-      body: JSON.stringify({ email, password }),
-    },
-  );
-  if (!response.ok) {
-    const errorData = await response.json();
+    );
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      return {
+        errors:
+          response.status === 401
+            ? 'Incorrect email or password'
+            : errorData.message,
+        message:
+          response.status === 401
+            ? 'Incorrect email or password'
+            : errorData.message,
+      };
+    }
+    const result: LoginResponse = await response.json();
+    cookieStore.set({
+      name: 'token',
+      value: result.token,
+      expires: Date.now() + result.expiresIn * 1000,
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+    });
+    cookieStore.set({
+      name: 'token_expires_at',
+      value: String(Date.now() + result.expiresIn * 1000),
+      expires: new Date(Date.now() + result.expiresIn * 1000),
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+    });
+
+    return redirect(redirectTo);
+  } catch (error) {
+    clearTimeout(timeoutId);
+
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      return {
+        errors:
+          'Request timed out. Please check your connection and try again.',
+        message:
+          'Request timed out. Please check your connection and try again.',
+      };
+    }
+
     return {
-      errors:
-        response.status === 401
-          ? 'Incorrect email or password'
-          : errorData.message,
-      message:
-        response.status === 401
-          ? 'Incorrect email or password'
-          : errorData.message,
+      errors: 'An unexpected error occurred. Please try again.',
+      message: 'An unexpected error occurred. Please try again.',
     };
   }
-  const result: LoginResponse = await response.json();
-  cookieStore.set({
-    name: 'token',
-    value: result.token,
-    expires: Date.now() + result.expiresIn * 1000,
-    httpOnly: true,
-    secure: true,
-    sameSite: 'lax',
-  });
-  cookieStore.set({
-    name: 'token_expires_at',
-    value: String(Date.now() + result.expiresIn * 1000),
-    expires: new Date(Date.now() + result.expiresIn * 1000),
-    httpOnly: true,
-    secure: true,
-    sameSite: 'lax',
-  });
-
-  return redirect(redirectTo);
 };
 
 export const logoutAction = async () => {
