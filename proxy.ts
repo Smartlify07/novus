@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function proxy(request: NextRequest) {
   const cookieStore = await cookies();
-  const hasToken = cookieStore.has('token');
   const token = cookieStore.get('token');
   const expiresAt = cookieStore.get('token_expires_at');
 
