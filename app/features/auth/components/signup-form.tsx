@@ -6,6 +6,9 @@ import { PersonalInfoForm } from '../../signup-onboarding/components/personal-in
 import { SecurityForm } from '../../signup-onboarding/components/security-form';
 import { startTransition, useActionState, useEffect } from 'react';
 import { signUpAction } from '@/app/features/auth/actions';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { AlertCircle } from '@hugeicons/core-free-icons';
+import { FieldError } from '@/components/ui/field';
 
 export const OnboardingSteps = {
   BasicInfo: 1,
@@ -98,6 +101,19 @@ export function SignupForm({
         {...props}
       >
         {renderForm()}
+
+        {!!form.formState.errors.root && (
+          <div className="bg-destructive/10 flex items-center gap-2 rounded-md px-2 py-2">
+            <HugeiconsIcon
+              icon={AlertCircle}
+              size={16}
+              className="text-destructive"
+            />
+            <FieldError className="font-medium">
+              {form.formState.errors.root.message}
+            </FieldError>
+          </div>
+        )}
       </form>
     </>
   );

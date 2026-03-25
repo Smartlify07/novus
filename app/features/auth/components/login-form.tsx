@@ -52,7 +52,11 @@ export function LoginForm({
     formData.append('email', data.email);
     formData.append('password', data.password);
     startTransition(() => {
-      formAction(formData);
+      try {
+        formAction(formData);
+      } catch (error) {
+        console.error(error);
+      }
     });
   });
 
