@@ -21,6 +21,7 @@ import {
   Briefcase,
   Refresh,
   ArrowRight02Icon,
+  Checkmark,
 } from '@hugeicons/core-free-icons';
 import { Card } from '@/components/ui/card';
 import { format } from 'date-fns';
@@ -32,6 +33,9 @@ import {
 } from './loans-list';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { useLoanRepayments } from '@/app/features/loans/loan-application/hooks';
+import { LoanRepayment } from '@/app/features/loans/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface LoanDetailsSheetProps {
   open: boolean;
@@ -64,6 +68,9 @@ export default function LoanDetailsSheet({
                 <LoanStatusAlertSection status={loan.status} />
               )}
               <LoanDetailsSection loan={loan} />
+              {loan.status === 'ACTIVE' && (
+                <LoanRepaymentsList loanId={loan.id} />
+              )}
             </div>
 
             <SheetFooter className="p-4 border-t">
@@ -169,13 +176,11 @@ function LoanDetailsAmountCardItem({
 }
 
 function LoanDetailsPaymentCard({ loan }: { loan: Loan }) {
-  const totalPayment = totalPaid(loan);
+  const outstanding = loan.outstandingBalance;
   const percentage = percentagePaid(loan);
-  const totalRepayable =
-    loan.principalAmount +
-    (loan.principalAmount * loan.interestRate * loan.termMonths) / 100;
-  const outstanding = loan.principalAmount - totalPayment;
-
+  const { data } = useLoanRepayments({ loanId: loan.id });
+  const totalPayment = data?.totalRepaid ?? 0;
+  const totalRepayable = totalPayment + outstanding;
   return (
     <div className="bg-primary/5 rounded-lg p-4 flex flex-col gap-3">
       <div className="flex items-center justify-between">
@@ -345,5 +350,72 @@ function LoanStatusAlertSection({ status }: { status: LoanStatus }) {
         <LoanStatusAlertMessage>{config.message}</LoanStatusAlertMessage>
       </div>
     </LoanStatusAlert>
+  );
+}
+
+function LoanRepaymentItemSkeleton() {
+  return (
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-2">
+        <Skeleton className="size-8 rounded-full" />
+        <Skeleton className="h-4 w-32" />
+      </div>
+      <Skeleton className="h-4 w-20" />
+    </div>
+  );
+}
+
+function LoanRepaymentsList({ loanId }: { loanId: number }) {
+  const { data, isLoading } = useLoanRepayments({ loanId });
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xs font-medium text-foreground">Repayments</h3>
+        <div className="flex flex-col gap-2">
+          <LoanRepaymentItemSkeleton />
+          <LoanRepaymentItemSkeleton />
+        </div>
+      </div>
+    );
+  }
+
+  if (!data?.repayments?.length) {
+    return null;
+  }
+
+  return (
+    <div className="flex flex-col gap-3">
+      <h3 className="text-sm font-medium text-foreground">Repayments</h3>
+      <div className="flex flex-col gap-2">
+        {data.repayments.map((repayment: LoanRepayment) => (
+          <Card
+            key={repayment.id}
+            className="flex flex-row px-4 py-4 items-center justify-between bg-muted/50 ring-0 border"
+          >
+            <div className="flex items-center gap-4">
+              <div className="size-8 rounded-full bg-green-100 flex items-center justify-center">
+                <HugeiconsIcon
+                  icon={Checkmark}
+                  size={24}
+                  className="text-green-600"
+                />
+              </div>
+              <div className="flex flex-col gap-0.5">
+                <h1 className="text-sm text-foreground">
+                  {format(new Date(repayment.paymentDate), 'PPP')}
+                </h1>
+                <p className="text-xs text-muted-foreground">
+                  {repayment.paymentRef}
+                </p>
+              </div>
+            </div>
+            <p className="text-sm font-medium text-foreground">
+              {formatCurrency(repayment.amount, 'NGN')}
+            </p>
+          </Card>
+        ))}
+      </div>
+    </div>
   );
 }
