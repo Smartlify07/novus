@@ -13,101 +13,12 @@ import { percentagePaid, totalPaid } from '@/lib/loan-utils';
 import { useLoans } from '../hooks';
 import { Loan, LoanStatus, LoanType } from '@/types';
 import {
-  AlertCircle,
   Briefcase,
   House02Icon,
   InformationCircleIcon,
-  MoneyBag01Icon,
   MoneyBag02Icon,
   User,
 } from '@hugeicons/core-free-icons';
-
-const LOANS: Loan[] = [
-  {
-    id: 1,
-    loanNumber: 'LND-2025-001',
-    loanType: 'PERSONAL',
-    principalAmount: 1200000,
-    interestRate: 3.4,
-    termMonths: 12,
-    monthlyPayment: 150000,
-    outstandingBalance: 396000,
-    status: 'ACTIVE',
-    applicationDate: '2025-02-20',
-    disbursementDate: '2025-03-01',
-    maturityDate: '2026-03-01',
-  },
-  {
-    id: 2,
-    loanNumber: 'LND-2025-002',
-    loanType: 'BUSINESS',
-    principalAmount: 3500000,
-    interestRate: 3.4,
-    termMonths: 24,
-    monthlyPayment: 214900,
-    outstandingBalance: 1719200,
-    status: 'ACTIVE',
-    applicationDate: '2024-08-01',
-    disbursementDate: '2024-08-15',
-    maturityDate: '2026-08-15',
-  },
-  {
-    id: 3,
-    loanNumber: 'LND-2026-003',
-    loanType: 'MORTGAGE',
-    principalAmount: 15000000,
-    interestRate: 3.4,
-    termMonths: 36,
-    monthlyPayment: 620000,
-    outstandingBalance: 15000000,
-    status: 'APPROVED',
-    applicationDate: '2026-02-10',
-    disbursementDate: '2024-08-15',
-    maturityDate: '2026-08-15',
-  },
-  {
-    id: 4,
-    loanNumber: 'LND-2026-004',
-    loanType: 'PERSONAL',
-    principalAmount: 800000,
-    interestRate: 3.4,
-    termMonths: 6,
-    monthlyPayment: 154200,
-    outstandingBalance: 800000,
-    status: 'PENDING',
-    applicationDate: '2026-03-15',
-    disbursementDate: '2024-08-15',
-    maturityDate: '2026-08-15',
-  },
-  {
-    id: 5,
-    loanNumber: 'LND-2026-005',
-    loanType: 'MORTGAGE',
-    principalAmount: 2000000,
-    interestRate: 3.4,
-    termMonths: 18,
-    monthlyPayment: 145000,
-    outstandingBalance: 2000000,
-    status: 'REJECTED',
-    applicationDate: '2026-01-05',
-    disbursementDate: '2024-08-15',
-    maturityDate: '2026-08-15',
-  },
-  {
-    id: 6,
-    loanNumber: 'LND-2023-006',
-    loanType: 'MORTGAGE',
-    principalAmount: 450000,
-    interestRate: 3.4,
-    termMonths: 6,
-    monthlyPayment: 81600,
-    outstandingBalance: 0,
-    status: 'CLOSED',
-    applicationDate: '2023-08-20',
-    disbursementDate: '2023-09-01',
-    maturityDate: '2024-03-01',
-  },
-];
 
 export const LOAN_STATUS_COLORS: Record<
   LoanStatus,
@@ -241,8 +152,10 @@ export default function LoansList({
         <LoanListItem
           today={today}
           key={loan.id}
+          onClick={() => {
+            onLoanClick?.(loan);
+          }}
           {...loan}
-          onClick={() => onLoanClick?.(loan)}
         />
       ))}
     </div>
