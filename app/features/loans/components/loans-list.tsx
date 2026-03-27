@@ -13,101 +13,47 @@ import { percentagePaid, totalPaid } from '@/lib/loan-utils';
 import { useLoans } from '../hooks';
 import { Loan, LoanStatus, LoanType } from '@/types';
 import {
-  AlertCircle,
   Briefcase,
   House02Icon,
   InformationCircleIcon,
-  MoneyBag01Icon,
   MoneyBag02Icon,
   User,
 } from '@hugeicons/core-free-icons';
 
-const LOANS: Loan[] = [
+export const LOAN_STATUS_COLORS: Record<
+  LoanStatus,
   {
-    id: 1,
-    loanNumber: 'LND-2025-001',
-    loanType: 'PERSONAL',
-    principalAmount: 1200000,
-    interestRate: 3.4,
-    termMonths: 12,
-    monthlyPayment: 150000,
-    outstandingBalance: 396000,
-    status: 'ACTIVE',
-    applicationDate: '2025-02-20',
-    disbursementDate: '2025-03-01',
-    maturityDate: '2026-03-01',
+    bg: string;
+    color: string;
+    border: string;
+  }
+> = {
+  ACTIVE: {
+    bg: '#EDF5EE',
+    color: '#3D6644',
+    border: '#D5E7D8',
   },
-  {
-    id: 2,
-    loanNumber: 'LND-2025-002',
-    loanType: 'BUSINESS',
-    principalAmount: 3500000,
-    interestRate: 3.4,
-    termMonths: 24,
-    monthlyPayment: 214900,
-    outstandingBalance: 1719200,
-    status: 'ACTIVE',
-    applicationDate: '2024-08-01',
-    disbursementDate: '2024-08-15',
-    maturityDate: '2026-08-15',
+  APPROVED: {
+    bg: '#E8F3F8',
+    color: '#2D6E8A',
+    border: '#B5D4E8',
   },
-  {
-    id: 3,
-    loanNumber: 'LND-2026-003',
-    loanType: 'MORTGAGE',
-    principalAmount: 15000000,
-    interestRate: 3.4,
-    termMonths: 36,
-    monthlyPayment: 620000,
-    outstandingBalance: 15000000,
-    status: 'APPROVED',
-    applicationDate: '2026-02-10',
-    disbursementDate: '2024-08-15',
-    maturityDate: '2026-08-15',
+  PENDING: {
+    bg: '#FEF5E7',
+    color: '#8A6200',
+    border: '#F5DCB0',
   },
-  {
-    id: 4,
-    loanNumber: 'LND-2026-004',
-    loanType: 'PERSONAL',
-    principalAmount: 800000,
-    interestRate: 3.4,
-    termMonths: 6,
-    monthlyPayment: 154200,
-    outstandingBalance: 800000,
-    status: 'PENDING',
-    applicationDate: '2026-03-15',
-    disbursementDate: '2024-08-15',
-    maturityDate: '2026-08-15',
+  CLOSED: {
+    bg: '#F8F5F0',
+    color: '#6B7B72',
+    border: 'rgba(28,37,35,0.1)',
   },
-  {
-    id: 5,
-    loanNumber: 'LND-2026-005',
-    loanType: 'MORTGAGE',
-    principalAmount: 2000000,
-    interestRate: 3.4,
-    termMonths: 18,
-    monthlyPayment: 145000,
-    outstandingBalance: 2000000,
-    status: 'REJECTED',
-    applicationDate: '2026-01-05',
-    disbursementDate: '2024-08-15',
-    maturityDate: '2026-08-15',
+  REJECTED: {
+    bg: '#FCEBEB',
+    color: '#8B2020',
+    border: '#F5C4C4',
   },
-  {
-    id: 6,
-    loanNumber: 'LND-2023-006',
-    loanType: 'MORTGAGE',
-    principalAmount: 450000,
-    interestRate: 3.4,
-    termMonths: 6,
-    monthlyPayment: 81600,
-    outstandingBalance: 0,
-    status: 'CLOSED',
-    applicationDate: '2023-08-20',
-    disbursementDate: '2023-09-01',
-    maturityDate: '2024-03-01',
-  },
-];
+};
 
 const LOAN_STATUS_BADGE: Record<
   LoanStatus,
@@ -162,7 +108,13 @@ const LOAN_STATUS_BADGE: Record<
   },
 };
 
-export default function LoansList({ currentTab }: { currentTab: Tabs }) {
+export default function LoansList({
+  currentTab,
+  onLoanClick,
+}: {
+  currentTab: Tabs;
+  onLoanClick?: (loan: Loan) => void;
+}) {
   const { data } = useLoans();
 
   const today = new Date();
@@ -197,18 +149,32 @@ export default function LoansList({ currentTab }: { currentTab: Tabs }) {
   return (
     <div className="flex flex-col gap-4">
       {filteredLoans.map((loan) => (
-        <LoanListItem today={today} key={loan.id} {...loan} />
+        <LoanListItem
+          today={today}
+          key={loan.id}
+          onClick={() => {
+            onLoanClick?.(loan);
+          }}
+          {...loan}
+        />
       ))}
     </div>
   );
 }
 
-export function LoanListItem({ today, ...props }: { today: Date } & Loan) {
+export function LoanListItem({
+  today,
+  onClick,
+  ...props
+}: {
+  today: Date;
+  onClick?: () => void;
+} & Loan) {
   const totalPayment = totalPaid(props);
   const percentage = percentagePaid(props);
   const outstanding = props.principalAmount - totalPayment;
   return (
-    <Card>
+    <Card className="cursor-pointer" onClick={onClick}>
       <LoanListItemHeader {...props} />
       <CardContent className="flex flex-col gap-4 py-0">
         <div className="flex flex-col gap-1">
@@ -224,7 +190,7 @@ export function LoanListItem({ today, ...props }: { today: Date } & Loan) {
           />
         )}
         {props.status !== 'ACTIVE' && props.status !== 'CLOSED' && (
-          <LoanStatusAlert status={props.status} />
+          <LoanStatusAlertWithStatus status={props.status} />
         )}
       </CardContent>
       <CardFooter className="bg-card mx-4 grid grid-cols-3 items-start px-0">
@@ -451,16 +417,65 @@ function LoanStatusBadge({ status }: { status: LoanStatus }) {
   );
 }
 
-function LoanStatusAlert({ status }: { status: LoanStatus }) {
-  const { bg, color, border, alertLabel, dot } = LOAN_STATUS_BADGE[status];
-
+export function LoanStatusAlert({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<'div'>) {
   return (
     <div
-      className="rounded-lg py-4 px-4 text-xs flex items-center gap-2"
+      className={cn(
+        'rounded-lg py-4 px-4 text-xs flex flex-col gap-1',
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
+
+export function LoanStatusAlertIcon({ className }: { className?: string }) {
+  return (
+    <HugeiconsIcon
+      icon={InformationCircleIcon}
+      size={14}
+      strokeWidth={2}
+      className={cn('shrink-0', className)}
+    />
+  );
+}
+
+export function LoanStatusAlertLabel({
+  className,
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return <span className={cn('font-medium', className)}>{children}</span>;
+}
+
+export function LoanStatusAlertMessage({
+  className,
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return <span className={cn(className)}>{children}</span>;
+}
+
+export function LoanStatusAlertWithStatus({ status }: { status: LoanStatus }) {
+  const { bg, color, border, label, alertLabel } = LOAN_STATUS_BADGE[status];
+
+  return (
+    <LoanStatusAlert
+      className="flex flex-row items-center gap-2"
       style={{ background: bg, color, border: `1px solid ${border}` }}
     >
-      <HugeiconsIcon icon={InformationCircleIcon} size={14} strokeWidth={2} />
-      {alertLabel}
-    </div>
+      <LoanStatusAlertIcon />
+      <LoanStatusAlertMessage>{alertLabel}</LoanStatusAlertMessage>
+    </LoanStatusAlert>
   );
 }
