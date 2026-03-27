@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function proxy(request: NextRequest) {
   const cookieStore = await cookies();
-  const hasToken = cookieStore.has('token');
   const token = cookieStore.get('token');
   const expiresAt = cookieStore.get('token_expires_at');
 
@@ -16,6 +15,10 @@ export async function proxy(request: NextRequest) {
   if (!isAuthenticated && !isPublicRoute) {
     // Redirect unauthenticated users away from protected routes
     return NextResponse.redirect(new URL('/login', request.url));
+  }
+
+  if (isAuthenticated && isPublicRoute) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
   return NextResponse.next();

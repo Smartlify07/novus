@@ -20,7 +20,7 @@ export const signUpAction = async (initialState: any, formData: FormData) => {
   }
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000);
+  const timeoutId = setTimeout(() => controller.abort(), 60000);
 
   try {
     const signupResponse = await fetch(
@@ -53,9 +53,8 @@ export const signUpAction = async (initialState: any, formData: FormData) => {
             : result.message,
       };
     }
-
-    return loginAction(initialState, formData, '/create-account');
   } catch (error) {
+    console.error(error);
     clearTimeout(timeoutId);
 
     if (error instanceof DOMException && error.name === 'AbortError') {
@@ -72,6 +71,7 @@ export const signUpAction = async (initialState: any, formData: FormData) => {
       message: 'An unexpected error occurred. Please try again.',
     };
   }
+  return loginAction(initialState, formData, '/create-account');
 };
 
 export const loginAction = async (
@@ -94,7 +94,7 @@ export const loginAction = async (
   }
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000);
+  const timeoutId = setTimeout(() => controller.abort(), 60000);
 
   try {
     const response = await fetch(
@@ -140,9 +140,8 @@ export const loginAction = async (
       secure: true,
       sameSite: 'lax',
     });
-
-    return redirect(redirectTo);
   } catch (error) {
+    console.error(error);
     clearTimeout(timeoutId);
 
     if (error instanceof DOMException && error.name === 'AbortError') {
@@ -159,6 +158,7 @@ export const loginAction = async (
       message: 'An unexpected error occurred. Please try again.',
     };
   }
+  return redirect(redirectTo);
 };
 
 export const logoutAction = async () => {
