@@ -12,7 +12,6 @@ import {
   calculateInterest,
   calculateTotalRepayableAmount,
   percentagePaid,
-  totalPaid,
 } from '@/lib/loan-utils';
 import { HugeiconsIcon, IconSvgElement } from '@hugeicons/react';
 import {
@@ -33,9 +32,9 @@ import {
 } from './loans-list';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { useLoanRepayments } from '@/app/features/loans/loan-application/hooks';
 import { LoanRepayment } from '@/app/features/loans/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useLoanRepayments, useLoans } from '../hooks';
 
 interface LoanDetailsSheetProps {
   open: boolean;
@@ -48,47 +47,56 @@ export default function LoanDetailsSheet({
   onOpenChange,
   loan,
 }: LoanDetailsSheetProps) {
+  const { data: loansData } = useLoans();
+  const resolvedLoan = loan
+    ? loansData?.loans?.find((currentLoan) => currentLoan.id === loan.id) ||
+      loan
+    : null;
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="overflow-y-auto pb-4">
-        {loan && (
+        {resolvedLoan && (
           <>
             <LoanDetailsHeader
-              loanType={loan.loanType}
-              loanNumber={loan.loanNumber}
+              loanType={resolvedLoan.loanType}
+              loanNumber={resolvedLoan.loanNumber}
             />
             <div className="px-4 flex flex-col gap-4">
-              <LoanDetailsAmountCard loan={loan} />
-              {loan.status === 'ACTIVE' && (
-                <LoanDetailsPaymentCard loan={loan} />
+              <LoanDetailsAmountCard loan={resolvedLoan} />
+              {resolvedLoan.status === 'ACTIVE' && (
+                <LoanDetailsPaymentCard loan={resolvedLoan} />
               )}
-              {(loan.status === 'PENDING' ||
-                loan.status === 'APPROVED' ||
-                loan.status === 'REJECTED') && (
-                <LoanStatusAlertSection status={loan.status} />
+              {(resolvedLoan.status === 'PENDING' ||
+                resolvedLoan.status === 'APPROVED' ||
+                resolvedLoan.status === 'REJECTED') && (
+                <LoanStatusAlertSection status={resolvedLoan.status} />
               )}
-              <LoanDetailsSection loan={loan} />
-              {loan.status === 'ACTIVE' && (
-                <LoanRepaymentsList loanId={loan.id} />
+              <LoanDetailsSection loan={resolvedLoan} />
+              {resolvedLoan.status === 'ACTIVE' && (
+                <LoanRepaymentsList loanId={resolvedLoan.id} />
               )}
             </div>
 
             <SheetFooter className="p-4 border-t">
-              {loan.status === 'REJECTED' && (
+              {resolvedLoan.status === 'REJECTED' && (
                 <Button asChild variant={'ghost'} className="w-full">
                   <HugeiconsIcon icon={Refresh} size={16} />
                   <Link href="/loans/apply">Apply again</Link>
                 </Button>
               )}
 
-              {loan.status === 'ACTIVE' && (
-                <Button className="">
-                  Make Payment{' '}
-                  <HugeiconsIcon icon={ArrowRight02Icon} size={16} />
+              {resolvedLoan.status === 'ACTIVE' && (
+                <Button asChild className="w-full">
+                  <Link href={`/loans/${resolvedLoan.id}/repay`}>
+                    Make Payment{' '}
+                    <HugeiconsIcon icon={ArrowRight02Icon} size={16} />
+                  </Link>
                 </Button>
               )}
 
-              {(loan.status === 'APPROVED' || loan.status === 'PENDING') && (
+              {(resolvedLoan.status === 'APPROVED' ||
+                resolvedLoan.status === 'PENDING') && (
                 <Button disabled variant={'outline'}>
                   Awaiting Update
                 </Button>
@@ -178,7 +186,7 @@ function LoanDetailsAmountCardItem({
 function LoanDetailsPaymentCard({ loan }: { loan: Loan }) {
   const outstanding = loan.outstandingBalance;
   const percentage = percentagePaid(loan);
-  const { data } = useLoanRepayments({ loanId: loan.id });
+  const { data } = useLoanRepayments(loan.id);
   const totalPayment = data?.totalRepaid ?? 0;
   const totalRepayable = totalPayment + outstanding;
   return (
@@ -366,7 +374,7 @@ function LoanRepaymentItemSkeleton() {
 }
 
 function LoanRepaymentsList({ loanId }: { loanId: number }) {
-  const { data, isLoading } = useLoanRepayments({ loanId });
+  const { data, isLoading } = useLoanRepayments(loanId);
 
   if (isLoading) {
     return (

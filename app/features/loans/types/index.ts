@@ -1,4 +1,4 @@
-import { Loan, Pagination } from '@/types';
+import { Account, Loan, Pagination } from '@/types';
 
 export type LoanResponse = {
   loans: Loan[];
@@ -22,4 +22,22 @@ export type LoanRepaymentsResponse = {
   repayments: LoanRepayment[];
   totalRepaid: number;
   remainingBalance: number;
+};
+
+export type LoanRepaymentMethod = 'DEBIT' | 'TRANSFER' | 'CASH';
+
+export type LoanRepaymentPayload = {
+  accountId: Account['id'];
+  amount: number;
+  paymentMethod: LoanRepaymentMethod;
+};
+
+export type SubmitLoanRepaymentStatus = 'PENDING' | 'COMPLETED' | 'FAILED';
+
+export type SubmitLoanRepaymentResponse = {
+  paymentRef: string;
+  amount: number;
+  remainingBalance: number;
+  status: SubmitLoanRepaymentStatus;
+  paymentDate: string;
 };
