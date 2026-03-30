@@ -172,5 +172,6 @@ export const logoutAction = async () => {
   const cookieStore = await cookies();
   cookieStore.delete('token');
   cookieStore.delete('token_expires_at');
+  cookieStore.delete('session');
   return redirect('/login');
 };
