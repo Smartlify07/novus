@@ -106,13 +106,13 @@ export function TransactionsTable({
                       <Badge
                         className={cn(
                           getTransactionTypeColor(
-                            tx.destinationAccountId === currentAccount?.id
+                            tx.destinationAccountId !== currentAccount?.id
                               ? 'credit'
                               : 'debit',
                           ),
                         )}
                       >
-                        {tx.destinationAccountId === currentAccount?.id
+                        {tx.destinationAccountId !== currentAccount?.id
                           ? 'Credit'
                           : 'Debit'}
                       </Badge>
@@ -122,12 +122,12 @@ export function TransactionsTable({
                         'font-semibold tracking-tight',
                         getTransactionAmountColor(
                           tx.destinationAccountId !== currentAccount?.id
-                            ? 'debit'
-                            : 'credit',
+                            ? 'credit'
+                            : 'debit',
                         ),
                       )}
                     >
-                      {tx.destinationAccountId === currentAccount?.id
+                      {tx.destinationAccountId !== currentAccount?.id
                         ? '+'
                         : '-'}{' '}
                       {formatCurrency(tx.amount, 'NGN')}
