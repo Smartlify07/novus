@@ -140,6 +140,13 @@ export const loginAction = async (
       secure: true,
       sameSite: 'lax',
     });
+    cookieStore.set({
+      name: 'session',
+      value: String(result.user.id),
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+    });
   } catch (error) {
     console.error(error);
     clearTimeout(timeoutId);
