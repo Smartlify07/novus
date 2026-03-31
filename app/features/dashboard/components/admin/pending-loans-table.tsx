@@ -19,7 +19,7 @@ export default function PendingLoansTable() {
   const { data, error, isPending } = usePendingLoans();
   const loans = data?.content ?? [];
 
-  if (!isPending) {
+  if (isPending) {
     return (
       <Table>
         <TableHeader>
@@ -50,8 +50,8 @@ export default function PendingLoansTable() {
 
             <TableCell className="">
               <div className="flex items-center gap-2">
-                <Skeleton className="h-4 w-10" />
-                <Skeleton className="h-4 w-10" />
+                <Skeleton className="h-8 w-10" />
+                <Skeleton className="h-8 w-10" />
               </div>
             </TableCell>
           </TableRow>
