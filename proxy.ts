@@ -8,7 +8,7 @@ export async function proxy(request: NextRequest) {
   const expiresAt = cookieStore.get('token_expires_at');
 
   const isAuthenticated =
-    token?.value && Number(expiresAt?.value) >= Date.now() / 1000;
+    token?.value && Number(expiresAt?.value) >= Date.now();
   const { pathname } = request.nextUrl;
   const PUBLIC_ROUTES = ['/login', '/signup', '/'];
   const isPublicRoute = PUBLIC_ROUTES.some((route) => pathname === route);
