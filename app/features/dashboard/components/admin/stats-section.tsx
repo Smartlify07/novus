@@ -69,7 +69,7 @@ export default function StatsSection() {
           </StatCardIcon>
           <div className="flex flex-col gap-1">
             <StatCardTitle className="font-medium">Idle Capital</StatCardTitle>
-            <StatCardDescription>
+            <StatCardDescription className="text-nowrap">
               Deposits not yet deployed as loans
             </StatCardDescription>
             <StatCardValue className="tracking-tighter font-normal">
