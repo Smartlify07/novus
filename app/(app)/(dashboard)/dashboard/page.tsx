@@ -6,6 +6,5 @@ export default async function DashboardPage() {
   const user = await getUser();
 
   const isAdmin = user?.roles?.includes('ADMIN');
-
   return isAdmin ? <AdminDashboard /> : <Dashboard />;
 }
