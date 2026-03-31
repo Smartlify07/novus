@@ -1,5 +1,5 @@
 import { getUser } from '@/app/features/auth/api';
-import AdminDashboard from '@/app/features/dashboard/components/admin-dashboard';
+import AdminDashboard from '@/app/features/dashboard/components/admin/admin-dashboard';
 import Dashboard from '@/app/features/dashboard/components/dashboard';
 
 export default async function DashboardPage() {

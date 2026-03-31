@@ -3,23 +3,36 @@ import {
   LoanRepaymentPayload,
   LoanRepaymentsResponse,
   LoanResponse,
+  PendingLoansResponse,
   SubmitLoanRepaymentResponse,
 } from '../types';
-import { getLoanRepayments, getLoans, submitLoanRepayment } from '../api';
+import {
+  getLoanRepayments,
+  getLoans,
+  getPendingLoanApplications,
+  submitLoanRepayment,
+} from '../api';
 
 export const LOANS_QUERY_KEY = ['loans'];
+export const PENDING_LOANS_QUERY_KEY = [...LOANS_QUERY_KEY, 'pending'];
 export const LOAN_REPAYMENTS_QUERY_KEY = ['loan-repayments'];
 
 export const loanRepaymentsKeys = {
   all: LOAN_REPAYMENTS_QUERY_KEY,
-  byLoanId: (loanId: number) =>
-    [...LOAN_REPAYMENTS_QUERY_KEY, loanId] as const,
+  byLoanId: (loanId: number) => [...LOAN_REPAYMENTS_QUERY_KEY, loanId] as const,
 };
 
 export function useLoans() {
   return useQuery<LoanResponse>({
     queryKey: LOANS_QUERY_KEY,
     queryFn: getLoans,
+  });
+}
+
+export function usePendingLoans() {
+  return useQuery<PendingLoansResponse>({
+    queryKey: PENDING_LOANS_QUERY_KEY,
+    queryFn: getPendingLoanApplications,
   });
 }
 

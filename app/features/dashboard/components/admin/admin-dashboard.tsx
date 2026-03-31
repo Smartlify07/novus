@@ -1,0 +1,18 @@
+import React from 'react';
+import Header from './header';
+import SummaryCards from './summary-cards';
+import StatsSection from './stats-section';
+import PendingLoans from './pending-loans';
+
+export default function AdminDashboard() {
+  return (
+    <div className="flex flex-col gap-10 p-6">
+      <Header />
+      <SummaryCards />
+      <StatsSection />
+      <div className="grid grid-cols-2 gap-6">
+        <PendingLoans />
+      </div>
+    </div>
+  );
+}

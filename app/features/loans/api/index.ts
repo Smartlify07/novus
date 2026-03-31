@@ -5,6 +5,7 @@ import {
   LoanRepaymentPayload,
   LoanRepaymentsResponse,
   LoanResponse,
+  PendingLoansResponse,
   SubmitLoanRepaymentResponse,
 } from '../types';
 
@@ -16,6 +17,30 @@ const getAuthHeaders = async () => {
     Authorization: `Bearer ${token}`,
   };
 };
+
+export const getPendingLoanApplications =
+  async (): Promise<PendingLoansResponse> => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/loans/pending`,
+        {
+          method: 'GET',
+          headers: await getAuthHeaders(),
+        },
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to fetch loans');
+      }
+
+      const data: PendingLoansResponse = await response.json();
+      return data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
 
 export const getLoans = async (): Promise<LoanResponse> => {
   try {
