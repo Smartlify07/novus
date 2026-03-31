@@ -9,7 +9,7 @@ export default function PendingLoans() {
   return (
     <Card className="col-span-2">
       <CardHeader className="flex items-center justify-between ">
-        <CardTitle>Pending applications</CardTitle>
+        <CardTitle className="text-sm">Pending applications</CardTitle>
         <Button asChild variant={'outline'}>
           <Link href="/loans">
             View All <HugeiconsIcon icon={ArrowRight02Icon} />

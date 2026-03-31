@@ -3,6 +3,7 @@ import Header from './header';
 import SummaryCards from './summary-cards';
 import StatsSection from './stats-section';
 import PendingLoans from './pending-loans';
+import CapitalDeploymentCard from './capital-deployment-card';
 
 export default function AdminDashboard() {
   return (
@@ -11,8 +12,11 @@ export default function AdminDashboard() {
       <SummaryCards />
       <StatsSection />
       <div className="grid grid-cols-2 gap-6">
-        <PendingLoans />
+        <div className="flex flex-col gap-6">
+          <CapitalDeploymentCard />
+        </div>
       </div>
+      <PendingLoans />
     </div>
   );
 }
