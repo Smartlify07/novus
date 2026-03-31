@@ -67,7 +67,7 @@ function FooterItem({
   return (
     <div className="flex flex-col gap-0.5">
       <Label className="text-xs text-muted-foreground ">{label}</Label>
-      <p className="text-sm font-medium tracking-tighter">{value}</p>
+      <p className="text-base font-medium tracking-tighter">{value}</p>
     </div>
   );
 }
