@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight01Icon, ArrowRight02Icon } from '@hugeicons/core-free-icons';
+import { ArrowRight02Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import PendingLoansTable from './pending-loans-table';
 import Link from 'next/link';
