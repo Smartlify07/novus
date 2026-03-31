@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import React from 'react';
 
 const Header = () => {
-  const todaysDate = format(new Date(), 'PPP');
+  const todaysDate = format(new Date(), 'EEEE, PPP');
   return (
     <header className="flex items-end justify-between">
       <div className="flex flex-col gap-1">

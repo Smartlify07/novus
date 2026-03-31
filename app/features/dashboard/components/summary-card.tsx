@@ -50,18 +50,18 @@ export default function SummaryCard({
       )}
       <div className="flex flex-col gap-1">
         <div className="flex flex-col gap-1">
-          <CardHeader className="flex items-center gap-2 text-sm text-muted-foreground">
-            <CardTitle className="text-muted-foreground font-normal shrink-0 tracking-tighter">
+          <CardHeader className="flex px-0 items-center gap-2 text-sm text-muted-foreground">
+            <CardTitle className="text-muted-foreground font-normal shrink-0 tracking-tight text-sm">
               {title}
             </CardTitle>
           </CardHeader>
-          <CardContent className="">
+          <CardContent className="px-0">
             <CardTitle className="text-2xl font-normal tracking-tighter text-foreground">
               {value}
             </CardTitle>
           </CardContent>
         </div>
-        <CardFooter className="rounded-none bg-card border-none px-4 pt-1 pb-2">
+        <CardFooter className="rounded-none bg-card border-none px-0 pt-1 pb-4">
           {children}
         </CardFooter>
       </div>
