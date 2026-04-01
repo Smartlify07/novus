@@ -124,18 +124,20 @@ export const loginAction = async (
       };
     }
     const result: LoginResponse = await response.json();
+    const expiresAt = new Date(Date.now() + result.expiresIn * 1000);
+
     cookieStore.set({
       name: 'token',
       value: result.token,
-      expires: Date.now() + result.expiresIn * 1000,
+      expires: expiresAt,
       httpOnly: true,
       secure: true,
       sameSite: 'lax',
     });
     cookieStore.set({
       name: 'token_expires_at',
-      value: String(Date.now() + result.expiresIn * 1000),
-      expires: new Date(Date.now() + result.expiresIn * 1000),
+      value: String(expiresAt.getTime()),
+      expires: expiresAt,
       httpOnly: true,
       secure: true,
       sameSite: 'lax',
