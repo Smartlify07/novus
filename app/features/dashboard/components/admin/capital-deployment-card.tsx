@@ -11,6 +11,10 @@ import { useAdminDashboardStats } from '../../hooks';
 import { formatCurrency } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Alert, Refresh } from '@hugeicons/core-free-icons';
+import { Button } from '@/components/ui/button';
 
 export default function CapitalDeploymentCard() {
   const { data, error, isPending } = useAdminDashboardStats();
@@ -18,11 +22,60 @@ export default function CapitalDeploymentCard() {
   const totalLoans = data?.totalLoans ?? 0;
   const totalActiveLoans = data?.activeLoans ?? 0;
   const totalIdle = totalDeposits - totalLoans;
+
   if (isPending) {
-    return <p>Loading...</p>;
+    return (
+      <Card>
+        <CardHeader>
+          <Skeleton className="h-4 w-20" />
+        </CardHeader>
+
+        <CardContent className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <Skeleton className="h-4 w-20" />
+            <Skeleton className="h-6 w-32" />
+          </div>
+          <div className="flex flex-col gap-1">
+            <Skeleton className="h-2 w-20" />
+            <Skeleton className="h-1 w-full" />
+          </div>
+        </CardContent>
+        <CardFooter className="bg-card">
+          <div className="flex items-center justify-between gap-4 w-full">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="flex flex-col gap-0.5 w-full">
+                <Skeleton className="h-2 w-20" />
+                <Skeleton className="h-4 w-24" />
+              </div>
+            ))}
+          </div>
+        </CardFooter>
+      </Card>
+    );
   }
+
   if (error) {
-    return <p>{error.message}</p>;
+    return (
+      <Card>
+        <div className="flex flex-col items-center gap-2 self-center w-xl max-w-xl py-10">
+          <div className="rounded-full border bg-muted/50 size-12 flex items-center justify-center">
+            <HugeiconsIcon icon={Alert} />
+          </div>
+          <div>
+            <h1 className="font-medium text-lg text-center">
+              Unable to get capital deployment stats
+            </h1>
+            <p className="text-muted-foreground text-center text-sm">
+              We were unable to get details of the capital deployment statistics
+            </p>
+          </div>
+          <Button variant={'outline'} className="max-w-xs">
+            <HugeiconsIcon className="size-4" icon={Refresh} size={14} /> Try
+            again
+          </Button>
+        </div>
+      </Card>
+    );
   }
   return (
     <Card>
@@ -30,7 +83,7 @@ export default function CapitalDeploymentCard() {
         <CardTitle className="text-sm">Capital deployment</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        <div className="flex flex-col gap-">
+        <div className="flex flex-col">
           <CardTitle className="text-muted-foreground text-sm">
             Total Deposits
           </CardTitle>
