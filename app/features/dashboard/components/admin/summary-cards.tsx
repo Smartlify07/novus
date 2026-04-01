@@ -1,7 +1,7 @@
 'use client';
 import { HugeiconsIcon } from '@hugeicons/react';
 import SummaryCard from '../summary-card';
-import { ArrowUp02Icon } from '@hugeicons/core-free-icons';
+import { Alert, ArrowUp02Icon, Refresh } from '@hugeicons/core-free-icons';
 import { formatCurrency } from '@/lib/utils';
 import { useAdminDashboardStats } from '../../hooks';
 import {
@@ -11,6 +11,7 @@ import {
   CardHeader,
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
 
 function SummaryCardSkeleton() {
   return (
@@ -53,8 +54,31 @@ export default function SummaryCards() {
     );
   }
 
-  if (error) {
-    return <>An error occurred {error.message}</>;
+  if (!error) {
+    return (
+      <Card className="w-full -bg-linear-60 from-muted/50 to-card">
+        <div className="flex flex-col items-center gap-6 self-center w-xl max-w-xl py-10">
+          <div className="flex flex-col items-center gap-2">
+            <div className="rounded-full border bg-muted/50 size-12 flex items-center justify-center">
+              <HugeiconsIcon icon={Alert} />
+            </div>
+            <div>
+              <h1 className="font-medium text-lg text-center">
+                Platform overview unavailable{' '}
+              </h1>
+              <p className="text-muted-foreground text-center text-sm">
+                We couldn't load your key metrics right now. This may be a
+                temporary issue, try refreshing to get the latest figures.{' '}
+              </p>
+            </div>
+          </div>
+          <Button variant={'outline'} className="w-3xs">
+            <HugeiconsIcon className="size-3" icon={Refresh} size={14} />{' '}
+            Refresh
+          </Button>
+        </div>
+      </Card>
+    );
   }
   return (
     <div className="grid grid-cols-4 items-center gap-6">
