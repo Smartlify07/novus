@@ -1,38 +1,76 @@
-import { cookies } from 'next/headers';
+import { decodeJwt } from 'jose';
 import { NextRequest, NextResponse } from 'next/server';
-import { getUser } from './app/features/auth/api';
+
+const AUTH_COOKIE_NAMES = ['token', 'token_expires_at', 'session'] as const;
+const PUBLIC_ROUTES = new Set(['/', '/login', '/signup']);
+
+const clearAuthCookies = (response: NextResponse) => {
+  for (const cookieName of AUTH_COOKIE_NAMES) {
+    response.cookies.delete(cookieName);
+  }
+
+  return response;
+};
+
+const parseExpiry = (value?: string) => {
+  if (!value) {
+    return null;
+  }
+
+  const timestamp = Number(value);
+  return Number.isFinite(timestamp) ? timestamp : null;
+};
+
+const getTokenExpiry = (token: string, fallbackExpiry?: string) => {
+  const fallbackExpiresAt = parseExpiry(fallbackExpiry);
+
+  try {
+    const { exp } = decodeJwt(token);
+    console.log(exp);
+    if (typeof exp === 'number') {
+      return exp * 1000;
+    }
+  } catch {
+    return null;
+  }
+
+  return fallbackExpiresAt;
+};
 
 export async function proxy(request: NextRequest) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get('token');
-  const expiresAt = cookieStore.get('token_expires_at');
-
-  const isAuthenticated =
-    token?.value && Number(expiresAt?.value) >= Date.now();
   const { pathname } = request.nextUrl;
-  const PUBLIC_ROUTES = ['/login', '/signup', '/'];
-  const isPublicRoute = PUBLIC_ROUTES.some((route) => pathname === route);
+  const isPublicRoute = PUBLIC_ROUTES.has(pathname);
+  const token = request.cookies.get('token')?.value;
+  const expiresAt = request.cookies.get('token_expires_at')?.value;
+  const tokenExpiry = token ? getTokenExpiry(token, expiresAt) : null;
+  const isAuthenticated =
+    typeof tokenExpiry === 'number' && tokenExpiry >= Date.now();
 
   if (!isAuthenticated && !isPublicRoute) {
-    // Redirect unauthenticated users away from protected routes
-    return NextResponse.redirect(new URL('/login', request.url));
+    const response = NextResponse.redirect(new URL('/login', request.url));
+    return clearAuthCookies(response);
   }
 
   if (isAuthenticated && isPublicRoute) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
+  if (token && !isAuthenticated) {
+    return clearAuthCookies(NextResponse.next());
+  }
+
   return NextResponse.next();
 }
+
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * Feel free to modify this pattern to include more paths.
-     */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/',
+    '/login',
+    '/signup',
+    '/create-account',
+    '/dashboard/:path*',
+    '/loans/:path*',
+    '/transactions/:path*',
+    '/transfer/:path*',
   ],
 };
