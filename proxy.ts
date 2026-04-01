@@ -26,7 +26,6 @@ const getTokenExpiry = (token: string, fallbackExpiry?: string) => {
 
   try {
     const { exp } = decodeJwt(token);
-    console.log(exp);
     if (typeof exp === 'number') {
       return exp * 1000;
     }

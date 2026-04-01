@@ -1,6 +1,7 @@
 'use client';
 import { usePendingLoans } from '@/app/features/loans/hooks';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Loan } from '@/types';
 import { Briefcase, House01Icon, User } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon, IconSvgElement } from '@hugeicons/react';
@@ -21,17 +22,33 @@ export default function LoanTypeMixCard() {
   const mortgageLoansRatio = getLoanTypeRatio(loans, 'MORTGAGE');
 
   if (isPending) {
-    return <>Loading...</>;
+    return (
+      <Card className="gap-6">
+        <CardHeader>
+          <Skeleton className="h-4 w-32" />
+        </CardHeader>
+        <CardContent className="flex flex-col gap-6">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-4">
+              <Skeleton className="rounded-lg size-8" />
+              <Skeleton className="h-4 w-16" />
+              <Skeleton className="h-1 flex-1" />
+              <Skeleton className="h-4 w-10" />
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+    );
   }
   if (error) {
     return <>{error.message}</>;
   }
   return (
-    <Card>
-      <CardHeader className="border-b">
+    <Card className="gap-6">
+      <CardHeader>
         <CardTitle className="text-sm">Loan type mix</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col justify-between gap-4">
+      <CardContent className="flex flex-col justify-between gap-6">
         <LoanTypeMix
           loanType="PERSONAL"
           label="Personal"

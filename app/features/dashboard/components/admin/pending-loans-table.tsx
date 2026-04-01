@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
+  TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -25,37 +27,39 @@ export default function PendingLoansTable() {
         <TableHeader>
           <TableRow>
             {Array.from({ length: 5 }).map((_, i) => (
-              <TableHead className="first:pl-4">
+              <TableHead key={i} className="first:pl-4">
                 <Skeleton className="h-4 w-20" />
               </TableHead>
             ))}
           </TableRow>
         </TableHeader>
-        {Array.from({ length: 5 }).map((_, i) => (
-          <TableRow className=" last:border-b-0 ">
-            <TableCell className="pl-4">
-              <Skeleton className="h-4 w-20" />
-            </TableCell>
-            <TableCell>
-              <Skeleton className="h-4 w-20" />
-            </TableCell>
+        <TableBody>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <TableRow key={i} className=" last:border-b-0 ">
+              <TableCell className="pl-4">
+                <Skeleton className="h-4 w-20" />
+              </TableCell>
+              <TableCell>
+                <Skeleton className="h-4 w-20" />
+              </TableCell>
 
-            <TableCell>
-              <Skeleton className="h-4 w-20" />
-            </TableCell>
+              <TableCell>
+                <Skeleton className="h-4 w-20" />
+              </TableCell>
 
-            <TableCell>
-              <Skeleton className="h-4 w-24" />
-            </TableCell>
+              <TableCell>
+                <Skeleton className="h-4 w-24" />
+              </TableCell>
 
-            <TableCell className="">
-              <div className="flex items-center gap-2">
-                <Skeleton className="h-8 w-10" />
-                <Skeleton className="h-8 w-10" />
-              </div>
-            </TableCell>
-          </TableRow>
-        ))}
+              <TableCell className="">
+                <div className="flex items-center gap-2">
+                  <Skeleton className="h-8 w-10" />
+                  <Skeleton className="h-8 w-10" />
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
       </Table>
     );
   }
@@ -83,8 +87,8 @@ export default function PendingLoansTable() {
   }
   return (
     <Table>
-      <TableHeader className="">
-        <TableRow className="">
+      <TableHeader>
+        <TableRow>
           <TableHead className="pl-4">Applicant</TableHead>
           <TableHead className="">Amount</TableHead>
           <TableHead className="">Type</TableHead>
@@ -92,39 +96,43 @@ export default function PendingLoansTable() {
           <TableHead className="">Action</TableHead>
         </TableRow>
       </TableHeader>
-      {loans.map((loan) => (
-        <TableRow className=" last:border-b-0">
-          <TableCell className="pl-4">
-            <h4 className="font-medium">User user</h4>
-            <h5 className="text-muted-foreground text-xs">{loan.loanNumber}</h5>
-          </TableCell>
-          <TableCell className="">
-            <h4 className="font-medium">
-              {formatCurrency(loan.principalAmount, 'NGN')}
-            </h4>
-          </TableCell>
-          <TableCell className="">
-            <h4 className="font-medium text-muted-foreground">
-              {loan.loanType}{' '}
-            </h4>
-          </TableCell>
-          <TableCell className="">
-            <h4 className="font-medium text-muted-foreground">
-              {format(loan.applicationDate, 'EEEE, PPP')}{' '}
-            </h4>
-          </TableCell>
-          <TableCell className="">
-            <div className="flex items-center gap-2">
-              <Button className="">
-                <HugeiconsIcon icon={Tick} />
-              </Button>
-              <Button className="" variant={'destructive'}>
-                <HugeiconsIcon icon={Cancel} />
-              </Button>
-            </div>
-          </TableCell>
-        </TableRow>
-      ))}
+      <TableBody>
+        {loans.map((loan) => (
+          <TableRow key={loan.id} className="last:border-b-0">
+            <TableCell className="pl-4">
+              <h4 className="font-medium">User user</h4>
+              <h5 className="text-muted-foreground text-xs">
+                {loan.loanNumber}
+              </h5>
+            </TableCell>
+            <TableCell className="">
+              <h4 className="font-medium">
+                {formatCurrency(loan.principalAmount, 'NGN')}
+              </h4>
+            </TableCell>
+            <TableCell className="">
+              <h4 className="font-medium text-muted-foreground">
+                {loan.loanType}{' '}
+              </h4>
+            </TableCell>
+            <TableCell className="">
+              <h4 className="font-medium text-muted-foreground">
+                {format(loan.applicationDate, 'EEEE, PPP')}{' '}
+              </h4>
+            </TableCell>
+            <TableCell className="">
+              <div className="flex items-center gap-2">
+                <Button className="">
+                  <HugeiconsIcon icon={Tick} />
+                </Button>
+                <Button className="" variant={'destructive'}>
+                  <HugeiconsIcon icon={Cancel} />
+                </Button>
+              </div>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
     </Table>
   );
 }
