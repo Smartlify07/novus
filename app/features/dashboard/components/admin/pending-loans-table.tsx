@@ -1,5 +1,6 @@
 'use client';
 import { usePendingLoans } from '@/app/features/loans/hooks';
+import InlineErrorStateCard from '@/components/inline-error-state-card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -15,7 +16,6 @@ import { formatCurrency } from '@/lib/utils';
 import { Alert, Cancel, Refresh, Tick } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { format } from 'date-fns';
-import React from 'react';
 
 export default function PendingLoansTable() {
   const { data, error, isPending } = usePendingLoans();
@@ -65,24 +65,12 @@ export default function PendingLoansTable() {
   }
   if (error) {
     return (
-      <div className="flex flex-col items-center gap-2 self-center w-xl max-w-xl py-10">
-        <div className="rounded-full border bg-muted/50 size-12 flex items-center justify-center">
-          <HugeiconsIcon icon={Alert} />
-        </div>
-        <div>
-          <h1 className="font-medium text-lg text-center">
-            Could not get pending loans
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            We were unable to get the pending loans.
-          </p>
-        </div>
-        <p className=""></p>
-        <Button variant={'outline'} className="max-w-xs">
-          <HugeiconsIcon className="size-4" icon={Refresh} size={14} /> Try
-          again
-        </Button>
-      </div>
+      <InlineErrorStateCard
+        className="ring-0 py-10 "
+        title="Couldn't load applications"
+        description="The pending loan applications failed to load. Refresh the list to try again, no actions have been lost."
+        actions={[{ label: 'Retry', icon: Refresh }]}
+      />
     );
   }
   return (

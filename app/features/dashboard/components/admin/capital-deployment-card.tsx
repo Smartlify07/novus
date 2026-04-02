@@ -15,6 +15,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Alert, Refresh } from '@hugeicons/core-free-icons';
 import { Button } from '@/components/ui/button';
+import InlineErrorStateCard from '@/components/inline-error-state-card';
 
 export default function CapitalDeploymentCard() {
   const { data, error, isPending } = useAdminDashboardStats();
@@ -56,25 +57,11 @@ export default function CapitalDeploymentCard() {
 
   if (error) {
     return (
-      <Card>
-        <div className="flex flex-col items-center gap-2 self-center w-xl max-w-xl py-10">
-          <div className="rounded-full border bg-muted/50 size-12 flex items-center justify-center">
-            <HugeiconsIcon icon={Alert} />
-          </div>
-          <div>
-            <h1 className="font-medium text-lg text-center">
-              Unable to get capital deployment stats
-            </h1>
-            <p className="text-muted-foreground text-center text-sm">
-              We were unable to get details of the capital deployment statistics
-            </p>
-          </div>
-          <Button variant={'outline'} className="max-w-xs">
-            <HugeiconsIcon className="size-4" icon={Refresh} size={14} /> Try
-            again
-          </Button>
-        </div>
-      </Card>
+      <InlineErrorStateCard
+        title="Unable to get capital deployment stats"
+        description="We were unable to get details of the capital deployment statistics"
+        actions={[{ label: 'Try again', icon: Refresh }]}
+      />
     );
   }
   return (
