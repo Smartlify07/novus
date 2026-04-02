@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
+import InlineErrorStateCard from '@/components/inline-error-state-card';
 
 function SummaryCardSkeleton() {
   return (
@@ -54,30 +55,14 @@ export default function SummaryCards() {
     );
   }
 
-  if (!error) {
+  if (error) {
     return (
-      <Card className="w-full -bg-linear-60 from-muted/50 to-card">
-        <div className="flex flex-col items-center gap-6 self-center w-xl max-w-xl py-10">
-          <div className="flex flex-col items-center gap-2">
-            <div className="rounded-full border bg-muted/50 size-12 flex items-center justify-center">
-              <HugeiconsIcon icon={Alert} />
-            </div>
-            <div>
-              <h1 className="font-medium text-lg text-center">
-                Platform overview unavailable{' '}
-              </h1>
-              <p className="text-muted-foreground text-center text-sm">
-                We couldn't load your key metrics right now. This may be a
-                temporary issue, try refreshing to get the latest figures.{' '}
-              </p>
-            </div>
-          </div>
-          <Button variant={'outline'} className="w-3xs">
-            <HugeiconsIcon className="size-3" icon={Refresh} size={14} />{' '}
-            Refresh
-          </Button>
-        </div>
-      </Card>
+      <InlineErrorStateCard
+        className="py-10"
+        title="Platform overview unavailable"
+        description="We couldn't load your key metrics right now. This may be a temporary issue, try refreshing to get the latest figures."
+        actions={[{ label: 'Refresh', icon: Refresh }]}
+      />
     );
   }
   return (

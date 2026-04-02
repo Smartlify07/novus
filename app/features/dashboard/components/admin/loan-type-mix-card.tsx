@@ -1,9 +1,15 @@
 'use client';
 import { usePendingLoans } from '@/app/features/loans/hooks';
+import InlineErrorStateCard from '@/components/inline-error-state-card';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Loan } from '@/types';
-import { Briefcase, House01Icon, User } from '@hugeicons/core-free-icons';
+import {
+  Briefcase,
+  House01Icon,
+  Refresh,
+  User,
+} from '@hugeicons/core-free-icons';
 import { HugeiconsIcon, IconSvgElement } from '@hugeicons/react';
 
 function getLoanTypeRatio(loans: Loan[], type: Loan['loanType']) {
@@ -41,7 +47,18 @@ export default function LoanTypeMixCard() {
     );
   }
   if (error) {
-    return <>{error.message}</>;
+    return (
+      <InlineErrorStateCard
+        title=" Loan mix unavailable"
+        description="We weren't able to load the breakdown of loan types. This chart will update once the data is available."
+        actions={[
+          {
+            label: 'Retry',
+            icon: Refresh,
+          },
+        ]}
+      />
+    );
   }
   return (
     <Card className="gap-6">

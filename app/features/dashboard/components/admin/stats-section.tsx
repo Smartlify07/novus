@@ -15,8 +15,10 @@ import {
   Money01Icon,
   MoneyBag01Icon,
   MoneyBag02Icon,
+  Refresh,
   UserIcon,
 } from '@hugeicons/core-free-icons';
+import InlineErrorStateCard from '@/components/inline-error-state-card';
 
 function StatsCardsSkeleton() {
   return (
@@ -57,7 +59,14 @@ export default function StatsSection() {
   }
 
   if (error) {
-    return <>An error occurred {error.message}</>;
+    return (
+      <InlineErrorStateCard
+        className="py-10"
+        title="Insights couldn't be calculated"
+        description="We weren't able to compute your portfolio insights at this time. The underlying data may still be loading — give it a moment and try again."
+        actions={[{ label: 'Refresh', icon: Refresh }]}
+      />
+    );
   }
 
   return (
