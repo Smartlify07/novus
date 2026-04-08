@@ -1,5 +1,10 @@
 'use client';
-import { usePendingLoans } from '@/app/features/loans/hooks';
+import {
+  LOANS_QUERY_KEY,
+  useLoanApproval,
+  usePendingLoans,
+} from '@/app/features/loans/hooks';
+import { LoanApprovalPayload } from '@/app/features/loans/types';
 import InlineErrorStateCard from '@/components/inline-error-state-card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -13,14 +18,29 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { formatCurrency } from '@/lib/utils';
-import { Alert, Cancel, Refresh, Tick } from '@hugeicons/core-free-icons';
+import { Loan } from '@/types';
+import {
+  Alert,
+  Cancel,
+  MoreHorizontal,
+  MoreIcon,
+  MoreVertical,
+  MoreVerticalCircle01Icon,
+  Refresh,
+  Tick,
+} from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
+import { QueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 export default function PendingLoansTable() {
   const { data, error, isPending } = usePendingLoans();
   const loans = data?.content ?? [];
-
+  const approveLoanMutation = useLoanApproval();
+  const queryClient = new QueryClient();
+  const router = useRouter();
   if (isPending) {
     return (
       <Table>
@@ -35,7 +55,7 @@ export default function PendingLoansTable() {
         </TableHeader>
         <TableBody>
           {Array.from({ length: 5 }).map((_, i) => (
-            <TableRow key={i} className=" last:border-b-0 ">
+            <TableRow key={i} className=" last:border-b-0 cursor-pointer">
               <TableCell className="pl-4">
                 <Skeleton className="h-4 w-20" />
               </TableCell>
@@ -86,7 +106,13 @@ export default function PendingLoansTable() {
       </TableHeader>
       <TableBody>
         {loans.map((loan) => (
-          <TableRow key={loan.id} className="last:border-b-0">
+          <TableRow
+            onClick={() => {
+              router.push(`/loans/${loan.id}`);
+            }}
+            key={loan.id}
+            className="last:border-b-0"
+          >
             <TableCell className="pl-4">
               <h4 className="font-medium">User user</h4>
               <h5 className="text-muted-foreground text-xs">
@@ -108,15 +134,11 @@ export default function PendingLoansTable() {
                 {format(loan.applicationDate, 'EEEE, PPP')}{' '}
               </h4>
             </TableCell>
-            <TableCell className="">
-              <div className="flex items-center gap-2">
-                <Button className="">
-                  <HugeiconsIcon icon={Tick} />
-                </Button>
-                <Button className="" variant={'destructive'}>
-                  <HugeiconsIcon icon={Cancel} />
-                </Button>
-              </div>
+            <TableCell className="cursor-pointer">
+              <HugeiconsIcon
+                className="size-5"
+                icon={MoreVerticalCircle01Icon}
+              />
             </TableCell>
           </TableRow>
         ))}

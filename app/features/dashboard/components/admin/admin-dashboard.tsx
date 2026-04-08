@@ -5,6 +5,7 @@ import StatsSection from './stats-section';
 import PendingLoans from './pending-loans';
 import CapitalDeploymentCard from './capital-deployment-card';
 import LoanTypeMixCard from './loan-type-mix-card';
+import { Sheet } from '@/components/ui/sheet';
 
 export default function AdminDashboard() {
   return (
@@ -16,6 +17,7 @@ export default function AdminDashboard() {
         <CapitalDeploymentCard />
         <LoanTypeMixCard />
       </div>
+
       <PendingLoans />
     </div>
   );

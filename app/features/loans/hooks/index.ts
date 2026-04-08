@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
+  LoanApprovalPayload,
   LoanRepaymentPayload,
   LoanRepaymentsResponse,
   LoanResponse,
@@ -7,11 +8,13 @@ import {
   SubmitLoanRepaymentResponse,
 } from '../types';
 import {
+  approveLoan,
   getLoanRepayments,
   getLoans,
   getPendingLoanApplications,
   submitLoanRepayment,
 } from '../api';
+import { Loan } from '@/types';
 
 export const LOANS_QUERY_KEY = ['loans'];
 export const PENDING_LOANS_QUERY_KEY = [...LOANS_QUERY_KEY, 'pending'];
@@ -41,6 +44,16 @@ export function useLoanRepayments(loanId: number) {
     queryKey: loanRepaymentsKeys.byLoanId(loanId),
     queryFn: () => getLoanRepayments(loanId),
     enabled: !!loanId,
+  });
+}
+
+export function useLoanApproval() {
+  return useMutation<
+    Loan,
+    Error,
+    { loanId: number; payload: LoanApprovalPayload }
+  >({
+    mutationFn: ({ loanId, payload }) => approveLoan(loanId, payload),
   });
 }
 

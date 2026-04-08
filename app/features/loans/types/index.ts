@@ -61,6 +61,11 @@ export type LoanRepaymentPayload = {
   paymentMethod: LoanRepaymentMethod;
 };
 
+export type LoanApprovalPayload = {
+  comments?: string;
+  interestRate: number;
+};
+
 export type SubmitLoanRepaymentStatus = 'PENDING' | 'COMPLETED' | 'FAILED';
 
 export type SubmitLoanRepaymentResponse = {
