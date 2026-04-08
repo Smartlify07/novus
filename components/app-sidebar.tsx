@@ -1,8 +1,6 @@
 'use client';
 
 import * as React from 'react';
-
-import { NavDocuments } from '@/components/nav-documents';
 import { NavMain } from '@/components/nav-main';
 import { NavSecondary } from '@/components/nav-secondary';
 import { NavUser } from '@/components/nav-user';
@@ -35,8 +33,12 @@ import {
   CreditCard,
   MoneyBag02FreeIcons,
   Invoice03Icon,
+  Users,
+  MoneyBag01Icon,
+  GoogleDocIcon,
 } from '@hugeicons/core-free-icons';
 import AppLogo from './app-logo';
+import { useUser } from '@/app/features/auth/hooks/useUser';
 
 const data = {
   user: {
@@ -67,6 +69,24 @@ const data = {
     },
   ],
 
+  navAdmin: [
+    {
+      title: 'Dashboard',
+      url: '/dashboard',
+      icon: <HugeiconsIcon icon={DashboardSquare01Icon} strokeWidth={2} />,
+    },
+    {
+      title: 'Loan Applications',
+      url: '/loan-applications',
+      icon: <HugeiconsIcon icon={GoogleDocIcon} strokeWidth={2} />,
+    },
+    {
+      title: 'Users',
+      url: '/users',
+      icon: <HugeiconsIcon icon={Users} strokeWidth={2} />,
+    },
+  ],
+
   navSecondary: [
     {
       title: 'Settings',
@@ -82,6 +102,8 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data: user, isPending, error } = useUser();
+  const isAdmin = user?.roles.includes('ADMIN');
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -98,7 +120,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain
+          isPending={isPending}
+          items={isAdmin ? data.navAdmin : data.navMain}
+        />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
