@@ -2,12 +2,14 @@
 
 import { cookies } from 'next/headers';
 import {
+  LoanApprovalPayload,
   LoanRepaymentPayload,
   LoanRepaymentsResponse,
   LoanResponse,
   PendingLoansResponse,
   SubmitLoanRepaymentResponse,
 } from '../types';
+import { Loan } from '@/types';
 
 const getAuthHeaders = async () => {
   const cookieStore = await cookies();
@@ -87,6 +89,38 @@ export const getLoanRepayments = async (
   }
 };
 
+export const approveLoan = async (
+  loanId: number,
+  payload: LoanApprovalPayload,
+): Promise<Loan> => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/loans/${loanId}/approve`,
+      {
+        method: 'POST',
+        headers: await getAuthHeaders(),
+        body: JSON.stringify(payload),
+      },
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      if (errorData.fieldErrors) {
+        const errors = Object.entries(errorData.fieldErrors);
+        const errorString = errors.map(([key, value]) => `${value}`).join('');
+        throw new Error(errorString);
+      }
+      throw new Error(errorData.message || `Failed to approve loan`);
+    }
+
+    const data = (await response.json()) as Loan;
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 export const submitLoanRepayment = async (
   loanId: number,
   payload: LoanRepaymentPayload,
@@ -103,7 +137,6 @@ export const submitLoanRepayment = async (
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.log(errorData);
       if (errorData.fieldErrors) {
         const errors = Object.entries(errorData.fieldErrors);
         const errorString = errors.map(([key, value]) => `${value}`).join('');
