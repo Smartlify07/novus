@@ -4,6 +4,20 @@ export type Pagination = {
   totalElements: number;
   totalPages: number;
 };
+export type SortConfig = {
+  unsorted: boolean;
+  sorted: boolean;
+  empty: boolean;
+};
+
+export type Pageable = {
+  paged: boolean;
+  unpaged: boolean;
+  pageNumber: number;
+  pageSize: number;
+  offset: number;
+  sort: SortConfig;
+};
 
 export type Transaction = {
   id: number;
