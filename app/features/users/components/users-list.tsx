@@ -54,14 +54,15 @@ export function UsersList() {
   }
   return (
     <Card>
-      <CardHeader className="">
+      <CardHeader className="flex items-center justify-between">
         <CardTitle className="uppercase text-sm text-muted-foreground">
           All Users
         </CardTitle>
+        <CardDescription>Toggle to activate / deactivate</CardDescription>
       </CardHeader>
       <CardContent>
         {users?.content.slice(start, end).map((user) => (
-          <div className="flex items-center justify-between border-b py-4">
+          <div className="flex items-center justify-between border-b py-4 last:border-b-0">
             <div className="flex items-center gap-2">
               <Avatar>
                 <AvatarFallback className="">
