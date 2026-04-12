@@ -1,4 +1,4 @@
-'use client';
+"use client";
 export default function QuickActionButton({
   icon,
   label,
@@ -11,7 +11,7 @@ export default function QuickActionButton({
   return (
     <button
       onClick={onClick}
-      className="flex items-center gap-2 rounded-md ring-1 ring-muted bg-popover px-3 py-2 text-sm font-medium hover:bg-accent/50 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent"
+      className="ring-muted bg-popover hover:bg-accent/50 focus:ring-ring data-[state=open]:bg-accent flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium ring-1 focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:pointer-events-none"
     >
       {icon}
       {label}
