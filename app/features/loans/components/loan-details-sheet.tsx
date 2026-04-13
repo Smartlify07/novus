@@ -76,9 +76,10 @@ export default function LoanDetailsSheet({
                 <LoanStatusAlertSection status={resolvedLoan.status} />
               )}
               <LoanDetailsSection loan={resolvedLoan} />
-              {resolvedLoan.status === "ACTIVE" && (
-                <LoanRepaymentsList loanId={resolvedLoan.id} />
-              )}
+              {resolvedLoan.status === "ACTIVE" ||
+                (resolvedLoan.status === "CLOSED" && (
+                  <LoanRepaymentsList loanId={resolvedLoan.id} />
+                ))}
             </div>
 
             <SheetFooter className="border-t p-4">

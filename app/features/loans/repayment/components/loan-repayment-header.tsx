@@ -1,7 +1,7 @@
-import Link from 'next/link';
+import Link from "next/link";
 
-import { Button } from '@/components/ui/button';
-import { Loan } from '@/types';
+import { Button } from "@/components/ui/button";
+import { Loan } from "@/types";
 
 type LoanRepaymentHeaderProps = {
   loan: Loan;
@@ -13,15 +13,16 @@ export default function LoanRepaymentHeader({
   return (
     <div className="flex items-start justify-between gap-4">
       <div className="flex flex-col gap-2">
-        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+        <p className="text-muted-foreground text-xs tracking-[0.18em] uppercase">
           Loan repayment
         </p>
         <div className="flex flex-col gap-1">
-          <h1 className="text-3xl tracking-tight text-foreground">
+          <h1 className="text-foreground text-xl tracking-tight lg:text-3xl">
             Repay active loan
           </h1>
-          <p className="text-sm text-muted-foreground">
-            Make a payment against loan <span className="font-medium">{loan.loanNumber}</span>.
+          <p className="text-muted-foreground text-sm">
+            Make a payment against loan{" "}
+            <span className="font-medium">{loan.loanNumber}</span>.
           </p>
         </div>
       </div>

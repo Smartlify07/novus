@@ -9,10 +9,10 @@ export default function RepaymentMetric({
 }: RepaymentMetricProps) {
   return (
     <div className="flex flex-col gap-1">
-      <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
+      <p className="text-muted-foreground truncate text-sm tracking-tight">
         {label}
       </p>
-      <p className="text-sm font-medium text-foreground">{value}</p>
+      <p className="text-foreground truncate text-sm font-medium">{value}</p>
     </div>
   );
 }
