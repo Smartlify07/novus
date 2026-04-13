@@ -1,17 +1,20 @@
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import React from 'react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
+import React from "react";
 
 export default function Cta() {
   return (
-    <section className="bg-muted/50 rounded-lg flex flex-col p-6 gap-2">
-      <h4 className="text-xs tracking-tight text-muted-foreground uppercase">
-        New Application
-      </h4>
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col gap-0">
-            <h1 className="text-2xl tracking-tight font-medium">
+    <Card className="bg-muted/50 flex flex-col gap-2 rounded-lg">
+      <CardHeader>
+        <CardTitle className="text-muted-foreground text-xs tracking-tight uppercase">
+          New Application
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
+        <div className="flex flex-col justify-between lg:flex-row lg:items-center">
+          <div className="flex flex-col gap-1">
+            <h1 className="text-xl font-medium tracking-tight lg:text-2xl">
               Need more funds? We're ready
             </h1>
             <p className="text-muted-foreground text-sm tracking-tight">
@@ -20,18 +23,17 @@ export default function Cta() {
             </p>
           </div>
           <div className="flex flex-col gap-1">
-            <h1 className="text-2xl font-medium tracking-tight self-end">
-              3.4%
-            </h1>
-            <p className="text-xs uppercase tracking-tight text-muted-foreground">
-              From / Month
+            <p className="text-muted-foreground text-sm tracking-tight lg:text-lg">
+              From{" "}
+              <strong className="text-foreground font-medium">3.4% </strong>/
+              Month
             </p>
           </div>
         </div>
         <Button className="self-start">
-          <Link href={'/loans/apply'}>Start Application</Link>
+          <Link href={"/loans/apply"}>Start Application</Link>
         </Button>
-      </div>
-    </section>
+      </CardContent>
+    </Card>
   );
 }

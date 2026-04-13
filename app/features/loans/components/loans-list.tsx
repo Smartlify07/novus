@@ -1,24 +1,26 @@
-import { Badge } from '@/components/ui/badge';
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-} from '@/components/ui/card';
-import { cn, formatCurrency } from '@/lib/utils';
-import { HugeiconsIcon, IconSvgElement } from '@hugeicons/react';
-import { format } from 'date-fns';
-import { Tabs } from './your-loans-section';
-import { percentagePaid, totalPaid } from '@/lib/loan-utils';
-import { useLoans } from '../hooks';
-import { Loan, LoanStatus, LoanType } from '@/types';
+} from "@/components/ui/card";
+import { cn, formatCurrency } from "@/lib/utils";
+import { HugeiconsIcon, IconSvgElement } from "@hugeicons/react";
+import { format } from "date-fns";
+import { Tabs } from "./your-loans-section";
+import { percentagePaid, totalPaid } from "@/lib/loan-utils";
+import { useLoans } from "../hooks";
+import { Loan, LoanStatus, LoanType } from "@/types";
 import {
   Briefcase,
+  Document,
   House02Icon,
   InformationCircleIcon,
   MoneyBag02Icon,
   User,
-} from '@hugeicons/core-free-icons';
+} from "@hugeicons/core-free-icons";
+import { convertToCapitalized } from "../repayment/utils";
 
 export const LOAN_STATUS_COLORS: Record<
   LoanStatus,
@@ -29,29 +31,29 @@ export const LOAN_STATUS_COLORS: Record<
   }
 > = {
   ACTIVE: {
-    bg: '#EDF5EE',
-    color: '#3D6644',
-    border: '#D5E7D8',
+    bg: "#EDF5EE",
+    color: "#3D6644",
+    border: "#D5E7D8",
   },
   APPROVED: {
-    bg: '#E8F3F8',
-    color: '#2D6E8A',
-    border: '#B5D4E8',
+    bg: "#E8F3F8",
+    color: "#2D6E8A",
+    border: "#B5D4E8",
   },
   PENDING: {
-    bg: '#FEF5E7',
-    color: '#8A6200',
-    border: '#F5DCB0',
+    bg: "#FEF5E7",
+    color: "#8A6200",
+    border: "#F5DCB0",
   },
   CLOSED: {
-    bg: '#F8F5F0',
-    color: '#6B7B72',
-    border: 'rgba(28,37,35,0.1)',
+    bg: "#F8F5F0",
+    color: "#6B7B72",
+    border: "rgba(28,37,35,0.1)",
   },
   REJECTED: {
-    bg: '#FCEBEB',
-    color: '#8B2020',
-    border: '#F5C4C4',
+    bg: "#FCEBEB",
+    color: "#8B2020",
+    border: "#F5C4C4",
   },
 };
 
@@ -67,43 +69,43 @@ const LOAN_STATUS_BADGE: Record<
   }
 > = {
   ACTIVE: {
-    bg: '#EDF5EE',
-    color: '#3D6644',
-    border: '#D5E7D8',
-    label: 'Active',
+    bg: "#EDF5EE",
+    color: "#3D6644",
+    border: "#D5E7D8",
+    label: "Active",
     dot: true,
   },
   APPROVED: {
-    bg: '#E8F3F8',
-    color: '#2D6E8A',
-    border: '#B5D4E8',
-    label: 'Approved',
+    bg: "#E8F3F8",
+    color: "#2D6E8A",
+    border: "#B5D4E8",
+    label: "Approved",
     alertLabel:
-      'Your loan is approved. Funds will be disbursed by our team shortly.',
+      "Your loan is approved. Funds will be disbursed by our team shortly.",
     dot: true,
   },
   PENDING: {
-    bg: '#FEF5E7',
-    color: '#8A6200',
-    border: '#F5DCB0',
-    label: 'Pending review',
+    bg: "#FEF5E7",
+    color: "#8A6200",
+    border: "#F5DCB0",
+    label: "Pending review",
     dot: true,
     alertLabel:
       "Application under review. You'll be notified once a decision is made.",
   },
   CLOSED: {
-    bg: '#F8F5F0',
-    color: '#6B7B72',
-    border: 'rgba(28,37,35,0.1)',
-    label: 'Closed',
+    bg: "#F8F5F0",
+    color: "#6B7B72",
+    border: "rgba(28,37,35,0.1)",
+    label: "Closed",
     dot: false,
   },
   REJECTED: {
-    bg: '#FCEBEB',
-    color: '#8B2020',
-    border: '#F5C4C4',
-    label: 'Rejected',
-    alertLabel: 'This application was not approved. You may apply again.',
+    bg: "#FCEBEB",
+    color: "#8B2020",
+    border: "#F5C4C4",
+    label: "Rejected",
+    alertLabel: "This application was not approved. You may apply again.",
     dot: true,
   },
 };
@@ -119,7 +121,7 @@ export default function LoansList({
 
   const today = new Date();
   const filteredLoans = data?.loans?.filter((loan) => {
-    if (currentTab === 'ALL') {
+    if (currentTab === "ALL") {
       return true;
     } else {
       return loan.status === currentTab.toUpperCase();
@@ -130,15 +132,15 @@ export default function LoansList({
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
         <HugeiconsIcon
-          icon={MoneyBag02Icon}
+          icon={Document}
           size={48}
           className="text-primary mb-4"
         />
-        <h3 className="text-lg font-medium text-foreground mb-1">
+        <h3 className="text-foreground mb-1 text-lg font-medium">
           No loans found
         </h3>
-        <p className="text-sm text-muted-foreground">
-          {currentTab === 'ALL'
+        <p className="text-muted-foreground text-sm">
+          {currentTab === "ALL"
             ? "You don't have any loans yet."
             : `You don't have any ${currentTab.toLowerCase()} loans.`}
         </p>
@@ -182,51 +184,51 @@ export function LoanListItem({
           <LoanListItemNumber number={props.loanNumber} />
         </div>
 
-        {props.status === 'ACTIVE' && (
+        {props.status === "ACTIVE" && (
           <LoanListItemProgress
             totalPayment={totalPayment}
             principalAmount={props.principalAmount}
             percentage={percentage}
           />
         )}
-        {props.status !== 'ACTIVE' && props.status !== 'CLOSED' && (
+        {props.status !== "ACTIVE" && props.status !== "CLOSED" && (
           <LoanStatusAlertWithStatus status={props.status} />
         )}
       </CardContent>
       <CardFooter className="bg-card mx-4 grid grid-cols-3 items-start px-0">
-        {props.status === 'ACTIVE' && (
+        {props.status === "ACTIVE" && (
           <>
             <LoanItemFooterItem
               label="Monthly"
-              value={formatCurrency(props.monthlyPayment, 'NGN')}
+              value={formatCurrency(props.monthlyPayment, "NGN")}
               status={props.status}
               className="pl-0"
             />
             <LoanItemFooterItem
               label="Outstanding"
-              value={formatCurrency(outstanding, 'NGN')}
+              value={formatCurrency(outstanding, "NGN")}
               status={props.status}
               valueClassName="text-amber-600"
             />
 
             <LoanItemFooterItem
               label="Matures"
-              value={format(props.maturityDate, 'PPP')}
+              value={format(props.maturityDate, "PPP")}
               status={props.status}
               className="border-r-0"
             />
           </>
         )}
-        {props.status !== 'ACTIVE' && (
+        {props.status !== "ACTIVE" && (
           <LoanItemFooterItem
             label="Amount"
-            value={formatCurrency(props.principalAmount, 'NGN')}
+            value={formatCurrency(props.principalAmount, "NGN")}
             status={props.status}
             className="pl-0"
           />
         )}
 
-        {(props.status === 'PENDING' || props.status === 'APPROVED') && (
+        {(props.status === "PENDING" || props.status === "APPROVED") && (
           <>
             <LoanItemFooterItem
               label="Term"
@@ -235,35 +237,35 @@ export function LoanListItem({
             />
             <LoanItemFooterItem
               label="Applied"
-              value={format(props.applicationDate, 'PPP')}
+              value={format(props.applicationDate, "PPP")}
               status={props.status}
               className="border-r-0"
             />
           </>
         )}
 
-        {props.status === 'REJECTED' && (
+        {props.status === "REJECTED" && (
           <>
             <LoanItemFooterItem
               label="Applied"
-              value={format(props.applicationDate, 'PPP')}
+              value={format(props.applicationDate, "PPP")}
               status={props.status}
             />
           </>
         )}
 
-        {props.status === 'CLOSED' && (
+        {props.status === "CLOSED" && (
           <>
             <LoanItemFooterItem
               label="Settled"
-              value={formatCurrency(totalPayment, 'NGN')}
+              value={formatCurrency(totalPayment, "NGN")}
               status={props.status}
               className="text-chart-4"
             />
 
             <LoanItemFooterItem
               label="Matured"
-              value={format(props.maturityDate, 'PPP')}
+              value={format(props.maturityDate, "PPP")}
               status={props.status}
               className="text-chart-4 border-r-0"
             />
@@ -282,11 +284,11 @@ function LoanTypeSection({ loanType }: { loanType: LoanType }) {
   };
   return (
     <div className="flex items-center gap-2">
-      <div className="rounded-md flex items-center justify-center ring ring-border bg-secondary size-8">
+      <div className="ring-border bg-secondary flex size-8 items-center justify-center rounded-md ring">
         <HugeiconsIcon icon={icon[loanType]} size={16} />
       </div>
-      <h1 className="text-sm uppercase text-muted-foreground">
-        {loanType} loan
+      <h1 className="text-muted-foreground text-sm capitalize">
+        {convertToCapitalized(loanType)} loan
       </h1>
     </div>
   );
@@ -308,16 +310,18 @@ function LoanItemFooterItem({
   className?: string;
 }) {
   return (
-    <div className={cn('flex flex-col gap-1 border-r pl-4', className)}>
+    <div className={cn("flex flex-col gap-1 border-r pl-4", className)}>
       <h3
         className={cn(
-          'text-muted-foreground uppercase text-xs',
+          "text-muted-foreground text-xs capitalize",
           labelClassName,
         )}
       >
         {label}
       </h3>
-      <p className={cn('text-base tracking-tighter', valueClassName)}>
+      <p
+        className={cn("text-sm tracking-tighter lg:text-base", valueClassName)}
+      >
         {value}
       </p>
     </div>
@@ -326,7 +330,7 @@ function LoanItemFooterItem({
 
 function LoanItemAmount({ amount }: { amount: number }) {
   return (
-    <h1 className="text-foreground text-3xl tracking-tighter flex items-center gap-1">
+    <h1 className="text-foreground flex items-center gap-1 text-3xl tracking-tighter">
       <span className="text-muted-foreground text-2xl">₦</span>
       {amount.toLocaleString()}
     </h1>
@@ -335,7 +339,7 @@ function LoanItemAmount({ amount }: { amount: number }) {
 
 function LoanListItemNumber({ number }: { number: string }) {
   return (
-    <p className="text-sm font-medium text-muted-foreground max-w-sm truncate">
+    <p className="text-muted-foreground max-w-sm truncate text-sm font-medium">
       {number}
     </p>
   );
@@ -354,15 +358,15 @@ function LoanListItemProgress({
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
         <p className="text-muted-foreground text-xs">
-          {formatCurrency(totalPayment, 'NGN')} paid down
+          {formatCurrency(totalPayment, "NGN")} paid down
         </p>
         <p className="text-muted-foreground text-xs">
-          {formatCurrency(principalAmount - totalPayment, 'NGN')} left
+          {formatCurrency(principalAmount - totalPayment, "NGN")} left
         </p>
       </div>
-      <div className="w-full h-1 bg-muted rounded-full">
+      <div className="bg-muted h-1 w-full rounded-full">
         <div
-          className="rounded-full h-1 bg-primary "
+          className="bg-primary h-1 rounded-full"
           style={{
             width: `${percentage}%`,
           }}
@@ -380,19 +384,19 @@ function LoanListItemHeader({
 }: {
   loanType: LoanType;
   status: LoanStatus;
-  termMonths: Loan['termMonths'];
-  interestRate: Loan['interestRate'];
+  termMonths: Loan["termMonths"];
+  interestRate: Loan["interestRate"];
 }) {
   return (
-    <CardHeader className="flex flex-row items-center justify-between">
+    <CardHeader className="flex flex-row items-start justify-between lg:items-center">
       <LoanTypeSection loanType={loanType} />
-      <div className="flex flex-col gap-2 items-end">
+      <div className="flex flex-col items-end gap-4 lg:gap-2">
         <LoanStatusBadge status={status} />
         <div className="flex items-center gap-2">
-          <Badge variant={'secondary'} className="text-muted-foreground">
+          <Badge variant={"secondary"} className="text-muted-foreground">
             {termMonths} Months
           </Badge>
-          <Badge variant={'secondary'} className="text-muted-foreground">
+          <Badge variant={"secondary"} className="text-muted-foreground">
             {interestRate}% / mo
           </Badge>
         </div>
@@ -421,11 +425,11 @@ export function LoanStatusAlert({
   className,
   children,
   ...props
-}: React.ComponentProps<'div'>) {
+}: React.ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        'rounded-lg py-4 px-4 text-xs flex flex-col gap-1',
+        "flex flex-col gap-1 rounded-lg px-4 py-4 text-xs",
         className,
       )}
       {...props}
@@ -441,7 +445,7 @@ export function LoanStatusAlertIcon({ className }: { className?: string }) {
       icon={InformationCircleIcon}
       size={14}
       strokeWidth={2}
-      className={cn('shrink-0', className)}
+      className={cn("shrink-0", className)}
     />
   );
 }
@@ -453,7 +457,7 @@ export function LoanStatusAlertLabel({
   className?: string;
   children: React.ReactNode;
 }) {
-  return <span className={cn('font-medium', className)}>{children}</span>;
+  return <span className={cn("font-medium", className)}>{children}</span>;
 }
 
 export function LoanStatusAlertMessage({
