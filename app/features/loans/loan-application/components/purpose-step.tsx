@@ -1,26 +1,26 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardDescription,
   CardFooter,
   CardTitle,
-} from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
-import { useStepper } from './stepper';
-import { useLoanApplicationWorkflowStore } from '@/store/loan-application-workflow-store';
+} from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { useStepper } from "./stepper";
+import { useLoanApplicationWorkflowStore } from "@/store/loan-application-workflow-store";
 
 const quickSelectItems = [
-  'Housing',
-  'Travel',
-  'Medical',
-  'Education',
-  'Vehicle',
-  'Debt Consolidation',
-  'Business',
+  "Housing",
+  "Travel",
+  "Medical",
+  "Education",
+  "Vehicle",
+  "Debt Consolidation",
+  "Business",
 ];
 
 const MAX_CHARS = 500;
@@ -28,7 +28,7 @@ const MAX_CHARS = 500;
 export default function PurposeStep() {
   const stepper = useStepper();
   const { purpose, setPurpose } = useLoanApplicationWorkflowStore();
-  const [value, setValue] = useState(purpose || '');
+  const [value, setValue] = useState(purpose || "");
   const [selectedItem, setSelectedItem] = useState<string | null>(
     purpose || null,
   );
@@ -40,9 +40,9 @@ export default function PurposeStep() {
   };
 
   return (
-    <Card className="p-6 max-w-xl flex flex-col gap-6">
+    <Card className="flex max-w-xl flex-col gap-6 p-6">
       <div className="flex flex-col gap-2">
-        <CardTitle className="text-2xl tracking-tighter">
+        <CardTitle className="text-xl tracking-tighter lg:text-2xl">
           What is this Loan for?
         </CardTitle>
         <CardDescription className="tracking-tight">
@@ -53,7 +53,7 @@ export default function PurposeStep() {
       <div className="flex flex-col gap-4">
         <Textarea
           placeholder="Describe briefly how you plan to use the funds"
-          className="h-50 resize-none"
+          className="h-50 resize-none placeholder:text-sm"
           value={value}
           onChange={(e) => {
             if (e.target.value.length <= MAX_CHARS) {
@@ -62,7 +62,7 @@ export default function PurposeStep() {
             }
           }}
         />
-        <span className="text-muted-foreground text-xs self-end">
+        <span className="text-muted-foreground self-end text-xs">
           {value.length} of {MAX_CHARS} characters
         </span>
       </div>
@@ -73,8 +73,8 @@ export default function PurposeStep() {
           {quickSelectItems.map((item) => (
             <Badge
               key={item}
-              variant={selectedItem === item ? 'default' : 'outline'}
-              className="cursor-pointer px-4 h-8 text-sm font-medium"
+              variant={selectedItem === item ? "default" : "outline"}
+              className="h-8 cursor-pointer px-4 text-sm font-medium"
               onClick={() => handleQuickSelect(item)}
             >
               {item}
@@ -82,25 +82,25 @@ export default function PurposeStep() {
           ))}
         </div>
 
-        <CardFooter className="bg-card rounded-none px-0 flex items-center justify-between mt-6">
+        <CardFooter className="bg-card mt-6 flex items-center justify-between rounded-none px-0">
           <p className="text-muted-foreground text-sm">
             Step <span className="text-foreground">4</span> of 5
           </p>
           <div className="flex items-center gap-2">
             <Button
-              variant={'outline'}
+              variant={"outline"}
               onClick={() => {
-                stepper.onChange({ id: 3, value: 'term' });
+                stepper.onChange({ id: 3, value: "term" });
               }}
             >
               Back
             </Button>
             <Button
-              variant={'default'}
+              variant={"default"}
               onClick={() => {
-                stepper.onChange({ id: 5, value: 'review' });
+                stepper.onChange({ id: 5, value: "review" });
               }}
-              disabled={value === ''}
+              disabled={value === ""}
             >
               Continue
             </Button>

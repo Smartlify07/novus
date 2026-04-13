@@ -1,5 +1,11 @@
-import { Card, CardDescription, CardTitle } from '@/components/ui/card';
-import { formatCurrency } from '@/lib/utils';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { formatCurrency } from "@/lib/utils";
 
 export default function LoanAmountDisplay({
   principalAmount,
@@ -7,13 +13,17 @@ export default function LoanAmountDisplay({
   principalAmount: number;
 }) {
   return (
-    <Card className="bg-primary/5 px-6 py-10 gap-1 items-center">
-      <CardTitle className="text-5xl tracking-tighter">
-        {formatCurrency(principalAmount ?? 0, 'NGN')}
-      </CardTitle>
-      <CardDescription className="tracking-tight">
-        Principal Amount
-      </CardDescription>
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-muted-foreground text-sm tracking-tighter uppercase">
+          Principal amount{" "}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <h1 className="text-3xl tracking-tighter lg:text-5xl">
+          {formatCurrency(principalAmount ?? 0, "NGN")}
+        </h1>
+      </CardContent>
     </Card>
   );
 }
