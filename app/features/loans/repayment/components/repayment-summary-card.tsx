@@ -1,6 +1,12 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
-import RepaymentMetric from './repayment-metric';
+import RepaymentMetric from "./repayment-metric";
 
 type RepaymentSummaryCardProps = {
   amount: string;
@@ -14,14 +20,16 @@ export default function RepaymentSummaryCard({
   metrics,
 }: RepaymentSummaryCardProps) {
   return (
-    <Card className="border-primary/10 bg-primary/5">
+    <Card className="">
       <CardHeader className="gap-2">
-        <CardDescription className="text-xs uppercase tracking-[0.16em]">
+        <CardDescription className="text-sm tracking-tight">
           {label}
         </CardDescription>
-        <CardTitle className="text-4xl tracking-tight">{amount}</CardTitle>
+        <CardTitle className="text-2xl tracking-tight lg:text-4xl">
+          {amount}
+        </CardTitle>
       </CardHeader>
-      <CardContent className="grid grid-cols-2 gap-3 pt-0">
+      <CardContent className="grid grid-cols-2 gap-3 border-t pt-4">
         {metrics.map((metric) => (
           <RepaymentMetric
             key={metric.label}
