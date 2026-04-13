@@ -55,7 +55,10 @@ export default function LoanDetailsSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="overflow-y-auto pb-4">
+      <SheetContent
+        side="right"
+        className="overflow-y-auto pb-4 data-[side=right]:w-full lg:data-[side=right]:w-3/4"
+      >
         {resolvedLoan && (
           <>
             <LoanDetailsHeader
@@ -222,7 +225,7 @@ function LoanDetailsPaymentSummary({
   totalRepayable: number;
 }) {
   return (
-    <div className="grid grid-cols-3 gap-2 pt-2">
+    <div className="grid gap-2 pt-2 lg:grid-cols-3">
       <LoanDetailsPaymentSummaryItem
         label="Paid"
         value={formatCurrency(paid, "NGN")}
@@ -232,7 +235,7 @@ function LoanDetailsPaymentSummary({
         value={formatCurrency(outstanding, "NGN")}
       />
       <LoanDetailsPaymentSummaryItem
-        label="of"
+        label="Of"
         value={formatCurrency(totalRepayable, "NGN")}
       />
     </div>
@@ -247,8 +250,10 @@ function LoanDetailsPaymentSummaryItem({
   value: string;
 }) {
   return (
-    <div className="flex flex-col">
-      <span className="text-muted-foreground text-xs">{label}</span>
+    <div className="flex gap-1 lg:flex-col">
+      <span className="text-muted-foreground text-xs">
+        {label} <span className="lg:hidden">:</span>
+      </span>
       <span className="text-foreground text-xs font-medium">{value}</span>
     </div>
   );
