@@ -1,8 +1,8 @@
-import { Field, FieldLabel } from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
-import { MAX_ACCT_NUMBER_LENGTH } from '@/lib/constants';
-import { cn } from '@/lib/utils';
-import { useState, useEffect } from 'react';
+import { Field, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { MAX_ACCT_NUMBER_LENGTH } from "@/lib/constants";
+import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
 
 export default function RecepientsAccountInput({
   initialValue,
@@ -11,14 +11,14 @@ export default function RecepientsAccountInput({
   onChange: (value: string) => void;
   initialValue: string;
 }) {
-  const [value, setValue] = useState(initialValue ?? '');
+  const [value, setValue] = useState(initialValue ?? "");
 
   useEffect(() => {
-    setValue(initialValue ?? '');
+    setValue(initialValue ?? "");
   }, [initialValue]);
 
   const handleChange = (val: string) => {
-    const cleaned = val.replace(/[^0-9]/g, '');
+    const cleaned = val.replace(/[^0-9]/g, "");
     if (cleaned.length <= MAX_ACCT_NUMBER_LENGTH) {
       setValue(cleaned);
       onChange(cleaned);
@@ -31,8 +31,8 @@ export default function RecepientsAccountInput({
         Recepient's Account Number
       </FieldLabel>
       <div className="relative">
-        {value !== '' && (
-          <span className="text-muted-foreground absolute left-2 top-3 text-2xl">
+        {value !== "" && (
+          <span className="text-muted-foreground absolute top-1/2 left-2 -translate-y-1/2 text-lg lg:text-2xl">
             ACC-
           </span>
         )}
@@ -44,8 +44,8 @@ export default function RecepientsAccountInput({
           type="text"
           inputMode="numeric"
           className={cn(
-            'h-14 text-2xl md:text-2xl font-semibold placeholder:font-normal no-spinner',
-            value !== '' && 'pl-16',
+            "no-spinner h-14 text-lg font-semibold placeholder:font-normal lg:text-2xl",
+            value !== "" && "pl-16",
           )}
           placeholder="Enter recepient's account number"
           maxLength={MAX_ACCT_NUMBER_LENGTH}

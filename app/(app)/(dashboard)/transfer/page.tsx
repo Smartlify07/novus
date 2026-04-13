@@ -1,27 +1,27 @@
-'use client';
+"use client";
 
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect } from "react";
 import {
   useTransferWorkflowStore,
   Steps,
   STEP_METADATA,
-} from '@/store/transfer-workflow-store';
-import { MAX_ACCT_NUMBER_LENGTH } from '@/lib/constants';
-import AmountEntryStep from '@/app/features/transfer/components/amount-entry-step';
-import EnterRecepientStep from '@/app/features/transfer/components/enter-recepient-step';
-import ReviewTransferStep from '@/app/features/transfer/components/review-transfer-step';
-import TransferSuccessStep from '@/app/features/transfer/components/transfer-success-step';
-import TransfersBreadcrumb from '@/app/features/transfer/components/transfers-breadcrumb';
-import TransfersStepper from '@/app/features/transfer/components/transfers-stepper';
-import { Button } from '@/components/ui/button';
-import { useAccounts } from '@/app/features/accounts/hooks';
+} from "@/store/transfer-workflow-store";
+import { MAX_ACCT_NUMBER_LENGTH } from "@/lib/constants";
+import AmountEntryStep from "@/app/features/transfer/components/amount-entry-step";
+import EnterRecepientStep from "@/app/features/transfer/components/enter-recepient-step";
+import ReviewTransferStep from "@/app/features/transfer/components/review-transfer-step";
+import TransferSuccessStep from "@/app/features/transfer/components/transfer-success-step";
+import TransfersBreadcrumb from "@/app/features/transfer/components/transfers-breadcrumb";
+import TransfersStepper from "@/app/features/transfer/components/transfers-stepper";
+import { Button } from "@/components/ui/button";
+import { useAccounts } from "@/app/features/accounts/hooks";
 import {
   transferMoney,
   TransferResponse,
-} from '@/app/features/transactions/api';
-import { toast } from 'sonner';
-import { formatCurrency } from '@/lib/utils';
-import { useAccountStore } from '@/store/account-store';
+} from "@/app/features/transactions/api";
+import { toast } from "sonner";
+import { formatCurrency } from "@/lib/utils";
+import { useAccountStore } from "@/store/account-store";
 
 export default function TranferPage() {
   const step = useTransferWorkflowStore((s) => s.step);
@@ -51,7 +51,7 @@ export default function TranferPage() {
   );
   const sourceAccountBalance = currentAccount?.balance ?? 0;
 
-  const stepTitle = STEP_METADATA[step]?.title || '';
+  const stepTitle = STEP_METADATA[step]?.title || "";
 
   const isRecipientStepValid = useMemo(
     () => data.destinationAccountNumber.length === MAX_ACCT_NUMBER_LENGTH,
@@ -78,7 +78,7 @@ export default function TranferPage() {
       setIsSubmitting(true);
       const result = await transferMoney({
         sourceAccountId: data.sourceAccountId,
-        destinationAccountNumber: 'ACC' + data.destinationAccountNumber,
+        destinationAccountNumber: "ACC" + data.destinationAccountNumber,
         amount: data.amount ?? 0,
         description: data.description,
       });
@@ -87,7 +87,7 @@ export default function TranferPage() {
       setAccountBalance(result.newBalance);
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : 'Transfer failed';
+        error instanceof Error ? error.message : "Transfer failed";
       toast.error(message);
     } finally {
       setIsSubmitting(false);
@@ -111,19 +111,19 @@ export default function TranferPage() {
 
   const getButtonLabel = () => {
     if (step === Steps.ReviewTransfer) {
-      return `Send ${formatCurrency(data.amount ?? 0, 'NGN')}`;
+      return `Send ${formatCurrency(data.amount ?? 0, "NGN")}`;
     }
-    return 'Continue';
+    return "Continue";
   };
 
   const isReviewStep = step === Steps.ReviewTransfer;
 
   return (
-    <div className="p-6 flex flex-col gap-10 self-center w-3xl max-w-3xl">
+    <div className="flex max-w-3xl flex-col gap-10 self-center p-6 lg:w-3xl">
       <div className="flex flex-col gap-4">
         <TransfersBreadcrumb currentStepTitle={stepTitle} />
 
-        <h1 className="text-2xl font-semibold text-foreground">{stepTitle}</h1>
+        <h1 className="text-foreground text-2xl font-semibold">{stepTitle}</h1>
 
         <div className="flex items-center gap-2">
           <TransfersStepper onClick={() => setStep(Steps.EnterRecipient)} />
@@ -141,11 +141,11 @@ export default function TranferPage() {
       <div className="flex flex-col gap-10">{renderStep()}</div>
 
       {step !== Steps.Success && (
-        <div className="flex items-center justify-between mt-10">
+        <div className="mt-10 grid grid-cols-2 items-center justify-between gap-4">
           {step > 1 && (
             <Button
-              variant={'outline'}
-              className="w-30"
+              variant={"outline"}
+              className="w-full"
               onClick={goToPreviousStep}
               disabled={step === 1}
             >
@@ -153,11 +153,11 @@ export default function TranferPage() {
             </Button>
           )}
           <Button
-            className="w-30 ml-auto"
+            className="ml-auto w-full"
             onClick={isReviewStep ? handleTransfer : goToNextStep}
             disabled={!canContinue || isSubmitting}
           >
-            {isSubmitting ? 'Sending...' : getButtonLabel()}
+            {isSubmitting ? "Sending..." : getButtonLabel()}
           </Button>
         </div>
       )}

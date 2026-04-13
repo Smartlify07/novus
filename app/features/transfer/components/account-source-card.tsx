@@ -1,27 +1,28 @@
-import { AccountPopoverRadio } from '@/components/account-switcher';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Field, FieldLabel } from '@/components/ui/field';
+import { AccountPopoverRadio } from "@/components/account-switcher";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Field, FieldLabel } from "@/components/ui/field";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
-import { RadioGroup } from '@/components/ui/radio-group';
-import { Separator } from '@/components/ui/separator';
+} from "@/components/ui/popover";
+import { RadioGroup } from "@/components/ui/radio-group";
+import { Separator } from "@/components/ui/separator";
 import {
   formatCurrency,
   splitAccountNumber,
   maskAccountNumber,
-} from '@/lib/utils';
-import { ArrowReloadHorizontalIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { useTransferWorkflowStore } from '@/store/transfer-workflow-store';
-import { useAccountStore } from '@/store/account-store';
-import { useAuth } from '@/hooks/use-auth';
-import { useAccounts, useCurrentAccount } from '@/app/features/accounts/hooks';
-import { useUser } from '../../auth/hooks/useUser';
+} from "@/lib/utils";
+import { ArrowReloadHorizontalIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { useTransferWorkflowStore } from "@/store/transfer-workflow-store";
+import { useAccountStore } from "@/store/account-store";
+import { useAuth } from "@/hooks/use-auth";
+import { useAccounts, useCurrentAccount } from "@/app/features/accounts/hooks";
+import { useUser } from "../../auth/hooks/useUser";
+import { convertToCapitalized } from "../../loans/repayment/utils";
 
 export default function AccountSourceCard() {
   const sourceAccountId = useTransferWorkflowStore(
@@ -35,36 +36,36 @@ export default function AccountSourceCard() {
   const { data: accounts } = useAccounts();
 
   return (
-    <Field className="flex flex-col gap-2 max-w">
+    <Field className="flex flex-col gap-2">
       <FieldLabel className="text-foreground text-base font-medium">
         Paying from
       </FieldLabel>
 
-      <Card className="bg-muted/50 rounded-md p-4 flex flex-col gap-4">
-        <div className="flex items-center justify-between">
+      <Card className="flex flex-col gap-4 rounded-md p-4">
+        <div className="flex justify-between lg:items-center">
           <div className="flex gap-4">
-            <Avatar className="rounded-none">
-              <AvatarFallback className="font-medium rounded-md text-background bg-primary after:bg-primary">
+            <Avatar className="">
+              <AvatarFallback className="">
                 {user?.firstName?.charAt(0)}
                 {user?.lastName?.charAt(0)}
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <div className="flex flex-col shrink-0">
+              <div className="flex shrink-0 flex-col">
                 <p className="text-foreground text-base font-medium">
                   {user?.firstName} {user?.lastName}
                 </p>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col gap-2 lg:flex-row lg:items-center">
                   <p className="text-muted-foreground text-sm">
                     {splitAccountNumber(
-                      currentAccount?.accountNumber ?? '',
+                      currentAccount?.accountNumber ?? "",
                       3,
                       4,
                     )}
                   </p>
-                  <div className="rounded-full w-1 h-1 bg-muted-foreground"></div>
-                  <p className="text-sm text-muted-foreground capitalize">
-                    {`${currentAccount?.accountType.charAt(0)}${currentAccount?.accountType.slice(1).toLowerCase()} Account`}
+                  <div className="bg-muted-foreground hidden h-1 w-1 rounded-full lg:block"></div>
+                  <p className="text-muted-foreground text-sm capitalize">
+                    {`${convertToCapitalized(currentAccount?.accountType ?? "")} Account`}
                   </p>
                 </div>
               </div>
@@ -74,8 +75,8 @@ export default function AccountSourceCard() {
           <Popover>
             <PopoverTrigger asChild>
               <Button
-                variant={'ghost'}
-                className="text-primary font-medium hover:text-primary"
+                variant={"ghost"}
+                className="text-primary hover:text-primary font-medium"
               >
                 Switch <HugeiconsIcon icon={ArrowReloadHorizontalIcon} />
               </Button>
@@ -108,11 +109,11 @@ export default function AccountSourceCard() {
         <Separator />
 
         <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">Available Balance</p>
-          <h3 className="text-foreground font-semibold text-base">
+          <p className="text-muted-foreground text-sm">Available Balance</p>
+          <h3 className="text-foreground text-base font-semibold">
             {formatCurrency(
               currentAccount?.balance ?? 0,
-              currentAccount?.currency ?? 'NGN',
+              currentAccount?.currency ?? "NGN",
             )}
           </h3>
         </div>
