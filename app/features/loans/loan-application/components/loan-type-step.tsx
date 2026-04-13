@@ -1,10 +1,10 @@
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardDescription,
   CardFooter,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 
 import {
   Field,
@@ -12,42 +12,42 @@ import {
   FieldDescription,
   FieldLabel,
   FieldTitle,
-} from '@/components/ui/field';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { useLoanApplicationWorkflowStore } from '@/store/loan-application-workflow-store';
-import { Briefcase, House02Icon, User02Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon, IconSvgElement } from '@hugeicons/react';
-import { useStepper } from './stepper';
-import { LoanType } from '@/types';
+} from "@/components/ui/field";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useLoanApplicationWorkflowStore } from "@/store/loan-application-workflow-store";
+import { Briefcase, House02Icon, User02Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon, IconSvgElement } from "@hugeicons/react";
+import { useStepper } from "./stepper";
+import { LoanType } from "@/types";
 
 const loans: {
   id: number;
-  type: 'PERSONAL' | 'BUSINESS' | 'MORTGAGE';
+  type: "PERSONAL" | "BUSINESS" | "MORTGAGE";
   label: string;
   description: string;
   icon: IconSvgElement;
 }[] = [
   {
     id: 1,
-    type: 'PERSONAL',
-    label: 'Personal',
-    description: 'For everyday needs and expenses',
+    type: "PERSONAL",
+    label: "Personal",
+    description: "For everyday needs and expenses",
     icon: User02Icon,
   },
 
   {
     id: 2,
-    type: 'BUSINESS',
-    label: 'Business',
-    description: 'Grow your business or venture',
+    type: "BUSINESS",
+    label: "Business",
+    description: "Grow your business or venture",
     icon: Briefcase,
   },
 
   {
     id: 3,
-    type: 'MORTGAGE',
-    label: 'Mortgage',
-    description: 'Home purchase or refinance',
+    type: "MORTGAGE",
+    label: "Mortgage",
+    description: "Home purchase or refinance",
     icon: House02Icon,
   },
 ];
@@ -56,9 +56,9 @@ export default function LoanTypeStep() {
   const { loanType, setLoanType } = useLoanApplicationWorkflowStore();
   const { onChange } = useStepper();
   return (
-    <Card className="p-6 max-w-xl flex flex-col gap-6">
+    <Card className="flex max-w-xl flex-col gap-6 p-6">
       <div className="flex flex-col gap-2">
-        <CardTitle className="text-2xl tracking-tighter">
+        <CardTitle className="text-xl tracking-tighter lg:text-2xl">
           What type of loan do you need?
         </CardTitle>
         <CardDescription className="tracking-tight">
@@ -72,15 +72,15 @@ export default function LoanTypeStep() {
         value={loanType}
       />
 
-      <CardFooter className="bg-card rounded-none px-0  flex items-center justify-between">
+      <CardFooter className="bg-card flex items-center justify-between rounded-none px-0">
         <p className="text-muted-foreground text-sm">
           Step <span className="text-foreground">1</span> of 5
         </p>
 
         <Button
-          variant={'default'}
+          variant={"default"}
           onClick={() => {
-            onChange({ id: 2, value: 'amount' });
+            onChange({ id: 2, value: "amount" });
           }}
         >
           Continue
@@ -101,13 +101,13 @@ export function LoanTypeChoiceCard({
     <RadioGroup
       value={value}
       onValueChange={(value) => onSelect(value)}
-      className=" grid grid-cols-2 gap-4"
+      className="grid gap-4 lg:grid-cols-2"
     >
       {loans.map((loan) => (
         <FieldLabel key={loan.id} htmlFor={loan.type}>
           <Field orientation="horizontal" className="items-start">
-            <div className="flex flex-col gap-4 items-start">
-              <div className="rounded-md size-12 flex items-center justify-center bg-primary/5">
+            <div className="flex flex-col items-start gap-4">
+              <div className="bg-primary/5 flex size-12 items-center justify-center rounded-md">
                 <HugeiconsIcon icon={loan.icon} size={24} />
               </div>
               <FieldContent>
@@ -119,7 +119,7 @@ export function LoanTypeChoiceCard({
                 </FieldDescription>
               </FieldContent>
               <RadioGroupItem
-                className="hidden sr-only"
+                className="sr-only hidden"
                 value={loan.type}
                 id={loan.type}
               />

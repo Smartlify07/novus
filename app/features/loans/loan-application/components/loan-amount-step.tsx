@@ -1,16 +1,16 @@
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardDescription,
   CardFooter,
   CardTitle,
-} from '@/components/ui/card';
-import LoanAmountSlider from './loan-amount-slider';
-import LoanAmountDisplay from './loan-amount-display';
-import { useState } from 'react';
-import LiveEstimateCard from './live-estimate-card';
-import { useStepper } from './stepper';
-import { useLoanApplicationWorkflowStore } from '@/store/loan-application-workflow-store';
+} from "@/components/ui/card";
+import LoanAmountSlider from "./loan-amount-slider";
+import LoanAmountDisplay from "./loan-amount-display";
+import { useState } from "react";
+import LiveEstimateCard from "./live-estimate-card";
+import { useStepper } from "./stepper";
+import { useLoanApplicationWorkflowStore } from "@/store/loan-application-workflow-store";
 
 export default function LoanAmountStep() {
   const { setPrincipalAmount, principalAmount } =
@@ -18,13 +18,13 @@ export default function LoanAmountStep() {
   const [value, setValue] = useState([principalAmount || 50000]);
   const stepper = useStepper();
   return (
-    <Card className="p-6 max-w-xl flex flex-col gap-6">
+    <Card className="flex max-w-xl flex-col gap-6 p-6">
       <div className="flex flex-col gap-2">
         <CardTitle className="text-2xl tracking-tighter">
-          How much do you need?{' '}
+          How much do you need?{" "}
         </CardTitle>
         <CardDescription className="tracking-tight">
-          Drag the slider or type an amount between ₦50,000 and ₦10,000,000.
+          Drag the slider or type an amount between ₦50,000 and ₦1,000,000.
         </CardDescription>
       </div>
 
@@ -32,24 +32,24 @@ export default function LoanAmountStep() {
       <LoanAmountSlider onValueChange={(value) => setValue(value)} />
       <LiveEstimateCard principalAmount={value[0]} />
 
-      <CardFooter className="bg-card rounded-none px-0  flex items-center justify-between">
+      <CardFooter className="bg-card flex items-center justify-between rounded-none px-0">
         <p className="text-muted-foreground text-sm">
           Step <span className="text-foreground">2</span> of 5
         </p>
 
         <div className="flex items-center gap-2">
           <Button
-            variant={'outline'}
+            variant={"outline"}
             onClick={() => {
-              stepper.onChange({ id: 1, value: 'type' });
+              stepper.onChange({ id: 1, value: "type" });
             }}
           >
             Back
           </Button>
           <Button
-            variant={'default'}
+            variant={"default"}
             onClick={() => {
-              stepper.onChange({ id: 3, value: 'term' });
+              stepper.onChange({ id: 3, value: "term" });
               setPrincipalAmount(value[0]);
             }}
           >
