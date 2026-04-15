@@ -1,12 +1,12 @@
-import { useTransferWorkflowStore } from '@/store/transfer-workflow-store';
-import { useAccounts } from '@/app/features/accounts/hooks';
-import RecipientBadge from './recepient-badge';
-import AccountSourceCard from './account-source-card';
-import { Card, CardContent } from '@/components/ui/card';
-import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
-import { Textarea } from '@/components/ui/textarea';
-import { formatCurrency, maskAccountNumber } from '@/lib/utils';
-import { Separator } from '@/components/ui/separator';
+import { useTransferWorkflowStore } from "@/store/transfer-workflow-store";
+import { useAccounts } from "@/app/features/accounts/hooks";
+import RecipientBadge from "./recepient-badge";
+import AccountSourceCard from "./account-source-card";
+import { Card, CardContent } from "@/components/ui/card";
+import { Field, FieldLabel, FieldDescription } from "@/components/ui/field";
+import { Textarea } from "@/components/ui/textarea";
+import { formatCurrency, maskAccountNumber } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
 
 const TRANSFER_FEE = 10;
 
@@ -30,7 +30,7 @@ export default function ReviewTransferStep() {
   const totalDebit = amount + transferFee;
 
   return (
-    <div className="flex flex-col gap-10 w-xl max-w-xl self-center">
+    <div className="flex w-full max-w-full flex-col gap-10 self-center">
       <RecipientBadge
         recepientName={recipientName}
         accountNumber={recipientAccountNumber}
@@ -41,7 +41,7 @@ export default function ReviewTransferStep() {
           <div className="flex flex-col items-center gap-2 text-center">
             <p className="text-muted-foreground text-sm">You are sending</p>
             <p className="text-4xl font-semibold tracking-tight">
-              {formatCurrency(amount, 'NGN')}
+              {formatCurrency(amount, "NGN")}
             </p>
           </div>
 
@@ -51,14 +51,14 @@ export default function ReviewTransferStep() {
             <div className="flex items-center justify-between">
               <p className="text-muted-foreground text-sm">Amount</p>
               <p className="text-foreground font-medium">
-                {formatCurrency(amount, 'NGN')}
+                {formatCurrency(amount, "NGN")}
               </p>
             </div>
 
             <div className="flex items-center justify-between">
               <p className="text-muted-foreground text-sm">Transfer Fee</p>
               <p className="text-foreground font-medium">
-                {formatCurrency(transferFee, 'NGN')}
+                {formatCurrency(transferFee, "NGN")}
               </p>
             </div>
 
@@ -66,8 +66,8 @@ export default function ReviewTransferStep() {
 
             <div className="flex items-center justify-between">
               <p className="text-foreground font-semibold">Total Debit</p>
-              <p className="text-foreground font-semibold text-lg">
-                {formatCurrency(totalDebit, 'NGN')}
+              <p className="text-foreground text-lg font-semibold">
+                {formatCurrency(totalDebit, "NGN")}
               </p>
             </div>
           </div>
@@ -79,7 +79,7 @@ export default function ReviewTransferStep() {
             <p className="text-foreground font-medium">
               {sourceAccount
                 ? `${sourceAccount.accountType.charAt(0)}${sourceAccount.accountType.slice(1).toLowerCase()} - ${maskAccountNumber(sourceAccount.accountNumber)}`
-                : 'Unknown'}
+                : "Unknown"}
             </p>
           </div>
         </CardContent>
@@ -93,9 +93,9 @@ export default function ReviewTransferStep() {
           onChange={(e) =>
             setData((prev) => ({ ...prev, description: e.target.value }))
           }
-          className="min-h-[100px]"
+          className="min-h-25 placeholder:text-sm"
         />
-        <FieldDescription>
+        <FieldDescription className="text-xs">
           Add a note to help the recipient understand why you sent this money.
         </FieldDescription>
       </Field>
