@@ -1,8 +1,8 @@
-import { decodeJwt } from 'jose';
-import { NextRequest, NextResponse } from 'next/server';
+import { decodeJwt } from "jose";
+import { NextRequest, NextResponse } from "next/server";
 
-const AUTH_COOKIE_NAMES = ['token', 'token_expires_at', 'session'] as const;
-const PUBLIC_ROUTES = new Set(['/', '/login', '/signup']);
+const AUTH_COOKIE_NAMES = ["token", "token_expires_at", "session"] as const;
+const PUBLIC_ROUTES = new Set(["/", "/login", "/signup"]);
 
 const clearAuthCookies = (response: NextResponse) => {
   for (const cookieName of AUTH_COOKIE_NAMES) {
@@ -26,7 +26,7 @@ const getTokenExpiry = (token: string, fallbackExpiry?: string) => {
 
   try {
     const { exp } = decodeJwt(token);
-    if (typeof exp === 'number') {
+    if (typeof exp === "number") {
       return exp * 1000;
     }
   } catch {
@@ -39,19 +39,19 @@ const getTokenExpiry = (token: string, fallbackExpiry?: string) => {
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isPublicRoute = PUBLIC_ROUTES.has(pathname);
-  const token = request.cookies.get('token')?.value;
-  const expiresAt = request.cookies.get('token_expires_at')?.value;
+  const token = request.cookies.get("token")?.value;
+  const expiresAt = request.cookies.get("token_expires_at")?.value;
   const tokenExpiry = token ? getTokenExpiry(token, expiresAt) : null;
   const isAuthenticated =
-    typeof tokenExpiry === 'number' && tokenExpiry >= Date.now();
+    typeof tokenExpiry === "number" && tokenExpiry >= Date.now();
 
   if (!isAuthenticated && !isPublicRoute) {
-    const response = NextResponse.redirect(new URL('/login', request.url));
+    const response = NextResponse.redirect(new URL("/login", request.url));
     return clearAuthCookies(response);
   }
 
   if (isAuthenticated && isPublicRoute) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   if (token && !isAuthenticated) {
@@ -63,13 +63,13 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/',
-    '/login',
-    '/signup',
-    '/create-account',
-    '/dashboard/:path*',
-    '/loans/:path*',
-    '/transactions/:path*',
-    '/transfer/:path*',
+    "/",
+    "/login",
+    "/signup",
+    "/create-account",
+    "/dashboard/:path*",
+    "/loans/:path*",
+    "/transactions/:path*",
+    "/transfer/:path*",
   ],
 };

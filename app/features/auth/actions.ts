@@ -1,13 +1,13 @@
-'use server';
+"use server";
 
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
-import { LoginResponse } from './api';
-import { loginFormSchema, signupFormSchema } from './schema';
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { LoginResponse } from "./api";
+import { loginFormSchema, signupFormSchema } from "./schema";
 import {
   SignupFormValues,
   signupOnboardingSchema,
-} from '../signup-onboarding/schema';
+} from "../signup-onboarding/schema";
 
 export const signUpAction = async (initialState: any, formData: FormData) => {
   const data = Object.fromEntries(formData) as SignupFormValues;
@@ -26,9 +26,9 @@ export const signUpAction = async (initialState: any, formData: FormData) => {
     const signupResponse = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
       {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           ...data,
@@ -45,11 +45,11 @@ export const signUpAction = async (initialState: any, formData: FormData) => {
       return {
         errors:
           signupResponse.status === 401
-            ? 'Incorrect email or password'
+            ? "Incorrect email or password"
             : result.message,
         message:
           signupResponse.status === 401
-            ? 'Incorrect email or password'
+            ? "Incorrect email or password"
             : result.message,
       };
     }
@@ -57,34 +57,34 @@ export const signUpAction = async (initialState: any, formData: FormData) => {
     console.error(error);
     clearTimeout(timeoutId);
 
-    if (error instanceof DOMException && error.name === 'AbortError') {
+    if (error instanceof DOMException && error.name === "AbortError") {
       return {
         errors:
-          'Request timed out. Please check your connection and try again.',
+          "Request timed out. Please check your connection and try again.",
         message:
-          'Request timed out. Please check your connection and try again.',
+          "Request timed out. Please check your connection and try again.",
       };
     }
 
     return {
-      errors: 'An unexpected error occurred. Please try again.',
-      message: 'An unexpected error occurred. Please try again.',
+      errors: "An unexpected error occurred. Please try again.",
+      message: "An unexpected error occurred. Please try again.",
     };
   }
-  return loginAction(initialState, formData, '/create-account');
+  return loginAction(initialState, formData, "/create-account");
 };
 
 export const loginAction = async (
   initialState: any,
   formData: FormData,
-  redirectTo = '/dashboard',
+  redirectTo = "/dashboard",
 ) => {
   const cookieStore = await cookies();
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
   const parsed = loginFormSchema.safeParse({
-    email: formData.get('email'),
-    password: formData.get('password'),
+    email: formData.get("email"),
+    password: formData.get("password"),
   });
   if (!parsed.success) {
     return {
@@ -100,9 +100,9 @@ export const loginAction = async (
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
       {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
         signal: controller.signal,
@@ -115,11 +115,11 @@ export const loginAction = async (
       return {
         errors:
           response.status === 401
-            ? 'Incorrect email or password'
+            ? "Incorrect email or password"
             : errorData.message,
         message:
           response.status === 401
-            ? 'Incorrect email or password'
+            ? "Incorrect email or password"
             : errorData.message,
       };
     }
@@ -127,53 +127,57 @@ export const loginAction = async (
     const expiresAt = new Date(Date.now() + result.expiresIn * 1000);
 
     cookieStore.set({
-      name: 'token',
+      name: "token",
       value: result.token,
       expires: expiresAt,
       httpOnly: true,
       secure: true,
-      sameSite: 'lax',
+      sameSite: "lax",
     });
     cookieStore.set({
-      name: 'token_expires_at',
+      name: "token_expires_at",
       value: String(expiresAt.getTime()),
       expires: expiresAt,
       httpOnly: true,
       secure: true,
-      sameSite: 'lax',
+      sameSite: "lax",
     });
     cookieStore.set({
-      name: 'session',
+      name: "session",
       value: String(result.user.id),
       httpOnly: true,
       secure: true,
-      sameSite: 'lax',
+      sameSite: "lax",
     });
   } catch (error) {
     console.error(error);
     clearTimeout(timeoutId);
 
-    if (error instanceof DOMException && error.name === 'AbortError') {
+    if (error instanceof DOMException && error.name === "AbortError") {
       return {
         errors:
-          'Request timed out. Please check your connection and try again.',
+          "Request timed out. Please check your connection and try again.",
         message:
-          'Request timed out. Please check your connection and try again.',
+          "Request timed out. Please check your connection and try again.",
       };
     }
-
+    console.log(error, "Error at auth action");
     return {
-      errors: 'An unexpected error occurred. Please try again.',
-      message: 'An unexpected error occurred. Please try again.',
+      errors: "An unexpected error occurred. Please try again.",
+      message: "An unexpected error occurred. Please try again.",
     };
   }
   return redirect(redirectTo);
 };
 
 export const logoutAction = async () => {
-  const cookieStore = await cookies();
-  cookieStore.delete('token');
-  cookieStore.delete('token_expires_at');
-  cookieStore.delete('session');
-  return redirect('/login');
+  try {
+    const cookieStore = await cookies();
+    cookieStore.delete("token");
+    cookieStore.delete("token_expires_at");
+    cookieStore.delete("session");
+  } catch (error) {
+    console.error("Logout failed:", error);
+  }
+  return redirect("/login");
 };
