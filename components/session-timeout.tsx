@@ -4,7 +4,7 @@ import { logoutAction } from "@/app/features/auth/actions";
 import { useUser } from "@/app/features/auth/hooks/useUser";
 import { useCallback, useEffect, useRef } from "react";
 
-const TIMEOUT_DURATION = 20_000;
+const TIMEOUT_DURATION = 10 * 60 * 1000; // 10 minutes in milliseconds
 const LAST_ACTIVITY_KEY = "session-timeout:last-activity";
 const LOGOUT_EVENT_KEY = "session-timeout:logout";
 const ACTIVITY_EVENTS: Array<keyof WindowEventMap> = [
