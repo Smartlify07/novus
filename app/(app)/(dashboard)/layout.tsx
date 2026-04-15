@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/sidebar";
 import { NextRequest } from "next/server";
 import { cookies } from "next/headers";
+import { SessionTimeout } from "@/components/session-timeout";
 
 export default function RootLayout({
   children,
@@ -20,7 +21,7 @@ export default function RootLayout({
         <AppSidebar />
         <SidebarInset>
           <SidebarTrigger />
-          {children}
+          <SessionTimeout>{children}</SessionTimeout>
         </SidebarInset>
       </SidebarProvider>
     </TooltipProvider>

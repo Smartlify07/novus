@@ -1,9 +1,10 @@
-'use server';
-import { callApi } from '@/lib/api-utils';
-import { SignupFormValues } from '../signup-onboarding/schema';
-import { useAuthStore } from '@/store/auth-store';
-import { User } from '@/types';
-import { cookies } from 'next/headers';
+"use server";
+import { callApi } from "@/lib/api-utils";
+import { SignupFormValues } from "../signup-onboarding/schema";
+import { useAuthStore } from "@/store/auth-store";
+import { User } from "@/types";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 type LoginDetailsType = {
   email: string;
@@ -29,9 +30,9 @@ export type LoginResponse = {
 
 const getAuthHeaders = async () => {
   const cookieStore = await cookies();
-  const token = cookieStore.get('token')?.value;
+  const token = cookieStore.get("token")?.value;
   return {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
     Authorization: `Bearer ${token}`,
   };
 };
@@ -51,9 +52,9 @@ const postLogin = async (loginDetail: LoginDetailsType) => {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
       {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
         signal,
@@ -61,10 +62,10 @@ const postLogin = async (loginDetail: LoginDetailsType) => {
     );
     if (!response.ok) {
       if (response.status === 401) {
-        throw new Error('Incorrect email or password. Please try again.');
+        throw new Error("Incorrect email or password. Please try again.");
       } else {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Login Failed');
+        throw new Error(errorData.message || "Login Failed");
       }
     }
     const data: LoginResponse = await response.json();
@@ -78,10 +79,37 @@ const postLogin = async (loginDetail: LoginDetailsType) => {
 };
 
 const postSignUp = async (payload: SignupFormValues) => {
-  return callApi('POST', '/auth/register', payload, {}, true);
+  return callApi("POST", "/auth/register", payload, {}, true);
+};
+
+const verifySession = async () => {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
+  if (!token) {
+    console.log("No token, redirect");
+    redirect("/login");
+  }
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Session verification failed");
+    }
+    const user = (await response.json()) as User;
+    return { isAuth: true, userId: user.id };
+  } catch (error) {
+    console.error("Session verification error:", error);
+    redirect("/login");
+  }
 };
 
 const getUser = async () => {
+  const session = await verifySession();
+  if (!session) return null;
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
       headers: await getAuthHeaders(),
