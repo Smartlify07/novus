@@ -1,5 +1,5 @@
-import { convertToCapitalized } from '@/app/features/loans/repayment/utils';
-import { Button } from '@/components/ui/button';
+import { convertToCapitalized } from "@/app/features/loans/repayment/utils";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -8,49 +8,47 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { FieldLegend, FieldSet } from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { formatCurrency } from '@/lib/utils';
-import { Loan } from '@/types';
-import { format } from 'date-fns';
+} from "@/components/ui/dialog";
+import { FieldLegend, FieldSet } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { formatCurrency } from "@/lib/utils";
+import { Loan } from "@/types";
+import { format } from "date-fns";
 
 export function ConfirmDialogContent({
   loan,
   type,
 }: {
   loan: Loan;
-  type: 'reject' | 'approve' | null;
+  type: "reject" | "approve" | null;
 }) {
   return (
     <DialogContent className="sm:max-w-sm">
       <DialogHeader className="gap-0">
         <DialogTitle className="text-lg">
-          {type === 'approve' ? 'Approve Loan?' : 'Reject Application?'}
+          {type === "approve" ? "Approve Loan?" : "Reject Application?"}
         </DialogTitle>
-        <DialogDescription>
-          <div className="flex items-center gap-1">
-            {loan.loanNumber}{' '}
-            <div className="rounded-full size-1 bg-muted-foreground"></div>{' '}
-            Obinna Anosike
-          </div>
+        <DialogDescription className="text-muted-foreground flex items-center gap-2">
+          {loan.loanNumber}{" "}
+          <span className="bg-muted-foreground size-1 rounded-full"></span>{" "}
+          Obinna Anosike
         </DialogDescription>
       </DialogHeader>
 
-      <div className="rounded-lg p-4 bg-muted">
+      <div className="bg-muted rounded-lg p-4">
         <div className="grid grid-cols-2 gap-y-2">
           <Item
             label="Amount"
-            value={formatCurrency(loan.principalAmount, 'NGN')}
+            value={formatCurrency(loan.principalAmount, "NGN")}
           />
           <Item label="Type" value={convertToCapitalized(loan.loanType)} />
           <Item label="Term" value={`${loan.termMonths} months`} />
-          <Item label="Applied" value={format(loan.applicationDate, 'PPP')} />
+          <Item label="Applied" value={format(loan.applicationDate, "PPP")} />
         </div>
       </div>
 
-      {type === 'approve' && (
+      {type === "approve" && (
         <div className="flex flex-col gap-4">
           <FieldSet>
             <FieldLegend data-variant="label" className="text-sm">
@@ -64,16 +62,16 @@ export function ConfirmDialogContent({
           </FieldSet>
           <FieldSet>
             <FieldLegend data-variant="label" className="text-sm">
-              Comments{' '}
+              Comments{" "}
             </FieldLegend>
             <Textarea placeholder="Describe briefly what you want the applicant to know" />
           </FieldSet>
         </div>
       )}
       <DialogDescription>
-        {type === 'approve'
-          ? 'Approving notifies the applicant. Disbursement happens separately once you confirm.'
-          : 'Rejecting notifies the applicant that their application was declined. This cannot be undone.'}
+        {type === "approve"
+          ? "Approving notifies the applicant. Disbursement happens separately once you confirm."
+          : "Rejecting notifies the applicant that their application was declined. This cannot be undone."}
       </DialogDescription>
 
       <DialogFooter>
@@ -81,10 +79,10 @@ export function ConfirmDialogContent({
           <Button variant="outline">Cancel</Button>
         </DialogClose>
         <Button
-          variant={type === 'reject' ? 'destructive' : 'default'}
+          variant={type === "reject" ? "destructive" : "default"}
           type="submit"
         >
-          {type === 'approve' ? 'Approve' : 'Reject'}
+          {type === "approve" ? "Approve" : "Reject"}
         </Button>
       </DialogFooter>
     </DialogContent>
