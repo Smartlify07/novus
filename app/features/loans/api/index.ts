@@ -1,6 +1,6 @@
-'use server';
+"use server";
 
-import { cookies } from 'next/headers';
+import { cookies } from "next/headers";
 import {
   LoanApprovalPayload,
   LoanRepaymentPayload,
@@ -8,14 +8,14 @@ import {
   LoanResponse,
   PendingLoansResponse,
   SubmitLoanRepaymentResponse,
-} from '../types';
-import { Loan } from '@/types';
+} from "../types";
+import { Loan } from "@/types";
 
 const getAuthHeaders = async () => {
   const cookieStore = await cookies();
-  const token = cookieStore.get('token')?.value;
+  const token = cookieStore.get("token")?.value;
   return {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
     Authorization: `Bearer ${token}`,
   };
 };
@@ -26,14 +26,14 @@ export const getPendingLoanApplications =
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/admin/loans/pending`,
         {
-          method: 'GET',
+          method: "GET",
           headers: await getAuthHeaders(),
         },
       );
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to fetch loans');
+        throw new Error(errorData.message || "Failed to fetch loans");
       }
 
       const data: PendingLoansResponse = await response.json();
@@ -47,13 +47,13 @@ export const getPendingLoanApplications =
 export const getLoans = async (): Promise<LoanResponse> => {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/loans`, {
-      method: 'GET',
+      method: "GET",
       headers: await getAuthHeaders(),
     });
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to fetch loans');
+      throw new Error(errorData.message || "Failed to fetch loans");
     }
 
     const data: LoanResponse = await response.json();
@@ -71,14 +71,14 @@ export const getLoanRepayments = async (
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/loans/${loanId}/repayments`,
       {
-        method: 'GET',
+        method: "GET",
         headers: await getAuthHeaders(),
       },
     );
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to fetch loan repayments');
+      throw new Error(errorData.message || "Failed to fetch loan repayments");
     }
 
     const data: LoanRepaymentsResponse = await response.json();
@@ -95,9 +95,9 @@ export const approveLoan = async (
 ): Promise<Loan> => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/loans/${loanId}/approve`,
+      `${process.env.NEXT_PUBLIC_API_URL}/admin/loans/${loanId}/approve`,
       {
-        method: 'POST',
+        method: "PUT",
         headers: await getAuthHeaders(),
         body: JSON.stringify(payload),
       },
@@ -107,7 +107,7 @@ export const approveLoan = async (
       const errorData = await response.json();
       if (errorData.fieldErrors) {
         const errors = Object.entries(errorData.fieldErrors);
-        const errorString = errors.map(([key, value]) => `${value}`).join('');
+        const errorString = errors.map(([key, value]) => `${value}`).join("");
         throw new Error(errorString);
       }
       throw new Error(errorData.message || `Failed to approve loan`);
@@ -129,7 +129,7 @@ export const submitLoanRepayment = async (
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/loans/${loanId}/repay`,
       {
-        method: 'POST',
+        method: "POST",
         headers: await getAuthHeaders(),
         body: JSON.stringify(payload),
       },
@@ -139,10 +139,10 @@ export const submitLoanRepayment = async (
       const errorData = await response.json();
       if (errorData.fieldErrors) {
         const errors = Object.entries(errorData.fieldErrors);
-        const errorString = errors.map(([key, value]) => `${value}`).join('');
+        const errorString = errors.map(([key, value]) => `${value}`).join("");
         throw new Error(errorString);
       }
-      throw new Error(errorData.message || 'Failed to submit loan repayment');
+      throw new Error(errorData.message || "Failed to submit loan repayment");
     }
 
     const data = (await response.json()) as SubmitLoanRepaymentResponse;

@@ -15,14 +15,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { formatCurrency } from "@/lib/utils";
 import { Loan } from "@/types";
 import { format } from "date-fns";
+import { useState } from "react";
 
 export function ConfirmDialogContent({
   loan,
   type,
+  onClick,
+  onInterestRateChange,
 }: {
   loan: Loan;
   type: "reject" | "approve" | null;
+  onClick: () => void;
+  onInterestRateChange?: (value: number) => void;
 }) {
+  const [interestRate, setInterestRate] = useState(loan.interestRate);
   return (
     <DialogContent className="sm:max-w-sm">
       <DialogHeader className="gap-0">
@@ -55,9 +61,13 @@ export function ConfirmDialogContent({
               Interest rate
             </FieldLegend>
             <Input
-              defaultValue={loan.interestRate}
               type="number"
               placeholder="Enter a new interest rate"
+              value={interestRate}
+              onChange={(e) => {
+                setInterestRate(Number(e.target.value));
+                onInterestRateChange?.(Number(e.target.value));
+              }}
             />
           </FieldSet>
           <FieldSet>
@@ -81,6 +91,7 @@ export function ConfirmDialogContent({
         <Button
           variant={type === "reject" ? "destructive" : "default"}
           type="submit"
+          onClick={() => onClick()}
         >
           {type === "approve" ? "Approve" : "Reject"}
         </Button>
