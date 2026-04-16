@@ -1,30 +1,30 @@
-'use client';
-import React from 'react';
+"use client";
+import React from "react";
 import {
   StatCard,
   StatCardDescription,
   StatCardIcon,
   StatCardTitle,
   StatCardValue,
-} from './stat-card';
-import { formatCurrency } from '@/lib/utils';
-import { useAdminDashboardStats } from '../../hooks';
-import { Skeleton } from '@/components/ui/skeleton';
-import { HugeiconsIcon } from '@hugeicons/react';
+} from "./stat-card";
+import { formatCurrency } from "@/lib/utils";
+import { useAdminDashboardStats } from "../../hooks";
+import { Skeleton } from "@/components/ui/skeleton";
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
   Money01Icon,
   MoneyBag01Icon,
   MoneyBag02Icon,
   Refresh,
   UserIcon,
-} from '@hugeicons/core-free-icons';
-import InlineErrorStateCard from '@/components/inline-error-state-card';
+} from "@hugeicons/core-free-icons";
+import InlineErrorStateCard from "@/components/inline-error-state-card";
 
 function StatsCardsSkeleton() {
   return (
     <StatCard>
-      <div className="flex items-start gap-4">
-        <Skeleton className="rounded-lg size-10 w-10 h-10" />
+      <div className="flex flex-col items-start gap-4 lg:flex-row">
+        <Skeleton className="size-10 h-10 w-10 rounded-lg" />
         <div className="flex flex-col gap-1">
           <Skeleton className="h-4 w-32" />
           <Skeleton className="h-4 w-40" />
@@ -64,16 +64,16 @@ export default function StatsSection() {
         className="py-10"
         title="Insights couldn't be calculated"
         description="We weren't able to compute your portfolio insights at this time. The underlying data may still be loading — give it a moment and try again."
-        actions={[{ label: 'Refresh', icon: Refresh }]}
+        actions={[{ label: "Refresh", icon: Refresh }]}
       />
     );
   }
 
   return (
-    <div className="grid grid-cols-3 gap-6">
+    <div className="grid lg:grid-cols-3 gap-6">
       <StatCard>
         <div className="flex items-start gap-4">
-          <StatCardIcon className="rounded-lg bg-chart-4/10 size-10 flex items-center justify-center">
+          <StatCardIcon className="bg-chart-4/10 flex size-10 items-center justify-center rounded-lg">
             <HugeiconsIcon icon={Money01Icon} className="text-chart-4" />
           </StatCardIcon>
           <div className="flex flex-col gap-1">
@@ -81,8 +81,8 @@ export default function StatsSection() {
             <StatCardDescription className="text-nowrap">
               Deposits not yet deployed as loans
             </StatCardDescription>
-            <StatCardValue className="tracking-tighter font-normal">
-              {formatCurrency(idleCapital, 'NGN')}
+            <StatCardValue className="font-normal tracking-tighter">
+              {formatCurrency(idleCapital, "NGN")}
             </StatCardValue>
           </div>
         </div>
@@ -90,7 +90,7 @@ export default function StatsSection() {
 
       <StatCard>
         <div className="flex items-start gap-4">
-          <StatCardIcon className="rounded-lg bg-blue-600/10 size-10 justify-center items-center flex">
+          <StatCardIcon className="flex size-10 items-center justify-center rounded-lg bg-blue-600/10">
             <HugeiconsIcon icon={UserIcon} className="text-blue-600" />
           </StatCardIcon>
           <div className="flex flex-col gap-1">
@@ -98,7 +98,7 @@ export default function StatsSection() {
               Active accounts
             </StatCardTitle>
             <StatCardDescription>
-              {totalActiveAccounts} of {totalAccounts} accounts are active{' '}
+              {totalActiveAccounts} of {totalAccounts} accounts are active{" "}
             </StatCardDescription>
             <StatCardValue className="tracking-tight">
               {activeAccountsPercentage}%
@@ -109,7 +109,7 @@ export default function StatsSection() {
 
       <StatCard>
         <div className="flex items-start gap-4">
-          <StatCardIcon className="rounded-lg bg-amber-700/10 flex items-center justify-center size-10">
+          <StatCardIcon className="flex size-10 items-center justify-center rounded-lg bg-amber-700/10">
             <HugeiconsIcon icon={MoneyBag02Icon} className="text-amber-700" />
           </StatCardIcon>
           <div className="flex flex-col gap-1">
@@ -117,10 +117,10 @@ export default function StatsSection() {
               Avg. Loan Size
             </StatCardTitle>
             <StatCardDescription>
-              Across {totalActiveLoans} active loan{' '}
+              Across {totalActiveLoans} active loan{" "}
             </StatCardDescription>
             <StatCardValue className="tracking-tight">
-              {formatCurrency(averageLoanSize, 'NGN')}
+              {formatCurrency(averageLoanSize, "NGN")}
             </StatCardValue>
           </div>
         </div>

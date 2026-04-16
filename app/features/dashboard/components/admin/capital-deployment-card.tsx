@@ -1,21 +1,21 @@
-'use client';
+"use client";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import React from 'react';
-import { useAdminDashboardStats } from '../../hooks';
-import { formatCurrency } from '@/lib/utils';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { Alert, Refresh } from '@hugeicons/core-free-icons';
-import { Button } from '@/components/ui/button';
-import InlineErrorStateCard from '@/components/inline-error-state-card';
+} from "@/components/ui/card";
+import React from "react";
+import { useAdminDashboardStats } from "../../hooks";
+import { formatCurrency } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Alert, Refresh } from "@hugeicons/core-free-icons";
+import { Button } from "@/components/ui/button";
+import InlineErrorStateCard from "@/components/inline-error-state-card";
 
 export default function CapitalDeploymentCard() {
   const { data, error, isPending } = useAdminDashboardStats();
@@ -42,9 +42,9 @@ export default function CapitalDeploymentCard() {
           </div>
         </CardContent>
         <CardFooter className="bg-card">
-          <div className="flex items-center justify-between gap-4 w-full">
+          <div className="flex w-full items-center justify-between gap-4">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="flex flex-col gap-0.5 w-full">
+              <div key={i} className="flex w-full flex-col gap-0.5">
                 <Skeleton className="h-2 w-20" />
                 <Skeleton className="h-4 w-24" />
               </div>
@@ -60,7 +60,7 @@ export default function CapitalDeploymentCard() {
       <InlineErrorStateCard
         title="Unable to get capital deployment stats"
         description="We were unable to get details of the capital deployment statistics"
-        actions={[{ label: 'Try again', icon: Refresh }]}
+        actions={[{ label: "Try again", icon: Refresh }]}
       />
     );
   }
@@ -74,8 +74,8 @@ export default function CapitalDeploymentCard() {
           <CardTitle className="text-muted-foreground text-sm">
             Total Deposits
           </CardTitle>
-          <h1 className="text-3xl font-medium tracking-tighter">
-            {formatCurrency(totalDeposits, 'NGN')}
+          <h1 className="text-2xl font-medium tracking-tighter lg:text-3xl">
+            {formatCurrency(totalDeposits, "NGN")}
           </h1>
         </div>
         <PercentageMeter
@@ -84,12 +84,12 @@ export default function CapitalDeploymentCard() {
         />
       </CardContent>
       <CardFooter className="bg-card">
-        <div className="flex items-center justify-between w-full gap-4">
+        <div className="flex w-full flex-col justify-between gap-4 lg:flex-row lg:items-center">
           <FooterItem
             label="Deployed"
-            value={formatCurrency(totalDeposits, 'NGN')}
+            value={formatCurrency(totalDeposits, "NGN")}
           />
-          <FooterItem label="Idle" value={formatCurrency(totalIdle, 'NGN')} />
+          <FooterItem label="Idle" value={formatCurrency(totalIdle, "NGN")} />
           <FooterItem label="Active Loans" value={totalActiveLoans} />
         </div>
       </CardFooter>
@@ -105,8 +105,9 @@ function FooterItem({
   value: string | number;
 }) {
   return (
-    <div className="flex flex-col gap-0.5">
-      <Label className="text-xs text-muted-foreground ">{label}</Label>
+    <div className="flex flex-row items-center gap-0.5 lg:flex-col lg:items-start">
+      <Label className="text-muted-foreground lg:text-xs">{label}</Label>
+      <span className="text-muted-foreground lg:hidden">:</span>{" "}
       <p className="text-base font-medium tracking-tighter">{value}</p>
     </div>
   );
@@ -125,9 +126,9 @@ function PercentageMeter({
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-center justify-between">
-        <Label className="text-xs text-primary">{percentage}% deployed</Label>
+        <Label className="text-primary text-xs">{percentage}% deployed</Label>
       </div>
-      <div className="rounded-lg h-1 w-full bg-muted">
+      <div className="bg-muted h-1 w-full rounded-lg">
         <div
           className="bg-primary h-1 rounded-lg"
           style={{
