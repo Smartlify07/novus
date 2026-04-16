@@ -1,32 +1,19 @@
 "use client";
-import { ArrowLeft01Icon, ArrowLeft02Icon } from "@hugeicons/core-free-icons";
+import { ArrowLeft02Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
 import { LoanAmountCard } from "./loan-amount-card";
-import {
-  LOANS_QUERY_KEY,
-  useLoanApproval,
-  useLoans,
-} from "@/app/features/loans/hooks";
+import { LOANS_QUERY_KEY, useLoanApproval } from "@/app/features/loans/hooks";
 import { Loan } from "@/types";
 import { LoanBreakdown } from "./loan-breakdown";
 import { LoanApplicantCard } from "./loan-applicant-card";
 import { DecisionCard } from "./decision-card";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { formatCurrency } from "@/lib/utils";
+import { Dialog } from "@/components/ui/dialog";
 import { ConfirmDialogContent } from "./confirm-dialog-content";
 import { useState } from "react";
 import { QueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+
 const loan: Loan = {
   id: 101,
   loanNumber: "LN-2024-8842",
