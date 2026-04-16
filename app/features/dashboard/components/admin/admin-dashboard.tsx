@@ -13,7 +13,7 @@ export default function AdminDashboard() {
       <Header />
       <SummaryCards />
       <StatsSection />
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-2 gap-6">
         <CapitalDeploymentCard />
         <LoanTypeMixCard />
       </div>

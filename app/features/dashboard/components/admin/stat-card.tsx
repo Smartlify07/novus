@@ -1,17 +1,17 @@
-import { Card, CardDescription, CardTitle } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
-import React from 'react';
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import React from "react";
 
-export function StatCard({ className, children }: React.ComponentProps<'div'>) {
-  return <Card className={cn('px-4', className)}>{children}</Card>;
+export function StatCard({ className, children }: React.ComponentProps<"div">) {
+  return <Card className={cn("px-4", className)}>{children}</Card>;
 }
 
 export function StatCardTitle({
   className,
   children,
-}: React.ComponentProps<'div'>) {
+}: React.ComponentProps<"div">) {
   return (
-    <CardTitle className={cn('text-foreground text-sm font-normal', className)}>
+    <CardTitle className={cn("text-foreground text-sm font-normal", className)}>
       {children}
     </CardTitle>
   );
@@ -20,9 +20,11 @@ export function StatCardTitle({
 export function StatCardDescription({
   className,
   children,
-}: React.ComponentProps<'div'>) {
+}: React.ComponentProps<"div">) {
   return (
-    <CardDescription className={cn('font-normal', className)}>
+    <CardDescription
+      className={cn("text-sm font-normal lg:text-base", className)}
+    >
       {children}
     </CardDescription>
   );
@@ -31,9 +33,9 @@ export function StatCardDescription({
 export function StatCardValue({
   className,
   children,
-}: React.ComponentProps<'div'>) {
+}: React.ComponentProps<"div">) {
   return (
-    <CardTitle className={cn('text-2xl font-normal', className)}>
+    <CardTitle className={cn("text-2xl font-normal", className)}>
       {children}
     </CardTitle>
   );
@@ -42,6 +44,6 @@ export function StatCardValue({
 export function StatCardIcon({
   className,
   children,
-}: React.ComponentProps<'div'>) {
+}: React.ComponentProps<"div">) {
   return <div className={cn(className)}>{children}</div>;
 }

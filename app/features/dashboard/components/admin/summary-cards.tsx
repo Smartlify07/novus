@@ -1,32 +1,31 @@
-'use client';
-import { HugeiconsIcon } from '@hugeicons/react';
-import SummaryCard from '../summary-card';
-import { Alert, ArrowUp02Icon, Refresh } from '@hugeicons/core-free-icons';
-import { formatCurrency } from '@/lib/utils';
-import { useAdminDashboardStats } from '../../hooks';
+"use client";
+import { HugeiconsIcon } from "@hugeicons/react";
+import SummaryCard from "../summary-card";
+import { ArrowUp02Icon, Refresh } from "@hugeicons/core-free-icons";
+import { formatCurrency } from "@/lib/utils";
+import { useAdminDashboardStats } from "../../hooks";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-} from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from '@/components/ui/button';
-import InlineErrorStateCard from '@/components/inline-error-state-card';
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import InlineErrorStateCard from "@/components/inline-error-state-card";
 
 function SummaryCardSkeleton() {
   return (
-    <Card className="gap-0 flex flex-row px-4 rounded-md shadow-none">
+    <Card className="flex flex-row gap-0 rounded-md px-4 shadow-none">
       <div className="flex flex-col gap-1">
         <div className="flex flex-col gap-1">
-          <CardHeader className="flex items-center gap-2 px-0 text-sm text-muted-foreground">
+          <CardHeader className="text-muted-foreground flex items-center gap-2 px-0 text-sm">
             <Skeleton className="h-4 w-24" />
           </CardHeader>
           <CardContent className="px-0">
             <Skeleton className="h-8 w-40" />
           </CardContent>
         </div>
-        <CardFooter className="rounded-none bg-card border-none px-0 pt-1 pb-4">
+        <CardFooter className="bg-card rounded-none border-none px-0 pt-1 pb-4">
           <Skeleton className="h-4 w-40" />
         </CardFooter>
       </div>
@@ -47,7 +46,7 @@ export default function SummaryCards() {
 
   if (isPending) {
     return (
-      <div className="grid grid-cols-4 gap-6">
+      <div className="grid gap-6 lg:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
           <SummaryCardSkeleton key={i} />
         ))}
@@ -61,33 +60,33 @@ export default function SummaryCards() {
         className="py-10"
         title="Platform overview unavailable"
         description="We couldn't load your key metrics right now. This may be a temporary issue, try refreshing to get the latest figures."
-        actions={[{ label: 'Refresh', icon: Refresh }]}
+        actions={[{ label: "Refresh", icon: Refresh }]}
       />
     );
   }
   return (
-    <div className="grid grid-cols-4 items-center gap-6">
+    <div className="grid items-center gap-6 lg:grid-cols-4">
       <SummaryCard
         title="Total deposits"
-        value={formatCurrency(totalDeposits, 'NGN')}
+        value={formatCurrency(totalDeposits, "NGN")}
         icon={null}
       >
-        <p className="flex items-center gap-1 text-xs text-chart-4">
+        <p className="text-chart-4 flex items-center gap-1 text-xs">
           <HugeiconsIcon icon={ArrowUp02Icon} size={14} /> Capital held
         </p>
       </SummaryCard>
       <SummaryCard
         title="Loan portfolio"
-        value={formatCurrency(totalLoans, 'NGN')}
+        value={formatCurrency(totalLoans, "NGN")}
         icon={null}
       >
-        <p className="flex items-center gap-1 text-xs text-muted-foreground">
+        <p className="text-muted-foreground flex items-center gap-1 text-xs">
           21% of deposits deployed
         </p>
       </SummaryCard>
       <SummaryCard title="Total users" value={String(totalUsers)} icon={null}>
-        <p className="flex items-center gap-1 text-xs text-muted-foreground">
-          {percentageOfUsersWithAccounts}% have accounts{' '}
+        <p className="text-muted-foreground flex items-center gap-1 text-xs">
+          {percentageOfUsersWithAccounts}% have accounts{" "}
         </p>
       </SummaryCard>
       <SummaryCard
@@ -95,7 +94,7 @@ export default function SummaryCards() {
         value={String(totalPendingLoans)}
         icon={null}
       >
-        <p className="flex items-center gap-1 text-xs text-muted-foreground">
+        <p className="text-muted-foreground flex items-center gap-1 text-xs">
           Require attention
         </p>
       </SummaryCard>
