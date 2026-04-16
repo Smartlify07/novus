@@ -35,7 +35,7 @@ export function StatCardValue({
   children,
 }: React.ComponentProps<"div">) {
   return (
-    <CardTitle className={cn("text-2xl font-normal", className)}>
+    <CardTitle className={cn("text-xl font-normal lg:text-2xl", className)}>
       {children}
     </CardTitle>
   );
